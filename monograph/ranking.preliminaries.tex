@@ -1,1 +1,42 @@
-Aqui ficará o texto sobre os aspectos preliminares do problema de ranking.
+\emph{Ranking} pode ser enunciado, em uma forma simples, como a tarefa de
+ordenar os elementos de um conjunto de acordo com algum critério. Essa é uma
+definição bastante geral, porém estamos interessados em uma versão um pouco mais
+restrita do problema.
+
+Para nossos propósitos, os elementos do conjunto a ser ordenado são denominados
+instâncias. Essas são compostas por um conjunto de atributos mais uma classe de
+domínio ${0, 1}$.
+
+Restringindo o problema, esperamos que o algoritmo de \emph{ranking} receba como
+entrada um conjunto de instâncias no qual a classe esteja invisível durante o
+processo de ordenação e dê como saída o conjunto ordenado de forma que as
+instâncias com classe $0$ devem preceder as com classe $1$.
+
+A principal medida de eficiência da ordenação é a AUC
+\emph{(Area Under the Curve)}
+
+O uso da classe como critério para ordenação sugere uma relação com o problema
+de classificação em aprendizagem de máquina. Na verdade, é possível derivar uma
+ordem para as instâncias através das previsões produzidas por um classificador.
+
+Se podemos derivar ordenações diretamente dos classificadores, por que existe
+a necessidade de um algoritmo que seja especializado nisso? Segundo [langford],
+a ordenação por um algoritmo especializado nesse problema nos fornece algumas
+garantias que uma ordenação derivada de uma classificação não.
+
+Falar de erro associado.
+
+Antes de prosseguir, vamos definir formalmente algumas entidades necessárias
+para a representação do problema de \emph{ranking}:
+
+Um conjunto $S$ a ser ordenado é uma coleção de instâncias $i \in S$ em que toda
+instância $i$ possui um espaço com $n$ características observáveis
+$A_i = {a_1, ..., a_n}$ e uma classe $c_i \in {0, 1}$.
+
+O arranjo das instâncias $i \in S$ na qual cada uma assume uma posição, ou
+\emph{rank}, baseado em um critério é chamado \emph{ranking}. No nosso caso, o
+arranjo é baseado na classe das instâncias.
+
+A eficiência da ordenação do conjunto $S$ é máxima caso todas as instâncias
+$i \in S$ tais que $c_i = 0$ estejam posicionadas antes de todas as instâncias
+$i \in S$ tais que $c_i = 1$. Caso contrário, a eficiência é mínima.
