@@ -1,19 +1,24 @@
 \emph{Ranking} pode ser enunciado, em uma forma simples, como a tarefa de
-ordenar os elementos de um conjunto de acordo com algum crit√©rio. Essa √© uma
-defini√ß√£o bastante geral, por√©m estamos interessados em uma vers√£o um pouco mais
+ordenar os elementos de um conjunto de acordo com algum critÈrio. Essa È uma
+definiÁ„o bastante geral, porÈm estamos interessados em uma vers„o um pouco mais
 restrita do problema.
 
-Para nossos prop√≥sitos, os elementos do conjunto a ser ordenado s√£o denominados
-inst√¢ncias. Essas s√£o compostas por um conjunto de atributos mais uma classe de
-dom√≠nio ${0, 1}$.
+Para nossos propÛsitos, os elementos do conjunto a ser ordenado s„o denominados
+inst‚ncias. Essas s„o compostas por um conjunto de atributos mais uma classe de
+domÌnio ${0, 1}$.
 
 Restringindo o problema, esperamos que o algoritmo de \emph{ranking} receba como
-entrada um conjunto de inst√¢ncias no qual a classe esteja invis√≠vel durante o
-processo de ordena√ß√£o e d√™ como sa√≠da o conjunto ordenado de forma que as
-inst√¢ncias com classe $0$ devem preceder as com classe $1$.
+entrada um conjunto de inst‚ncias no qual a classe esteja invisÌvel durante o
+processo de ordenaÁ„o e retorne como saÌda o conjunto ordenado de forma que as
+inst‚ncias com classe $0$ devem preceder as com classe $1$.
 
-A principal medida de efici√™ncia da ordena√ß√£o √© a AUC
-\emph{(Area Under the Curve)}
+Uma medida comum de sucesso para algoritmos de \emph{ranking} È a ·rea sobre a
+curva ROC (\emph{(AUC - Area Under the Curve)}). A perda associada a essa medida
+$1 - AUC$ reflete o n˙mero de inst‚ncias, normalizado pela quantidade de $0$s
+vezes a quantidade de $1$s, que necessitam ser trocadas para um \emph{ranking}
+perfeito. Para uma ordenaÁ„o perfeita, em que todas as inst‚ncias com classe $0$
+precedem as com classe $1$, a perda na \emph{AUC} È $0$. No pior caso, em que
+todos os $1$s precedem os $0$s, a perda na \emph{AUC} È $1$.
 
 O uso da classe como crit√©rio para ordena√ß√£o sugere uma rela√ß√£o com o problema
 de classifica√ß√£o em aprendizagem de m√°quina. Na verdade, √© poss√≠vel derivar uma
