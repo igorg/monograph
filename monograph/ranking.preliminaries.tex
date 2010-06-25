@@ -13,35 +13,67 @@ processo de ordenação e retorne como saída o conjunto ordenado de forma que as
 instâncias com classe $0$ devem preceder as com classe $1$.
 
 Uma medida comum de sucesso para algoritmos de \emph{ranking} é a área sobre a
-curva ROC (\emph{(AUC - Area Under the Curve)}). A perda associada a essa medida
-$1 - AUC$ reflete o número de instâncias, normalizado pela quantidade de $0$s
-vezes a quantidade de $1$s, que necessitam ser trocadas para um \emph{ranking}
-perfeito. Para uma ordenação perfeita, em que todas as instâncias com classe $0$
-precedem as com classe $1$, a perda na \emph{AUC} é $0$. No pior caso, em que
-todos os $1$s precedem os $0$s, a perda na \emph{AUC} é $1$.
+curva \emph{ROC (Receiver Operating Characteristic)}, comummente chamada de
+\emph{AUC (Area Under the Curve)}. A perda associada a essa medida, $1 - AUC$,
+reflete o número de instâncias, normalizado pela quantidade de $0$s vezes a
+quantidade de $1$s, que necessitam ser trocadas para um \emph{ranking} perfeito.
+Para uma ordenação perfeita, em que todas as instâncias com classe $0$ precedem
+as com classe $1$, a perda na \emph{AUC} é $0$. No pior caso, em que todos os
+$1$s precedem os $0$s, a perda na \emph{AUC} é $1$.
 
-O uso da classe como critÃ©rio para ordenaÃ§Ã£o sugere uma relaÃ§Ã£o com o problema
-de classificaÃ§Ã£o em aprendizagem de mÃ¡quina. Na verdade, Ã© possÃ­vel derivar uma
-ordem para as instÃ¢ncias atravÃ©s das previsÃµes produzidas por um classificador.
+O uso da classe como critério para ordenação sugere uma relação com os problemas
+de classificação e regressão em aprendizagem de máquina. Realmente, pode-se
+derivar uma ordenação diretamente das pontuações obtidas em uma classificação ou
+regressão. Se desejamos que instâncias da classe $0$ ocupem as primeiras
+posições do \emph{ranking}, basta ordenar de forma crescente as pontuações
+obtidas considerando a classe $0$.
 
-Se podemos derivar ordenaÃ§Ãµes diretamente dos classificadores, por que existe
-a necessidade de um algoritmo que seja especializado nisso? Segundo [langford],
-a ordenaÃ§Ã£o por um algoritmo especializado nesse problema nos fornece algumas
-garantias que uma ordenaÃ§Ã£o derivada de uma classificaÃ§Ã£o nÃ£o.
+Geralmente, a medida de eficiência mais utilizada para classificação é a
+acurácia: uma razão entre o número de instâncias corretamente classificadas
+sobre o número total de instâncias no conjunto de avaliação. O erro decorrente
+de uma classificação afeta a acurácia de uma forma pontual.
 
-Falar de erro associado.
+Comparativamente, um erro de classificação pode ter maior influência na medida
+\emph{AUC} que na acurácia, portanto afetar considerevelmente um \emph{ranking}.
+A causa disso é a \emph{AUC} considerar uma relação entre as instâncias,
+enquanto a acurácia considera apenas as instâncias pontualmente. Abaixo
+ilustramos através de um exemplo uma relação entre essas medidas que comprova o
+intuído sobre erros na classificação.
 
-Antes de prosseguir, vamos definir formalmente algumas entidades necessÃ¡rias
-para a representaÃ§Ã£o do problema de \emph{ranking}:
+\begin{tabular}{crr}
+\hline
+atributos & classe & previsão \\
+\hline
+$a_{0, 1} \cdots a_{0, n}$ & 0 & 0 \\
+$a_{1, 1} \cdots a_{1, n}$ & 0 & 0 \\
+$a_{2, 1} \cdots a_{2, n}$ & 1 & 0 \\
+$a_{3, 1} \cdots a_{3, n}$ & 0 & 0 \\
+$a_{4, 1} \cdots a_{4, n}$ & 0 & 0 \\
+$a_{5, 1} \cdots a_{5, n}$ & 0 & 0 \\
+$a_{6, 1} \cdots a_{6, n}$ & 0 & 0 \\
+$a_{7, 1} \cdots a_{7, n}$ & 0 & 0 \\
+$a_{8, 1} \cdots a_{8, n}$ & 0 & 0 \\
+$a_{9, 1} \cdots a_{9, n}$ & 1 & 1
+\hline
+\end{tabular}
 
-Um conjunto $S$ a ser ordenado Ã© uma coleÃ§Ã£o de instÃ¢ncias $i \in S$ em que toda
-instÃ¢ncia $i$ possui um espaÃ§o com $n$ caracterÃ­sticas observÃ¡veis
-$A_i = {a_1, ..., a_n}$ e uma classe $c_i \in {0, 1}$.
+No conjunto hipotético representado acima, temos dez instâncias ordenadas em
+um \emph{ranking} com os atributos, as classes e as previsões dadas por um
+classificador. Podemos perceber que o classificador errou apenas a classe da
+terceira instância.
 
-O arranjo das instÃ¢ncias $i \in S$ na qual cada uma assume uma posiÃ§Ã£o, ou
-\emph{rank}, baseado em um critÃ©rio Ã© chamado \emph{ranking}. No nosso caso, o
-arranjo Ã© baseado na classe das instÃ¢ncias.
+Calculando a acurácia, temos nove acertos em dez possíveis, ou seja, $90\%$.
+Calculando a perda da AUC considerando como base a classe $0$, a terceira
+instância precisa retroceder seis posições para uma ordenação perfeita,
+normalizando pelo número de $0$s vezes o número de $1$s, temos
+$(1 - AUC) = 6 \div (2 * 8) = 0,325$, logo a AUC vale $62,5\%$. Isso comprova
+que a AUC, comparada à acurácia, pode sofrer um impacto maior devido a erros de
+classificação.
 
-A eficiÃªncia da ordenaÃ§Ã£o do conjunto $S$ Ã© mÃ¡xima caso todas as instÃ¢ncias
-$i \in S$ tais que $c_i = 0$ estejam posicionadas antes de todas as instÃ¢ncias
-$i \in S$ tais que $c_i = 1$. Caso contrÃ¡rio, a eficiÃªncia Ã© mÃ­nima.
+Langford explica que um classificador que gere um erro de ordem $\alpha$ na
+acurácia pode gerar um erro teórico máximo de $\alpha \cdot n$ na AUC, em que
+$n$ é a cardinalidade do conjunto de instâncias avaliado. Esse efeito se
+intensifica a medida que aumenta o desbalanceamento de classes do conjunto usado
+durante o processo de treinamento pois, quanto mais desbalanceadas as classes,
+mais provável que o classificador resultante seja tendencioso para a classe
+majoritária.
