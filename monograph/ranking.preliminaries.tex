@@ -1,25 +1,56 @@
-\emph{Ranking} pode ser enunciado, em uma forma simples, como a tarefa de
-ordenar os elementos de um conjunto de acordo com algum critério. Essa é uma
-definição bastante geral, porém estamos interessados em uma versão um pouco mais
-restrita do problema.
+Em termos gerais, \emph{ranking} pode ser enunciado como a tarefa de
+ordenar os elementos de um conjunto de acordo com algum critério. Alguns
+exemplos de \emph{rankings} são: \emph{ranking} de seleções da FIFA,
+\emph{ranking} das melhores aplicações do Rails Rumble e ranking do IDH
+(Índice de Desenvolvimento Humano) dos países.
 
-Para nossos propósitos, os elementos do conjunto a ser ordenado são denominados
-instâncias. Essas são compostas por um conjunto de atributos mais uma classe de
-domínio ${0, 1}$.
+Todos os exemplos citados acima tem um aspecto comum: a comparação entre os
+elementos do ranking é feita sobre uma pontuação de cada elemento. Essa
+pontuação é obtida a partir de algumas características dos elementos, da mesma
+forma, o problema a ser estudado consiste em ordenar elementos de acordo com
+uma pontuação.
 
-Restringindo o problema, esperamos que o algoritmo de \emph{ranking} receba como
-entrada um conjunto de instâncias no qual a classe esteja invisível durante o
-processo de ordenação e retorne como saída o conjunto ordenado de forma que as
-instâncias com classe $0$ devem preceder as com classe $1$.
+Em uma definição que carece de formalidade, pode-se descrever o problema como
+a busca pela ordenação dos elementos de um conjunto. A ordem é regida por uma
+pontuação obtida por cada elemento, assim podemos reduzir o problema à
+determinação da pontuação para todos os elementos do conjunto.
+
+Cada instância possui uma característica binária \emph{C} em comum, isso
+significa que \emph{C} pode assumir um de dois valores possíveis para uma dada
+instância. Fixando um valor \emph{V} para a característica \emph{C} como base,
+podemos dizer, de forma simplória, que a pontuação dessa instância é a
+probabilidade de \emph{C} possuir o valor \emph{V}.
+
+\subsection{Formalização do problema}
+Algumas definições são necessárias para adicionar formalidade à descrição do
+problema dada acima. Começando pelo conceito de \emph{ranking}, o conjunto a
+ser ordenado é chamado de base. Os elementos do conjunto a serem ordenados são
+denominados instâncias. As características dos elementos a que nos referimos
+são chamadas de atributos das instâncias. Dentre os atributos, um é nomeado
+classe, encarregado da ordenação no \emph{ranking}, além disso, para nosso
+problema, o atributo classe deve ter um domínio binário $\{0, 1\}$.
+
+Tendo como entrada uma base composta por instâncias para as quais os valores
+das classes são desconhecidos, espera-se como saída uma ordenação de tais
+instâncias que siga o critério: as instâncias com maior chance de pertencer à
+classe $0$ devem preceder as com maior chance de pertencer à classe $1$. Isso
+deve ser concluído com base apenas nos atributos das instâncias.
+
+A via para definir uma solução passa pelo aprendizado de máquina. O algoritmo
+projetado funciona em duas etapas. Na primeira, denominada treinamento, recebe
+uma base com instâncias compostas por atributos e classe e tenta extrair algum
+conhecimento dessas. Na segunda etapa, o algoritmo recebe uma base com
+instâncias compostas apenas por atributos e deve usar o conhecimento obtido na
+primeira etapa para ordenar tais instâncias.
 
 Uma medida comum de sucesso para algoritmos de \emph{ranking} é a área sobre a
-curva \emph{ROC (Receiver Operating Characteristic)}, comummente chamada de
-\emph{AUC (Area Under the Curve)}. A perda associada a essa medida, $1 - AUC$,
-reflete o número de instâncias, normalizado pela quantidade de $0$s vezes a
-quantidade de $1$s, que necessitam ser trocadas para um \emph{ranking} perfeito.
-Para uma ordenação perfeita, em que todas as instâncias com classe $0$ precedem
-as com classe $1$, a perda na \emph{AUC} é $0$. No pior caso, em que todos os
-$1$s precedem os $0$s, a perda na \emph{AUC} é $1$.
+curva \emph{ROC (Receiver Operating Characteristic)}, comumente chamada de
+\emph{AUC (Area Under the Curve)}. A perda, $1 - AUC$, associada a essa medida
+é calculada pelo número de instâncias, normalizado pela quantidade de $0$s
+vezes a quantidade de $1$s, que necessitam ser trocadas para um \emph{ranking}
+perfeito. Uma ordenação é perfeita, quando todas as instâncias com classe $0$
+precedem as com classe $1$, nesse caso a perda na \emph{AUC} é $0$. No pior
+caso, em que todos os $1$s precedem os $0$s, a perda na \emph{AUC} é $1$.
 
 O uso da classe como critério para ordenação sugere uma relação com os problemas
 de classificação e regressão em aprendizagem de máquina. Realmente, pode-se
@@ -34,7 +65,7 @@ sobre o número total de instâncias no conjunto de avaliação. O erro decorren
 de uma classificação afeta a acurácia de uma forma pontual.
 
 Comparativamente, um erro de classificação pode ter maior influência na medida
-\emph{AUC} que na acurácia, portanto afetar considerevelmente um \emph{ranking}.
+\emph{AUC} que na acurácia, portanto afetar consideravelmente um \emph{ranking}.
 A causa disso é a \emph{AUC} considerar uma relação entre as instâncias,
 enquanto a acurácia considera apenas as instâncias pontualmente. Abaixo
 ilustramos através de um exemplo uma relação entre essas medidas que comprova o
