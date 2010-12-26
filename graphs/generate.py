@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
+from os import mkdir, system
 from os.path import join, realpath
 
 SCORES = {
@@ -39,18 +40,28 @@ SCORES = {
 wd = realpath('.')
 plot_tmpl = open(join(wd, 'gnuplot.tmpl'), 'r').read()
 
+try:
+    mkdir(join(wd, 'gplot'))
+    mkdir(join(wd, 'img'))
+except OSError, e:
+    print('Diretórios de configuracao e imagens já existem.')
+
 for database, dictionary in SCORES.items():
     for classifier, score in dictionary.items():
-        print('Gnuplot configuration for: %s - %s\n' % (database, classifier))
         cls_mean, ranking_mean = score
+        filename = '%s.%s' % (database, classifier)
 
         tmpl_data = {
-            'database': database,
+            'img_path': join(wd, 'img', filename),
+            'dat_path': join(wd, database, classifier),
             'classifier': classifier,
             'cls_mean': cls_mean,
             'ranking_mean': ranking_mean
         }
 
-        plot_config = open(join(wd, database, classifier+'.gplot'), 'w')
-        plot_config.write(plot_tmpl % tmpl_data)
-        plot_config.close()
+        plot_config_filename = join(wd, 'gplot', '%s.gplot' % filename)
+        plot_config_file = open(plot_config_filename, 'w')
+        plot_config_file.write(plot_tmpl % tmpl_data)
+        plot_config_file.close()
+
+        system('gnuplot %s' % plot_config_filename)

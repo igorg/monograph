@@ -1,10 +1,10 @@
 set terminal postscript eps color lw 1 "Helvetica" 14
-set output "%(database)s.%(classifier)s.eps"
+set output "%(img_path)s.eps"
 set key over nobox
 set style data linespoints
 set style line 1 lt 10 lc rgb "violet" lw 1
 set style line 2 lt 5 lc rgb "orange" lw 1
-plot    "%(database)s/%(classifier)s.dat" u 2:xtic(1) t "iteracoes", \
+plot    "%(dat_path)s.dat" u 2:xtic(1) t "iteracoes", \
         "" u 3 t "pares", \
         %(cls_mean)s ls 1 t "%(classifier)s", \
         %(ranking_mean)s ls 2 t "ranking"
