@@ -37,7 +37,7 @@ SCORES = {
 }
 
 wd = realpath('.')
-plot_tmpl = open(join(wd, 'gnuplot.config'), 'r').read()
+plot_tmpl = open(join(wd, 'gnuplot.tmpl'), 'r').read()
 
 for database, dictionary in SCORES.items():
     for classifier, score in dictionary.items():
