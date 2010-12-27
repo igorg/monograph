@@ -2,6 +2,8 @@ A primeira conclusão que pode ser tirada é que o algoritmo testado aqui tem um
 
 Para acelerar a etapa de avaliação, foi implantado um método baseado no algoritmo \emph{Quicksort}. Essa parte do algoritmo está completamente funcional, apesar de não haver resultados expostos. Posso sugerir como trabalho futuro a metrificação dos resultados obyidos com a etapa de avaliação baseada nesse algoritmo de \emph{Quicksort}.
 
-Comportamento dúbio do Naïve Bayes.
+O classificador Naïve Bayes teve um desempenho incomum quando combinado com o algortimo de \emph{Ranking}. Esse classificador gerou resultados muito abaixo do esperado para todas as bases testadas, exceto para a base \emph{yeast}.
+
+Pode-se reparar que, para a base \emph{glass}, os resultados começam a melhorar em relação aos obtidos para as bases \emph{breast-cancer}, \emph{vehicle} e \emph{hepatitis}. Já para a base \emph{yeast}, o Naïve Bayes aliado ao algoritmo de \emph{Ranking} teve uma performance perfeita acertando quase todos as ordenações. Esse comportamento bipolar não foi elucidado nesse estudo.
 
 Comparando as estratégias implantandas para acelerar a etapa de treinamento de forma isolada pelos gráficos da seção {{Execução e avaliação}} pode-se chegar a seguinte conclusão: o aumento do número de classificadores na votação cria resultados mais estáveis que o aumento de pares por instância no treinamento.
