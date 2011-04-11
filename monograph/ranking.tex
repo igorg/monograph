@@ -1,6 +1,8 @@
-O algoritmo original proposto em \cite{langford08} é composto de duas etapas: uma de treinamento e outra de ordenação que gera o \emph{ranking}. Porém, o custo computacional desse algoritmo é alto em ambas etapas, cada uma possui complexidade assintótica O(n^2). Isso nos levou a buscar alternativas para reduzir o tempo tanto de treinamento quanto de ordenação.
+O algoritmo proposto em \cite{langford08} é composto de duas etapas: uma de treinamento e outra de ordenação que gera o \emph{ranking}. Porém, o custo computacional desse algoritmo é alto em ambas etapas, cada uma possui complexidade assintótica O(n^2). Isso nos levou a buscar alternativas para reduzir o tempo tanto de treinamento quanto de ordenação.
 
-\section{Votação}
+Na etapa de treinamento, o algoritmo original funciona fazendo todas as combinações entre as instâncias de classe $0$ e de classe $1$ existentes no conjunto de treinamento. A otimização pensada é aumentar o número de classificadores treinados e treiná-los com um subconjunto dos dados para treinamento.
+
+\section{Otimização do treinamento: Votação e pares por instância}
 Aqui ficará a explicação sobre o sistema de votação entre vários classificadores.
 
 \section{Pares por instância}
