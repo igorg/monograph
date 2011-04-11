@@ -1,7 +1,74 @@
-Aqui ficará o texto sobre a implantação do Ranking e as novas estratégias adotadas.
+O algoritmo original de \emph{Ranking} descrito em \cite{langford} funciona em duas etapas. Na primeira, treina-se um classificador;
+na segunda, o classificador gera o \emph{ranking} utilizando um método chamado \emph{torneio}. No algoritmo original, para cada etapa
+o cenário de pior caso vale $O(n^2)$, um tempo computacional bastante elevado.
+
+Duas abordagens foram consideradas para reduzir a complexidade do algoritmo: uma para a fase de treinamento e outra para a fase de geração do \emph{ranking}. Para a fase de classificação, foi pensada uma estratégia de votação entre classifiadores e para a geração do \emph{ranking}, foi pensada uma estratégia de torneio baseada em \emph{quicksort}. Nesse capítulo, estão explicados tanto o algoritmo original quanto essas abordagens para reduzir a complexidade.
+
+\section{Descrição do algoritmo original}
+
+\begin{definition}
+Uma base $B$ é um conjunto de instâncias ${i_0, \dots i_n}$.
+\end{definition}
+
+\begin{definition}
+Uma instância $I$ é composta por um conjunto de atributos $I(A) = {a_0, \dots a_m}$ e uma classe binária $I(C)$.
+\end{definition}
+
+\begin{definition}
+Uma classe binária $C$ é um valor $c \in {0, 1}$.
+\end{definition}
+
+\begin{definition}
+Um problema de classificação binária é definido como
+\end{definition}
+
+\begin{algorithm}
+\begin{algorithmic}
+
+\STATE train(S)
+\STATE rank(S)
+
+\caption{Algoritmo geral do \emph{Ranking}}
+\label{alg_ranking}
+
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\begin{algorithmic}
+    
+\STATE $S$ \gets $\emptyset$
+\FORALL{$I_0 \in S$}
+    \FORALL{$I_1 \in S$}
+        \IF{$I_0 \neq I_1$}
+            \STATE $J(A)$ \gets $I_0(A) + I_1(A)$
+            \STATE $J(C)$ \gets $1(I_0(C), I_1(C))$
+        \ENDIF
+    \ENDFOR
+\ENDFOR
+
+\caption{Etapa de treinamento segundo \cite{langford}}
+\label{alg_original_train}
+
+\end{algorithmic}    
+\end{algorithm}
+
+\begin{algorithm}
+\begin{algorithmic}
+    
+
+
+\caption{Etapa de \emph{rank} segundo \cite{langford}}
+\label{alg_original_train}
+
+\end{algorithmic}    
+\end{algorithm}
+
+\section{Pares por instância}
+Aqui ficará a explicação sobre a quantidade de pares por instância a treinar o classificador.
 
 \section{Votação}
 Aqui ficará a explicação sobre o sistema de votação entre vários classificadores.
 
-\section{Pares por instância}
-Aqui ficará a explicação sobre a quantidade de pares por instância a treinar o classificador.
+\section{Quicksort}
+Aqui ficará a explicação sobre quicksort para a geraçao do \emph{ranking}.
