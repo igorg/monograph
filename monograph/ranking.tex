@@ -1,4 +1,4 @@
-O algoritmo proposto em \cite{langford08} é composto de duas etapas: uma de treinamento e outra de ordenação que gera o \emph{ranking}. Porém, o custo computacional desse algoritmo é alto em ambas etapas, cada uma possui complexidade assintótica O(n^2). Com bases de dados acima de $700$ instâncias o desempenho do algoritmo degrada consideravelmente, isso nos levou a buscar alternativas para reduzir o tempo tanto de treinamento quanto de ordenação.
+O algoritmo proposto em \cite{langford08} é composto de duas etapas: uma de treinamento e outra de ordenação que gera o \emph{ranking}. Porém, o custo computacional desse algoritmo é alto em ambas etapas. Com bases de dados acima de $700$ instâncias o desempenho do algoritmo degrada consideravelmente, isso motivou a busca de alternativas para reduzir o tempo tanto de treinamento quanto de ordenação.
 
 Duas abordagens foram consideradas para reduzir a complexidade do algoritmo: uma para a fase de treinamento e outra para a fase de geração do \emph{ranking}. Para a fase de classificação, foi pensada uma estratégia de votação entre classifiadores e para a geração do \emph{ranking}, foi pensada uma estratégia de torneio baseada em \emph{quicksort}. Nesse capítulo, estão explicados tanto o algoritmo original quanto essas abordagens para reduzir a complexidade.
 
@@ -16,6 +16,12 @@ O algoritmo original chama a etapa de treinamento de AUC-Train. Nessa etapa, sã
 
 \end{algorithmic}
 \end{algorithm}
+
+O AUC-Train faz a combinação de cada instância com classe $0$ com todas as instâncias de classe $1$ nas formas $(z, u)$ e $(u, z)$, onde $z$ é a instância com classe $0$ e $u$ é a instância com classe $1$.
+
+Para o pior caso, com um conjunto de treinamento em que metade das instâncias é da classe $0$ e a outra metade é da classe $1$, a complexidade assintótica é de $O(n^2)$.
+
+Esse algoritmo de mesclagem das instâncias é executado uma vez e seu resultado é usado como massa de dados para um algoritmo de aprendizado - no caso específico dessa implantação, um classificador - ao fim o custo do AUC-Train é composto da etapa de mesclagem acrescido do custo do algoritmo de aprendizagem.
 
 A otimização pensada é aumentar o número de classificadores treinados e treiná-los com um subconjunto dos dados para treinamento.
 
