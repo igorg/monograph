@@ -1,13 +1,11 @@
-O algoritmo proposto em \cite{langford08} é composto de duas etapas: uma de treinamento e outra de ordenação que gera o \emph{ranking}. Porém, o custo computacional desse algoritmo é alto em ambas etapas, cada uma possui complexidade assintótica O(n^2). Isso nos levou a buscar alternativas para reduzir o tempo tanto de treinamento quanto de ordenação.
-
-Na etapa de treinamento, o algoritmo original funciona fazendo todas as combinações entre as instâncias de classe $0$ e de classe $1$ existentes no conjunto de treinamento. A otimização pensada é aumentar o número de classificadores treinados e treiná-los com um subconjunto dos dados para treinamento.
-
-O algoritmo original chama a etapa de ordenação de \emph{torneio}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
+O algoritmo proposto em \cite{langford08} é composto de duas etapas: uma de treinamento e outra de ordenação que gera o \emph{ranking}. Porém, o custo computacional desse algoritmo é alto em ambas etapas, cada uma possui complexidade assintótica O(n^2). Com bases de dados acima de $700$ instâncias o desempenho do algoritmo degrada consideravelmente, isso nos levou a buscar alternativas para reduzir o tempo tanto de treinamento quanto de ordenação.
 
 \section{Otimização do treinamento: Votação e pares por instância}
-Aqui ficará a explicação sobre o sistema de votação entre vários classificadores.
+Na etapa de treinamento, o algoritmo original funciona fazendo todas as combinações entre as instâncias de classe $0$ e de classe $1$ existentes no conjunto de treinamento.
+
+A otimização pensada é aumentar o número de classificadores treinados e treiná-los com um subconjunto dos dados para treinamento.
 
 \section{Otimização da ordenação: Quicksort}
-Aqui ficará a explicação sobre a quantidade de pares por instância a treinar o classificador.
+O algoritmo original chama a etapa de ordenação de \emph{torneio}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
 
 \section{Algoritmo final}
