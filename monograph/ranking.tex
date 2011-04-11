@@ -3,7 +3,19 @@ O algoritmo proposto em \cite{langford08} é composto de duas etapas: uma de tre
 Duas abordagens foram consideradas para reduzir a complexidade do algoritmo: uma para a fase de treinamento e outra para a fase de geração do \emph{ranking}. Para a fase de classificação, foi pensada uma estratégia de votação entre classifiadores e para a geração do \emph{ranking}, foi pensada uma estratégia de torneio baseada em \emph{quicksort}. Nesse capítulo, estão explicados tanto o algoritmo original quanto essas abordagens para reduzir a complexidade.
 
 \section{Otimização do treinamento: Votação e pares por instância}
-O algoritmo original chama a etapa de treinamento de AUC funciona fazendo todas as combinações entre as instâncias de classe $0$ e de classe $1$ existentes no conjunto de treinamento.
+O algoritmo original chama a etapa de treinamento de AUC-Train. Nessa etapa, são feitas combinações entre as instâncias de classe $0$ e de classe $1$, como mostrado no \emph{ algoritmo \ref{alg:auc-train}}. 
+
+\begin{algorithm}
+\begin{algorithmic}
+
+\STATE Let S' = ${\langle(x_1, x_2), 1\cdot(y_1 < y_2)\rangle :(x_1, y_1), (x_2, y_2) \in S and y_1 \neq y_2}$
+\STATE return c = A(S')
+
+\caption{AUC-Train}
+\label{alg:auc-train}
+
+\end{algorithmic}
+\end{algorithm}
 
 A otimização pensada é aumentar o número de classificadores treinados e treiná-los com um subconjunto dos dados para treinamento.
 
