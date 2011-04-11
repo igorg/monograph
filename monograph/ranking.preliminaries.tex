@@ -21,7 +21,7 @@ instância. Fixando um valor \emph{V} para a característica \emph{C} como base,
 podemos dizer, de forma simplória, que a pontuação dessa instância é a
 probabilidade de \emph{C} possuir o valor \emph{V}.
 
-\subsection{Formalização do problema}
+\section{Formalização do problema}
 Algumas definições são necessárias para adicionar formalidade à descrição do
 problema dada acima. Começando pelo conceito de \emph{ranking}, o conjunto a
 ser ordenado é chamado de base. Os elementos do conjunto a serem ordenados são
@@ -114,8 +114,12 @@ processo de treinamento pois, quanto mais desbalanceadas as classes, mais
 provável que o classificador resultante seja tendencioso para a classe
 majoritária.
 
-\section{Breve descrição do algoritmo}
-Mostrar o algoritmo de langford e a complexidade para ambas as fases.
+\section{Formulação Matemática}
 
-\section{Algumas melhorias propostas}
-Votação, pares por instância e quicksort para o ranking.
+A formulação matemática a seguir tem como objetivo possibilitar a descrição do
+algoritmo de \emph{Ranking} proposto em {{Langford}}.
+
+\newtheorem{Base}{Definition}
+\begin{Base}
+Uma base B é composta por um espaço de $n$ atributos $A \in {a_0, ..., a_n}$
+\end{Base}
