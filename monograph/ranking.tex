@@ -2,10 +2,12 @@ O algoritmo proposto em \cite{langford08} é composto de duas etapas: uma de tre
 
 Na etapa de treinamento, o algoritmo original funciona fazendo todas as combinações entre as instâncias de classe $0$ e de classe $1$ existentes no conjunto de treinamento. A otimização pensada é aumentar o número de classificadores treinados e treiná-los com um subconjunto dos dados para treinamento.
 
+O algoritmo original chama a etapa de ordenação de \emph{torneio}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
+
 \section{Otimização do treinamento: Votação e pares por instância}
 Aqui ficará a explicação sobre o sistema de votação entre vários classificadores.
 
-\section{Pares por instância}
+\section{Otimização da ordenação: Quicksort}
 Aqui ficará a explicação sobre a quantidade de pares por instância a treinar o classificador.
 
-\section{Torneio}
+\section{Algoritmo final}
