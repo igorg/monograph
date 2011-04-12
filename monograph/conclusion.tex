@@ -1,6 +1,6 @@
 A primeira conclusão que pode ser tirada é que o algoritmo testado aqui tem uma performance muito baixa no que diz respeito a tempo computacional, tanto para treinamento, quanto para avaliação. As tentativas de melhora no tempo de treinamento como uso de votação e de um número reduzido de pares por instância ajudaram nesse aspecto e criaram resultados por vezes superiores ao algoritmo original e ao classificador base.
 
-Os esforços para otimizar o tempo na etapa de avaliação consistiram em implantar um algoritmo baseado no algoritmo \emph{Quicksort}, que teria tempo de execução médio $n\cdotlog(n)$, um avanço comparado ao tempo de execução médio do torneio que é $n^2$. Embora esta estratégia tenha sido completamente implantada, não houve nenhum experimento que a utilizou.
+Os esforços para otimizar o tempo na etapa de avaliação consistiram em implantar um algoritmo baseado no algoritmo \emph{Quicksort}, que teria tempo de execução médio $n\cdot\log{n}$, um avanço comparado ao tempo de execução médio do torneio que é $n^2$. Embora esta estratégia tenha sido completamente implantada, não houve nenhum experimento que a utilizou.
 
 O classificador Naïve Bayes teve um desempenho incomum quando combinado com o algortimo de \emph{Ranking}. Esse classificador gerou resultados muito abaixo do esperado para todas as bases testadas, exceto para a base \emph{yeast}.
 

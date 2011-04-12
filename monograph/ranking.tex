@@ -1,6 +1,6 @@
-O algoritmo proposto em \cite{langford08} é composto de duas etapas: uma de treinamento e outra de ordenação que gera o \emph{ranking}. Porém, o custo computacional desse algoritmo é alto em ambas etapas. Com bases de dados acima de $700$ instâncias o desempenho do algoritmo degrada consideravelmente, isso motivou a busca de alternativas para reduzir o tempo tanto de treinamento quanto de ordenação.
+O algoritmo proposto em {{langford08}} é composto de duas etapas: uma de treinamento e outra de ordenação que gera o \emph{ranking}. Porém, o custo computacional desse algoritmo é alto em ambas etapas. Com bases de dados acima de $700$ instâncias o desempenho do algoritmo degrada consideravelmente, isso motivou a busca de alternativas para reduzir o tempo tanto de treinamento quanto de ordenação.
 
-Duas abordagens foram consideradas para reduzir a complexidade do algoritmo: uma para a fase de treinamento e outra para a fase de geração do \emph{ranking}. Para a fase de classificação, foi pensada uma estratégia de votação entre classifiadores e para a geração do \emph{ranking}, foi pensada uma estratégia de torneio baseada em \emph{quicksort}. Nesse capítulo, estão explicados tanto o algoritmo original quanto essas abordagens para reduzir a complexidade.
+Duas abordagens foram consideradas para reduzir a complexidade do algoritmo: uma para a fase de treinamento e outra para a fase de geração do \emph{ranking}. Para a fase de classificação, foi pensada uma estratégia de votação entre classificadores e para a geração do \emph{ranking}, foi pensada uma estratégia de torneio baseada em \emph{quicksort}. Nesse capítulo, estão explicados tanto o algoritmo original quanto essas abordagens para reduzir a complexidade.
 
 \section{Otimização do treinamento: Votação e pares por instância}
 O algoritmo original chama a etapa de treinamento de AUC-Train. Nessa etapa, são feitas combinações entre as instâncias de classe $0$ e de classe $1$, como mostrado no \emph{ algoritmo \ref{alg:auc-train}}. 
@@ -36,8 +36,8 @@ Algumas definições necessárias para o funcionamento do algoritmo final.
 \begin{algorithm}
 \begin{algorithmic}
 
-\STATE classifier \gets train(TS, C, pairs, iterations)
-\STATE rank(RS, C, quicksort)
+\STATE $c \gets train(TS, LA, pairs, iterations)$
+\STATE $rank(RS, c, quicksort)$
 
 \caption{Algoritmo final do \emph{Ranking}}
 \label{alg:ranking}
