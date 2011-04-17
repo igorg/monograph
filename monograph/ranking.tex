@@ -1,15 +1,15 @@
-O algoritmo proposto em {{langford08}} é composto de duas etapas: uma de treinamento e outra de ordenação que gera o \emph{ranking}. Porém, o custo computacional desse algoritmo é alto em ambas etapas. Com bases de dados acima de $700$ instâncias o desempenho do algoritmo degrada consideravelmente, isso motivou a busca de alternativas para reduzir o tempo tanto de treinamento quanto de ordenação.
+O algoritmo proposto em {{langford08}} é composto de duas etapas: uma de treinamento e outra de ordenação que gera o \emph{ranking}. Porém, o custo computacional desse algoritmo é alto em ambas etapas. Com bases de dados extensas o desempenho do algoritmo degrada consideravelmente, isso motivou a busca de alternativas para reduzir o tempo tanto de treinamento quanto de ordenação.
 
 Duas abordagens foram consideradas para reduzir a complexidade do algoritmo: uma para a fase de treinamento e outra para a fase de geração do \emph{ranking}. Para a fase de classificação, foi pensada uma estratégia de votação entre classificadores e para a geração do \emph{ranking}, foi pensada uma estratégia de torneio baseada em \emph{quicksort}. Nesse capítulo, estão explicados tanto o algoritmo original quanto essas abordagens para reduzir a complexidade.
 
 \section{Otimização do treinamento: Votação e pares por instância}
-O algoritmo original chama a etapa de treinamento de AUC-Train. Nessa etapa, são feitas combinações entre as instâncias de classe $0$ e de classe $1$, como mostrado no \emph{ algoritmo \ref{alg:auc-train}}. 
+O algoritmo original chama a etapa de treinamento de AUC-Train. Nessa etapa, são feitas combinações entre as instâncias de classe $0$ e de classe $1$, como mostrado no \emph{algoritmo \ref{alg:auc-train}}.
 
 \begin{algorithm}
 \begin{algorithmic}
 
-\STATE Let S' = ${\langle(x_1, x_2), 1\cdot(y_1 < y_2)\rangle :(x_1, y_1), (x_2, y_2) \in S and y_1 \neq y_2}$
-\STATE return c = A(S')
+\STATE Let $S' = {\langle(x_1, x_2), 1\cdot(y_1 < y_2)\rangle :(x_1, y_1), (x_2, y_2) \in S \wedge y_1 \neq y_2}$
+\STATE return $c = A(S')$
 
 \caption{AUC-Train}
 \label{alg:auc-train}
@@ -21,12 +21,29 @@ O AUC-Train faz a combinação de cada instância com classe $0$ com todas as in
 
 Para o pior caso, com um conjunto de treinamento em que metade das instâncias é da classe $0$ e a outra metade é da classe $1$, a complexidade assintótica é de $O(n^2)$.
 
-Esse algoritmo de mesclagem das instâncias é executado uma vez e seu resultado é usado como massa de dados para um algoritmo de aprendizado - no caso específico dessa implantação, um classificador - ao fim o custo do AUC-Train é composto da etapa de mesclagem acrescido do custo do algoritmo de aprendizagem.
+Esse algoritmo de mesclagem das instâncias é executado uma vez e seu resultado é usado como massa de dados para um algoritmo de aprendizado; no caso específico dessa implantação, um classificador.
 
-A otimização pensada é aumentar o número de classificadores treinados e treiná-los com um subconjunto dos dados para treinamento.
+O custo total do AUC-Train é composto pelos custos da etapa de mesclagem e do algoritmo de aprendizagem somados. Vale ressaltar que a etapa de mesclagem tem um tempo maior de execução; a otimização endereça esse problema especificamente.
+
+Na estratégia adotada para reduzir o tempo de mesclagem figuram duas técnicas conhecidas em \emph{data mining}, a primeira é efetuar uma amostragem do conjunto original e a segunda é promover uma votação entre vários classificadores treinados com as amostragens como massa de dados.
+
+O algoritmo:
+
+\begin{algorithm}
+\begin{algorithmic}
+
+\STATE Let $S_0 = {\langle (x, y)\rangle: (x, y) \in S \wedge y = 0}$
+\STATE Let $S_1 = S - S_0$
+
+
+\caption{AUC-Train com amostragem e votação}
+\label{alg:auc-train-amostragem-votacao}
+
+\end{algorithmic}
+\end{algorithm}
 
 \section{Otimização da ordenação: Quicksort}
-O algoritmo original chama a etapa de ordenação de \emph{torneio}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
+A etapa de ordenação original é chamada de \emph{torneio}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
 
 \section{Definições}
 Algumas definições necessárias para o funcionamento do algoritmo final.
