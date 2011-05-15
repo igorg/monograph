@@ -8,7 +8,7 @@ O algoritmo original chama a etapa de treinamento de AUC-Train. Nessa etapa, sã
 \begin{algorithm}
 \begin{algorithmic}
 
-\STATE Let $S' = {\langle(x_1, x_2), 1\cdot(y_1 < y_2)\rangle :(x_1, y_1), (x_2, y_2) \in S \wedge y_1 \neq y_2}$
+\STATE Let $S' = {\langle (x_1, x_2), 1 \cdot (y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S \wedge y_1 \neq y_2}$
 \STATE return $c = A(S')$
 
 \caption{AUC-Train}
@@ -32,10 +32,11 @@ O algoritmo:
 \begin{algorithm}
 \begin{algorithmic}
 
-\STATE Let $S_0 = {\langle (x, y)\rangle: (x, y) \in S \wedge y = 0}$
+\STATE Let $S_0 = {\langle (x, y) \rangle: (x, y) \in S \wedge y = 0}$
 \STATE Let $S_1 = S - S_0$
-
-
+\FOR{$i = 1$ \to iterations}
+\STATE Let $S' = {{\langle (x_1, x_2), 1 \cdot (y_1 < y_2) \rangle : (x_1, y_1) \in S_0 \wedge (x_2, y_2) \in S_1}}$
+\ENDFOR
 \caption{AUC-Train com amostragem e votação}
 \label{alg:auc-train-amostragem-votacao}
 
