@@ -2,13 +2,13 @@ O algoritmo proposto em {{langford08}} é composto de duas etapas: uma de treina
 
 Duas abordagens foram consideradas para reduzir a complexidade do algoritmo: uma para a fase de treinamento e outra para a fase de geração do \emph{ranking}. Para a fase de classificação, foi pensada uma estratégia de votação entre classificadores e para a geração do \emph{ranking}, foi pensada uma estratégia de torneio baseada em \emph{quicksort}. Nesse capítulo, estão explicados tanto o algoritmo original quanto essas abordagens para reduzir a complexidade.
 
-\section{Otimização do treinamento: Votação e pares por instância}
+\section{Otimização do treinamento: Amostragem e Votação}
 O algoritmo original chama a etapa de treinamento de AUC-Train. Nessa etapa, são feitas combinações entre as instâncias de classe $0$ e de classe $1$, como mostrado no \emph{algoritmo \ref{alg:auc-train}}.
 
 \begin{algorithm}
 \begin{algorithmic}
 
-\STATE Let $S' = {\langle (x_1, x_2), 1 \cdot (y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S \wedge y_1 \neq y_2}$
+\STATE Let $S' = \{\langle (x_1, x_2), 1 \cdot (y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S \wedge y_1 \neq y_2\}$
 \STATE return $c = A(S')$
 
 \caption{AUC-Train}
@@ -27,24 +27,49 @@ O custo total do AUC-Train é composto pelos custos da etapa de mesclagem e do a
 
 Na estratégia adotada para reduzir o tempo de mesclagem figuram duas técnicas conhecidas em \emph{data mining}, a primeira é efetuar uma amostragem do conjunto original e a segunda é promover uma votação entre vários classificadores treinados com as amostragens como massa de dados.
 
-O algoritmo:
-
 \begin{algorithm}
 \begin{algorithmic}
 
-\STATE Let $S_0 = {\langle (x, y) \rangle: (x, y) \in S \wedge y = 0}$
-\STATE Let $S_1 = S - S_0$
-\FOR{$i = 1$ \to iterations}
-\STATE Let $S' = {{\langle (x_1, x_2), 1 \cdot (y_1 < y_2) \rangle : (x_1, y_1) \in S_0 \wedge (x_2, y_2) \in S_1}}$
+\STATE Let $S_0 = \{\langle (x, y) \rangle: (x, y) \in S \wedge y = 0\}$
+\STATE Let $S_1\,=\,S\,-\,S_0$
+
+\STATE $V\,\gets\,\emptyset$
+
+\FOR{$i\,=\,1,\;i\,\to\,iterations$}
+\STATE Let $S_{sample} = S' : S' \subset S_1 \wedge |S'| = limit$
+\STATE Let $S_{train} = \{\langle ((x_{0},\,x_{s}),\, 1),\; ((x_{s},\, x_{0}),\,0) \rangle:
+       (x_{0},\,y_{0})\,\in\,S_{0}\,\wedge\,
+       (x_{s},\,y_{s})\,\in\,S_{sample}\}$
+\STATE $c\,\gets\,A(S_{train})$
+\STATE $V\,\gets\,V\,\bigcup\,\{c\}$
 \ENDFOR
-\caption{AUC-Train com amostragem e votação}
+
+\caption{AUC-Train com amostragem}
 \label{alg:auc-train-amostragem-votacao}
 
 \end{algorithmic}
 \end{algorithm}
 
+O produto gerado pelo algoritmo \ref{alg:auc-train-amostragem-votacao} é um conjunto de classificadores treinados a partir de amostragens do conjunto original. Se passarmos os parâmetros $limit=all$ e $iterations=1$, ele gera o mesmo resultado do algortimo descrito por {{langford}}.
+
+
 \section{Otimização da ordenação: Quicksort}
 A etapa de ordenação original é chamada de \emph{torneio}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
+
+\begin{algorithm}
+\begin{algorithmic}
+
+\FORALL{$x\,\in\,U$}
+\STATE $deg(x) = |\{x': c(x, x')=1, x'\in U\}|$
+\ENDFOR
+\STATE Ordene U de forma descendente com base em $deg(x)$, resolva os empates arbitrariamente
+
+\caption{Degree}
+\label{alg:degree}
+
+\end{algorithmic}
+\end{algorithm}
+
 
 \section{Definições}
 Algumas definições necessárias para o funcionamento do algoritmo final.
