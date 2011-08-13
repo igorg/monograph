@@ -1,34 +1,17 @@
-Em termos gerais, \emph{ranking} pode ser enunciado como a tarefa de
-ordenar os elementos de um conjunto de acordo com algum critério. Alguns
-exemplos de \emph{rankings} são: \emph{ranking} de seleções da FIFA,
-\emph{ranking} das melhores aplicações do Rails Rumble e ranking do IDH
-(Índice de Desenvolvimento Humano) dos países.
-
-Todos os exemplos citados acima tem um aspecto comum: a comparação entre os
-elementos do ranking é feita sobre uma pontuação de cada elemento. Essa
-pontuação é obtida a partir de algumas características dos elementos, da mesma
-forma, o problema a ser estudado consiste em ordenar elementos de acordo com
-uma pontuação.
-
-Em uma definição que carece de formalidade, pode-se descrever o problema como
-a busca pela ordenação dos elementos de um conjunto. A ordem é regida por uma
-pontuação obtida por cada elemento, assim podemos reduzir o problema a
-determinação da pontuação para todos os elementos do conjunto.
-
 Cada instância possui uma característica binária \emph{C} em comum, isso
 significa que \emph{C} pode assumir um de dois valores possíveis para uma dada
 instância. Fixando um valor \emph{V} para a característica \emph{C} como base,
 podemos dizer, de forma simplória, que a pontuação dessa instância é a
 probabilidade de \emph{C} possuir o valor \emph{V}.
 
-\section{Formalização do problema}
-Algumas definições são necessárias para adicionar formalidade à descrição do
-problema dada acima. Começando pelo conceito de \emph{ranking}, o conjunto a
-ser ordenado é chamado de base. Os elementos do conjunto a serem ordenados são
-denominados instâncias. As características dos elementos a que nos referimos
-são chamadas de atributos das instâncias. Dentre os atributos, um é nomeado
-classe, encarregado da ordenação no \emph{ranking}, além disso, para nosso
-problema, o atributo classe deve ter um domínio binário $\{0, 1\}$.
+\section{Introdução ao problema}
+Algumas definições são necessárias para a descrição do problema feita acima.
+Começando pelo conceito de \emph{ranking}, o conjunto a ser ordenado é chamado
+de base. Os elementos do conjunto a serem ordenados são denominados instâncias.
+As características dos elementos a que nos referimos são chamadas de atributos
+das instâncias. Dentre os atributos, um é nomeado classe, encarregado da
+ordenação no \emph{ranking}, além disso, para nosso problema, o atributo classe
+deve ter um domínio binário $\{0, 1\}$.
 
 Tendo como entrada uma base composta por instâncias para as quais os valores
 das classes são desconhecidos, espera-se como saída uma ordenação de tais
