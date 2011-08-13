@@ -1,3 +1,4 @@
 *.aux
 *.log
 *.gplot
+*.DS_Store
