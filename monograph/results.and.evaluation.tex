@@ -69,13 +69,36 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
         \hline
     \end{tabular}
     
-    \caption{Desempenho para J48}
+    \caption{Desempenho para árvore de decisão C4.5}
     \label{j48_results_table}
 \end{table}
 
 \begin{figure}[h]
-    \caption{Gráfico para J48}
-    \includegraphics[width=0.5\textwidth]{img/breast-cancer_j48.eps}
+    \centering
+    \subfloat[Breast cancer]{
+        \label{fig:breast-cancer_j48}
+        \includegraphics[width=0.5\textwidth]{img/breast-cancer_j48.eps}
+    }
+    \subfloat[Glass]{
+        \label{fig:glass_j48}
+        \includegraphics[width=0.5\textwidth]{img/glass_j48.eps}
+    }
+
+    \subfloat[Hepatitis]{
+        \label{fig:hepatitis_j48}
+        \includegraphics[width=0.5\textwidth]{img/hepatitis_j48.eps}
+    }    
+    \subfloat[Vehicle]{
+        \label{fig:vehicle_j48}
+        \includegraphics[width=0.5\textwidth]{img/vehicle_j48.eps}
+    }
+    
+    \subfloat[Yeast]{
+        \label{fig:yeast_j48}
+        \includegraphics[width=0.5\textwidth]{img/yeast_j48.eps}
+    }
+
+    \caption{Gráficos de desempenho para árvore de decisão C4.5}
 \end{figure}
 
 \subsection{Desempenho para \emph{Naïve Bayes} (bayes.NaiveBayes)}
@@ -102,6 +125,34 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
     \label{nb_results_table}
 \end{table}
 
+\begin{figure}[h]
+    \centering
+    \subfloat[Breast cancer]{
+        \label{fig:breast-cancer_naive-bayes}
+        \includegraphics[width=0.5\textwidth]{img/breast-cancer_naive-bayes.eps}
+    }
+    \subfloat[Glass]{
+        \label{fig:glass_naive-bayes}
+        \includegraphics[width=0.5\textwidth]{img/glass_naive-bayes.eps}
+    }
+
+    \subfloat[Hepatitis]{
+        \label{fig:hepatitis_naive-bayes}
+        \includegraphics[width=0.5\textwidth]{img/hepatitis_naive-bayes.eps}
+    }    
+    \subfloat[Vehicle]{
+        \label{fig:vehicle_naive-bayes}
+        \includegraphics[width=0.5\textwidth]{img/vehicle_naive-bayes.eps}
+    }
+    
+    \subfloat[Yeast]{
+        \label{fig:yeast_naive-bayes}
+        \includegraphics[width=0.5\textwidth]{img/yeast_naive-bayes.eps}
+    }
+
+    \caption{Gráficos de desempenho para Naïve Bayes}
+\end{figure}
+
 \subsection{Desempenho para a \emph{Curva Logística} (functions.Logistic)}
 
 \begin{table}[h]
@@ -126,6 +177,34 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
     \label{logistic_results_table}
 \end{table}
 
+\begin{figure}[h]
+    \centering
+    \subfloat[Breast cancer]{
+        \label{fig:breast-cancer_logistic}
+        \includegraphics[width=0.5\textwidth]{img/breast-cancer_logistic.eps}
+    }
+    \subfloat[Glass]{
+        \label{fig:glass_logistic}
+        \includegraphics[width=0.5\textwidth]{img/glass_logistic.eps}
+    }
+
+    \subfloat[Hepatitis]{
+        \label{fig:hepatitis_logistic}
+        \includegraphics[width=0.5\textwidth]{img/hepatitis_logistic.eps}
+    }    
+    \subfloat[Vehicle]{
+        \label{fig:vehicle_logistic}
+        \includegraphics[width=0.5\textwidth]{img/vehicle_logistic.eps}
+    }
+    
+    \subfloat[Yeast]{
+        \label{fig:yeast_logistic}
+        \includegraphics[width=0.5\textwidth]{img/yeast_logistic.eps}
+    }
+
+    \caption{Gráficos de desempenho para Curva Logística}
+\end{figure}
+
 \subsection{Desempenho para \emph{Support Vector Machine} (functions.SMO)}
 
 \begin{table}[h]
@@ -149,3 +228,31 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
     \caption{Desempenho para SMO}
     \label{smo_results_table}
 \end{table}
+
+\begin{figure}[h]
+    \centering
+    \subfloat[Breast cancer]{
+        \label{fig:breast-cancer_smo}
+        \includegraphics[width=0.5\textwidth]{img/breast-cancer_smo.eps}
+    }
+    \subfloat[Glass]{
+        \label{fig:glass_smo}
+        \includegraphics[width=0.5\textwidth]{img/glass_smo.eps}
+    }
+
+    \subfloat[Hepatitis]{
+        \label{fig:hepatitis_smo}
+        \includegraphics[width=0.5\textwidth]{img/hepatitis_smo.eps}
+    }    
+    \subfloat[Vehicle]{
+        \label{fig:vehicle_smo}
+        \includegraphics[width=0.5\textwidth]{img/vehicle_smo.eps}
+    }
+    
+    \subfloat[Yeast]{
+        \label{fig:yeast_smo}
+        \includegraphics[width=0.5\textwidth]{img/yeast_smo.eps}
+    }
+
+    \caption{Gráficos de desempenho para Curva Logística}
+\end{figure}
