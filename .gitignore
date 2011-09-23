@@ -2,3 +2,4 @@
 *.log
 *.gplot
 *.DS_Store
+*converted-to*
