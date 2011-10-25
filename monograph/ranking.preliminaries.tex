@@ -1,8 +1,14 @@
-Cada instância possui uma característica binária \emph{C} em comum, isso
-significa que \emph{C} pode assumir um de dois valores possíveis para uma dada
-instância. Fixando um valor \emph{V} para a característica \emph{C} como base,
-podemos dizer, de forma simplória, que a pontuação dessa instância é a
-probabilidade de \emph{C} possuir o valor \emph{V}.
+\emph{Alguma coisa que descreva o ranking como um subproblema de classificação, aprendizado supervisionado e ordena com relação a uma característica binária}
+
+Segundo \cite{langford08} há uma correlação entre um problema de ordenação e um problema classificação, sendo possível ordenar um conjunto a partir de avaliações de um classificador.
+
+Partindo desse princípio, o algoritmo foi projetado envolvendo o treinamento de classificador binário com uma etapa anterior e outra posterior. A etapa anterior ao treinamento aplica uma transformação na base de dados de exemplos e na etapa posterior a base é ordenada a partir das previsões do classificador.
+
+% Cada instância possui uma característica binária \emph{C} em comum, isso
+% significa que \emph{C} pode assumir um de dois valores possíveis para uma dada
+% instância. Fixando um valor \emph{V} para a característica \emph{C} como base,
+% podemos dizer, de forma simplória, que a pontuação dessa instância é a
+% probabilidade de \emph{C} possuir o valor \emph{V}.
 
 \section{Introdução ao problema}
 Algumas definições são necessárias para a descrição do problema feita acima.
@@ -41,6 +47,8 @@ derivar uma ordenação diretamente das pontuações obtidas em uma classificaç
 regressão. Se desejamos que instâncias da classe $0$ ocupem as primeiras
 posições do \emph{ranking}, basta ordenar de forma crescente as pontuações
 obtidas considerando a classe $0$.
+
+\section{Medidas para avaliação de \{rankings}}
 
 Geralmente, a medida de eficiência mais utilizada para classificação é a
 acurácia: uma razão entre o número de instâncias corretamente classificadas
@@ -96,13 +104,3 @@ a medida que aumenta o desbalanceamento de classes do conjunto usado durante o
 processo de treinamento pois, quanto mais desbalanceadas as classes, mais
 provável que o classificador resultante seja tendencioso para a classe
 majoritária.
-
-\section{Formulação Matemática}
-
-A formulação matemática a seguir tem como objetivo possibilitar a descrição do
-algoritmo de \emph{Ranking} proposto em {{Langford}}.
-
-\newtheorem{Base}{Definition}
-\begin{Base}
-Uma base B é composta por um espaço de $n$ atributos $A \in {a_0, ..., a_n}$
-\end{Base}
