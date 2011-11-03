@@ -1,28 +1,40 @@
-Segundo o dicionário Cambridge, a palavra \emph{rank} significa uma posição
-particular, mais alta ou mais baixa que outras. Por exemplo, a seleção
-brasileira de futebol masculino ocupa uma posição na classificação das
-seleções da FIFA.
+Segundo o dicionário Cambridge, a palavra \emph{rank} significa uma posição particular, mais alta ou mais baixa que outras. Por exemplo, a seleção brasileira de futebol masculino ocupa uma posição na classificação das seleções da FIFA.
 
-A posição ocupada pela seleção brasileira somada as posições ocupadas pelas
-outras seleções constituem o \emph{ranking} das seleções de futebol
-masculino da FIFA. Pode-se citar como outros exemplos de \emph{ranking}: o
-\emph{ranking} das aplicações do Rails Rumble e o \emph{ranking} do IDH
-(Índice de Desenvolvimento Humano) dos países.
+A posição ocupada pela seleção brasileira somada as posições ocupadas pelas outras seleções constituem o \emph{ranking} das seleções de futebol masculino da FIFA. Pode-se citar como outros exemplos de \emph{ranking}: o \emph{ranking} das aplicações do Rails Rumble e o \emph{ranking} do IDH (Índice de Desenvolvimento Humano) dos países.
 
-Todos os \emph{rankings} citados são ordenados de acordo com um critério.
-Para a definição da posição de uma seleção no \emph{ranking} de seleções
-da FIFA, há um cálculo que leva em conta alguns fatores das partidas
-disputadas por essa seleção nos quatro anos mais recentes. Exemplos:
+Todos os \emph{rankings} citados são ordenados de acordo com um critério. Por exemplo, para a definição do \emph{ranking} de seleções da FIFA, calcula-se o total de pontos para cada seleção vinculada à FIFA e ordenam-se as seleções com base nas pontuações. As seleções com maior pontuação ocupam o topo do \emph{ranking}, enquanto as seleções com menor pontuação ocupam a base.
 
+A pontuação total de uma seleção em um período de quatro anos é definida por meio da soma da média de pontos ganhos em partidas disputados nos 12 últimos meses e da média de pontos ganhos em partidas que ocorreram há mais de 12 meses, a qual se deprecia anualmente.
+
+A pontuação para uma partida é calculada pela seguinte fórmula:
+
+\[P = M \times I \times T \times C \times 100\]
+
+Onde:
 \begin{itemize}
-    \item Pontos por resultado (vitória, empate ou derrota);
-    \item Importância da partida (amistoso, eliminatórias, copa do mundo, etc.);
-    \item Força do adversário (posição no \emph{ranking}).
-    \item Força da região (confederação FIFA)
-    \item Período (Quanto mais recente, maior peso)
+
+    \item {\bf M}: Pontos por vitória (3 pontos), empate (1 ponto) ou derrota (0 pontos). Se a partida for decidida nos penaltis, o vencedor recebe 2 pontos e o derrotado recebe 1 ponto.
+
+    \item {\bf I}: Importância da partida com os seguintes pesos:
+    \begin{itemize}
+        \item Amistoso: 1,0
+        \item Eliminatórias da copa e eliminatórias continentais: 2,5
+        \item Torneio continental e Copa da Confedarações: 3,0
+        \item Copa do Mundo: 4,0
+    \end{itemize}
+
+    \item {\bf T}: Dificuldade do adversário de acordo com a seguinte fórmula:
+    \[(200 - posicao \; do \; adversario \; no \; ranking) \div 100\]
+    O time no topo do ranking reprensenta dificuldade 2,00. Os times abaixo da posicao 150 tem dificuldade fixa de 0,5.
+
+    \item {\bf C}: Dificuldade de confederação: É a média entre as duas confederações envolvidas em uma partida. Cada confederação tem um peso, variando de 1 a 0.85, definido pela FIFA.
+    
 \end{itemize}
 
-Com o cálculo feito para cada seleção vinculada à FIFA, define-se o
-\emph{ranking} das seleções. Pode-se considerar que o topo do \emph{ranking}
-possui as melhores seleções em um passado recente, enquanto na base estão
-as piores seleções.
+Podemos afirmar que as fórmulas utilizadas pela FIFA para definir as pontuações das seleções constituem um modelo que determina uma ordem parcial do conjunto de seleções FIFA. Dizer que o as fórmulas utilizadas pela FIFA constituem um modelo caracteriza a tarefa de ordenação das seleções FIFA como computável, ou seja, o modelo pode ser escrito em forma de algoritmo e avaliado, junto aos dados necessários, por um computador.
+
+Outra característica do modelo FIFA é que ele foi definido por funcionários da instituição, ou seja, o modelo é fruto do intelecto humano, apesar disso, seria possível utilizar métodos de inteligência artificial para aprendizagem de um modelo que ordene o conjunto de seleções FIFA.
+
+A computabilidade e a possibilidade de aprendizagem automática de modelos para ordenação é um dos assuntos em voga na área de inteligência artificial atualmente. O ranking de seleções da FIFA é apenas um exemplo.
+
+Portanto, de posse de algumas informações das seleções, seria possível automatizar a computação de um modelo que ordene as seleções e aplicar esse
