@@ -1,8 +1,8 @@
 \emph{Alguma coisa que descreva o ranking como um subproblema de classificação, aprendizado supervisionado e ordena com relação a uma característica binária}
 
-Segundo \cite{langford08} há uma correlação entre um problema de ordenação e um problema classificação, sendo possível ordenar um conjunto a partir de avaliações de um classificador.
+Segundo \cite{langford08} há uma correlação entre um problema de ordenação e um problema classificação, sendo possível ordenar um conjunto a partir de avaliações de um classificador. Por causa dessa correlação, a solução de \emph{ranking} tem característica de apredizagem supervisionada.
 
-Partindo desse princípio, o algoritmo foi projetado envolvendo o treinamento de classificador binário com uma etapa anterior e outra posterior. A etapa anterior ao treinamento aplica uma transformação na base de dados de exemplos e na etapa posterior a base é ordenada a partir das previsões do classificador.
+Partindo desse princípio, o algoritmo foi projetado envolvendo o treinamento de classificador binário com uma etapa anterior e outra posterior. A etapa anterior ao treinamento aplica uma transformação na base de dados de exemplos e a etapa posterior  ordena a base a partir das previsões do classificador.
 
 % Cada instância possui uma característica binária \emph{C} em comum, isso
 % significa que \emph{C} pode assumir um de dois valores possíveis para uma dada
@@ -32,15 +32,6 @@ conhecimento dessas. Na segunda etapa, o algoritmo recebe uma base com
 instâncias compostas apenas por atributos e deve usar o conhecimento obtido na
 primeira etapa para ordenar tais instâncias.
 
-Uma medida comum de sucesso para algoritmos de \emph{ranking} é a área sobre a
-curva \emph{ROC (Receiver Operating Characteristic)}, comumente chamada de
-\emph{AUC (Area Under the Curve)}. A perda, $1 - AUC$, associada a essa medida
-é calculada pelo número de instâncias, normalizado pela quantidade de $0$s
-vezes a quantidade de $1$s, que necessitam ser trocadas para um \emph{ranking}
-perfeito. Uma ordenação é perfeita, quando todas as instâncias com classe $0$
-precedem as com classe $1$, nesse caso a perda na \emph{AUC} é $0$. No pior
-caso, em que todos os $1$s precedem os $0$s, a perda na \emph{AUC} é $1$.
-
 O uso da classe como critério para ordenação sugere uma relação com os problemas
 de classificação e regressão em aprendizagem de máquina. Realmente, pode-se
 derivar uma ordenação diretamente das pontuações obtidas em uma classificação ou
@@ -55,12 +46,15 @@ acurácia: uma razão entre o número de instâncias corretamente classificadas
 sobre o número total de instâncias no conjunto de avaliação. O erro decorrente
 de uma classificação afeta a acurácia de uma forma pontual.
 
-Comparativamente, um erro de classificação pode ter maior influência na medida
-\emph{AUC} que na acurácia, portanto afetar consideravelmente um \emph{ranking}.
-A causa disso é a \emph{AUC} considerar uma relação entre as instâncias,
-enquanto a acurácia considera apenas as instâncias pontualmente. Abaixo
-ilustramos através de um exemplo uma relação entre essas medidas que comprova o
-intuído sobre erros na classificação.
+Uma medida comum de avaliação para algoritmos de \emph{ranking} é a área sobre a
+curva \emph{ROC (Receiver Operating Characteristic)}, comumente chamada de
+\emph{AUC (Area Under the Curve)}.
+
+A perda, $1 - AUC$, associada a essa medida é calculada pelo número de instâncias, normalizado pela quantidade de $0$s vezes a quantidade de $1$s, que necessitam ser trocadas para um \emph{ranking} perfeito.
+
+Uma ordenação é perfeita, quando todas as instâncias com classe $0$ precedem as com classe $1$, nesse caso a perda na \emph{AUC} é $0$. No pior caso, em que todos os $1$s precedem os $0$s, a perda na \emph{AUC} é $1$.
+
+Comparativamente, um erro de classificação pode ter maior influência na medida \emph{AUC} que na acurácia, portanto afetar consideravelmente um \emph{ranking}. A causa disso é a \emph{AUC} considerar a relação entre as instâncias, enquanto a acurácia considera apenas as instâncias pontualmente. Abaixo ilustramos através de um exemplo uma relação entre essas medidas que comprova o intuído sobre erros na classificação.
 
 \begin{table}[h!]
         \centering
@@ -84,10 +78,7 @@ intuído sobre erros na classificação.
         \caption{Exemplo de \emph{ranking} e classificação}
 \end{table}
 
-No conjunto hipotético representado ao lado, temos dez instâncias ordenadas em
-um \emph{ranking} com os atributos, as classes e as previsões dadas por um
-classificador. Podemos perceber que o classificador errou apenas a classe da
-terceira instância.
+No exemplo acima, temos dez instâncias ordenadas em um \emph{ranking} com os atributos, as classes e as previsões dadas por um classificador. Podemos perceber que o classificador errou apenas a classe da terceira instância.
 
 Calculando a acurácia, temos nove acertos em dez possíveis, ou seja, $90\%$.
 Calculando a perda da AUC considerando como base a classe $0$, a terceira
@@ -97,10 +88,6 @@ $(1 - AUC) = 6 \div (2 * 8) = 0,325$, logo a AUC vale $62,5\%$. Isso comprova
 que a AUC, comparada à acurácia, pode sofrer um impacto maior devido a erros de
 classificação.
 
-Langford explica que um classificador que gere um erro de ordem $\alpha$ na
-acurácia pode gerar um erro teórico máximo de $\alpha \cdot n$ na AUC, onde $n$
-é a cardinalidade do conjunto de instâncias avaliado. Esse efeito se intensifica
-a medida que aumenta o desbalanceamento de classes do conjunto usado durante o
-processo de treinamento pois, quanto mais desbalanceadas as classes, mais
-provável que o classificador resultante seja tendencioso para a classe
-majoritária.
+Langford explica que um classificador que gere um erro de ordem $\alpha$ na acurácia pode gerar um erro teórico máximo de $\alpha \cdot n$ na AUC, onde $n$ é a cardinalidade do conjunto de instâncias avaliado.
+
+O erro na AUC se intensifica a medida que o desbalanceamento de classes do conjunto usado no treinamento aumenta pois, quanto mais desbalanceadas as classes, mais provável que o classificador resultante seja tendencioso para a classe majoritária.

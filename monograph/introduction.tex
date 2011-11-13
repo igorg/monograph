@@ -33,8 +33,12 @@ Onde:
 
 Podemos afirmar que as fórmulas utilizadas pela FIFA para definir as pontuações das seleções constituem um modelo que determina uma ordem parcial do conjunto de seleções FIFA. Dizer que o as fórmulas utilizadas pela FIFA constituem um modelo caracteriza a tarefa de ordenação das seleções FIFA como computável, ou seja, o modelo pode ser escrito em forma de algoritmo e avaliado, junto aos dados necessários, por um computador.
 
-Outra característica do modelo FIFA é que ele foi definido por funcionários da instituição, ou seja, o modelo é fruto do intelecto humano, apesar disso, seria possível utilizar métodos de inteligência artificial para aprendizagem de um modelo que ordene o conjunto de seleções FIFA.
+Outra característica do modelo FIFA é que ele foi definido por funcionários da instituição, ou seja, o modelo é fruto do intelecto humano, apesar disso, seria possível a aprendizagem automática de um modelo que ordene o conjunto de seleções FIFA.
 
-A computabilidade e a possibilidade de aprendizagem automática de modelos para ordenação é um dos assuntos em voga na área de inteligência artificial atualmente. O ranking de seleções da FIFA é apenas um exemplo.
+Embora o \emph{ranking} de seleções da FIFA ter sido usado apenas como exemplo, a computabilidade e a possibilidade de aprendizagem automática de modelos para ordenação tem atraído a atenção de muitos pesquisadores nos últimos anos.
 
-Portanto, de posse de algumas informações das seleções, seria possível automatizar a computação de um modelo que ordene as seleções e aplicar esse
+Grande parte das pesquisas está concentrada em uma área denominada \emph{Learning to Rank for Information Retrieval}, com sites especializados no assunto (ex. http://research.microsoft.com/en-us/um/beijing/projects/letor/) e competições como (http://learningtorankchallenge.yahoo.com/)'. Essa área de pesquisa é constituída por uma conjunção de conhecimentos sobre \emph{Aprendizagem de máquina} e \emph{Recuperação de informação}.
+
+Um dos problemas básicos de \emph{Learning to Rank for Information Retrieval} tem seguinte enunciado. Dado um conjunto de documentos em que cada documento pode receber um rótulo, \emph{ranking} consiste em atribuir uma posicao a cada documento do conjunto, tendo como insumo pares documento-rótulo ou uma relação de ordem total ou parcial entre os documentos.
+
+Estudaremos a implantação e avaliação de um método de aprendizagem automática para ordenação de um conjunto de elementos passíveis de rotulação. O método consiste na aplicação de técnicas já conhecidas em \emph{aprendizagem de máquina} (regressão e classificação) com finalidade de ordenar dados.
