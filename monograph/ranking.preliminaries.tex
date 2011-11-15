@@ -1,3 +1,34 @@
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{ccccc}
+        \hline
+        panorama & temperatura & humidade & ventoso & adequado para jogo \\
+        \hline
+        ensolarado & quente & alta & falso & não \\
+        ensolarado & quente & alta & verdadeiro & não \\
+        nublado & quente & alta & falso & sim \\
+        chuvoso & branda & alta & falso & sim \\
+        chuvoso & frio & normal & falso & sim \\
+        chuvoso & frio & normal & verdadeiro & não \\
+        nublado & frio & normal & verdadeiro & sim \\
+        ensolarado & branda & alta & falso & não \\
+        ensolarado & frio & normal & falso & sim \\
+        chuvoso & branda & normal & falso & sim \\
+        ensolarado & branda & normal & verdadeiro & sim \\
+        nublado & branda & alta & verdadeiro & sim \\
+        nublado & quente & normal & falso & sim \\
+        chuvoso & branda & alta & verdadeiro & não \\
+        \hline
+    \end{tabular}
+
+    \caption{Base de dados de tempo}
+\end{table}
+
+
+
+
+
+
 \emph{Alguma coisa que descreva o ranking como um subproblema de classificação, aprendizado supervisionado e ordena com relação a uma característica binária}
 
 Segundo \cite{langford08} há uma correlação entre um problema de ordenação e um problema classificação, sendo possível ordenar um conjunto a partir de avaliações de um classificador. Por causa dessa correlação, a solução de \emph{ranking} tem característica de apredizagem supervisionada.
