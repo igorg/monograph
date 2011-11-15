@@ -1,6 +1,6 @@
 Segundo o dicionário Cambridge, a palavra \emph{rank} significa uma posição particular, mais alta ou mais baixa que outras. Por exemplo, a seleção brasileira de futebol masculino ocupa uma posição na classificação das seleções da FIFA.
 
-A posição ocupada pela seleção brasileira somada as posições ocupadas pelas outras seleções constituem o \emph{ranking} das seleções de futebol masculino da FIFA. Pode-se citar como outros exemplos de \emph{ranking}: o \emph{ranking} das aplicações do Rails Rumble e o \emph{ranking} do IDH (Índice de Desenvolvimento Humano) dos países.
+A posição ocupada pela seleção brasileira somada as posições ocupadas pelas outras seleções constituem o \emph{ranking} das seleções de futebol masculino da FIFA. Pode-se citar como outros exemplos de \emph{ranking}: o \emph{ranking} do IDH (Índice de Desenvolvimento Humano) dos países, o \emph{ranking} da competição da Yahoo! \footnote{http://learningtorankchallenge.yahoo.com/leaderboard.php} sobre \emph{Learning to rank}, entre outros.
 
 Todos os \emph{rankings} citados são ordenados de acordo com um critério. Por exemplo, para a definição do \emph{ranking} de seleções da FIFA, calcula-se o total de pontos para cada seleção vinculada à FIFA e ordenam-se as seleções com base nas pontuações. As seleções com maior pontuação ocupam o topo do \emph{ranking}, enquanto as seleções com menor pontuação ocupam a base.
 
@@ -33,12 +33,16 @@ Onde:
 
 Podemos afirmar que as fórmulas utilizadas pela FIFA para definir as pontuações das seleções constituem um modelo que determina uma ordem parcial do conjunto de seleções FIFA. Dizer que o as fórmulas utilizadas pela FIFA constituem um modelo caracteriza a tarefa de ordenação das seleções FIFA como computável, ou seja, o modelo pode ser escrito em forma de algoritmo e avaliado, junto aos dados necessários, por um computador.
 
-Outra característica do modelo FIFA é que ele foi definido por funcionários da instituição, ou seja, o modelo é fruto do intelecto humano, apesar disso, seria possível a aprendizagem automática de um modelo que ordene o conjunto de seleções FIFA.
+Outra característica do modelo FIFA é que ele foi definido por funcionários da instituição, ou seja, o modelo é fruto do intelecto humano. Apesar disso, seria possível a aprendizagem automática de um modelo que ordenasse o conjunto de seleções vinculadas à FIFA.
 
-Embora o \emph{ranking} de seleções da FIFA ter sido usado apenas como exemplo, a computabilidade e a possibilidade de aprendizagem automática de modelos para ordenação tem atraído a atenção de muitos pesquisadores nos últimos anos.
+As características de computabilidade e possibilidade de aprendizagem automática, observadas no exemplo do \emph{ranking} da FIFA, podem ser encontradas em diversos outros tipos de ordenações.
 
-Grande parte das pesquisas está concentrada em uma área denominada \emph{Learning to Rank for Information Retrieval}, com sites especializados no assunto (ex. http://research.microsoft.com/en-us/um/beijing/projects/letor/) e competições como (http://learningtorankchallenge.yahoo.com/)'. Essa área de pesquisa é constituída por uma conjunção de conhecimentos sobre \emph{Aprendizagem de máquina} e \emph{Recuperação de informação}.
+Talvez não haja muita valia em automatizar o aprendizado de um modelo para ordenar as seleções vinculadas à FIFA; o modelo definido pela FIFA já é bastante adequado. Porém, para uma grande quantidade de aplicações, aprender modelos que ordenem uma base de dados pode ser útil, ajudando a lidar com problemas como quantidade de dados e variáveis a serem consideradas.
 
-Um dos problemas básicos de \emph{Learning to Rank for Information Retrieval} tem seguinte enunciado. Dado um conjunto de documentos em que cada documento pode receber um rótulo, \emph{ranking} consiste em atribuir uma posicao a cada documento do conjunto, tendo como insumo pares documento-rótulo ou uma relação de ordem total ou parcial entre os documentos.
+Um problema beneficiado pela aprendizagem de um modelo de ordenação seria: Dado um conjunto de documentos em que cada documento pode receber um rótulo, atribuir uma posicao a cada documento do conjunto, tendo como insumo pares documento-rótulo ou uma relação de ordem total ou parcial entre os documentos.
 
-Estudaremos a implantação e avaliação de um método de aprendizagem automática para ordenação de um conjunto de elementos passíveis de rotulação. O método consiste na aplicação de técnicas já conhecidas em \emph{aprendizagem de máquina} (regressão e classificação) com finalidade de ordenar dados.
+O problema de ordenação de documentos é um dos problemas de interesse de uma área  conhecida como \emph{Learning to Rank} que tem atraído a atenção de muitos pesquisadores nos últimos anos. Essa área de pesquisa é constituída por uma conjunção de conhecimentos sobre \emph{Aprendizagem de máquina} e \emph{Recuperação de informação} e está inserida no contexto de \emph{inteligência artificial}.
+
+Essa área já conta com sites especializados no assunto\footnote{http://research.microsoft.com/en-us/um/beijing/projects/letor/}, competições\footnote{http://learningtorankchallenge.yahoo.com/} além do apoio das gigantes de TI.
+
+Estudaremos a implantação e avaliação de um método de aprendizagem automática para ordenação de um conjunto de elementos passíveis de rotulação. O método consiste na aplicação de técnicas consolidadas em \emph{aprendizagem de máquina} (regressão e classificação) com finalidade de ordenar dados.
