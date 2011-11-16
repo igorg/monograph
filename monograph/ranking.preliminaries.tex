@@ -88,36 +88,38 @@ Uma ordenação é perfeita, quando todas as instâncias com classe $0$ precedem
 Comparativamente, um erro de classificação pode ter maior influência na medida \emph{AUC} que na acurácia, portanto afetar consideravelmente um \emph{ranking}. A causa disso é a \emph{AUC} considerar a relação entre as instâncias, enquanto a acurácia considera apenas as instâncias pontualmente. Abaixo ilustramos através de um exemplo uma relação entre essas medidas que comprova o intuído sobre erros na classificação.
 
 \begin{table}[h!]
-        \centering
-        \begin{tabular*}{0.50\textwidth}{@{\extracolsep{\fill}} c|rr}
+    \centering
+    \begin{tabular}{cccccc}
         \hline
-        atributos & classe & previsão \\
+        panorama & temperatura & humidade & ventoso & classe & previsão \\
         \hline
-        $a_{0, 1}, \quad \cdots, \quad a_{0, n}$ & 0 & 0 \\
-        $a_{1, 1}, \quad \cdots, \quad a_{1, n}$ & 0 & 0 \\
-        $a_{2, 1}, \quad \cdots, \quad a_{2, n}$ & 1 & 0 \\
-        $a_{3, 1}, \quad \cdots, \quad a_{3, n}$ & 0 & 0 \\
-        $a_{4, 1}, \quad \cdots, \quad a_{4, n}$ & 0 & 0 \\
-        $a_{5, 1}, \quad \cdots, \quad a_{5, n}$ & 0 & 0 \\
-        $a_{6, 1}, \quad \cdots, \quad a_{6, n}$ & 0 & 0 \\
-        $a_{7, 1}, \quad \cdots, \quad a_{7, n}$ & 0 & 0 \\
-        $a_{8, 1}, \quad \cdots, \quad a_{8, n}$ & 0 & 0 \\
-        $a_{9, 1}, \quad \cdots, \quad a_{9, n}$ & 1 & 1 \\
+        ensolarado & quente & alta & falso & não & sim \\
+        nublado & quente & alta & falso & sim & sim \\
+        chuvoso & branda & alta & falso & sim & sim \\
+        chuvoso & frio & normal & falso & sim & sim \\
+        nublado & frio & normal & verdadeiro & sim & sim \\
+        ensolarado & frio & normal & falso & sim & sim \\
+        chuvoso & branda & normal & falso & sim & sim \\
+        ensolarado & branda & normal & verdadeiro & sim & sim \\
+        nublado & branda & alta & verdadeiro & sim & sim \\
+        nublado & quente & normal & falso & sim & sim \\
+        ensolarado & quente & alta & verdadeiro & não & não \\
+        chuvoso & frio & normal & verdadeiro & não & não \\
+        ensolarado & branda & alta & falso & não & não \\
+        chuvoso & branda & alta & verdadeiro & não & não \\
         \hline
-        \end{tabular*}
+    \end{tabular}
 
-        \caption{Exemplo de \emph{ranking} e classificação}
+    \caption{Exemplo de \emph{ranking} e classificação na base weather}
 \end{table}
 
-No exemplo acima, temos dez instâncias ordenadas em um \emph{ranking} com os atributos, as classes e as previsões dadas por um classificador. Podemos perceber que o classificador errou apenas a classe da terceira instância.
+No exemplo acima, temos quatorze instâncias ordenadas em um \emph{ranking} com os atributos, as classes e as previsões dadas por um classificador. Podemos perceber que o classificador errou apenas a classe da primeira instância.
 
-Calculando a acurácia, temos nove acertos em dez possíveis, ou seja, $90\%$.
-Calculando a perda da AUC considerando como base a classe $0$, a terceira
-instância precisa retroceder seis posições para uma ordenação perfeita,
-normalizando pelo número de $0$s vezes o número de $1$s, temos
-$(1 - AUC) = 6 \div (2 * 8) = 0,325$, logo a AUC vale $62,5\%$. Isso comprova
-que a AUC, comparada à acurácia, pode sofrer um impacto maior devido a erros de
-classificação.
+Calculando a acurácia, temos treze acertos em quatorze possíveis, o que equivale a aproximadamente $93\%$ de acerto.
+
+Calculando a perda da AUC considerando como base a classe \emph{sim}, a primeira instância precisa retroceder nove posições para uma ordenação perfeita, normalizando pelo número de \emph{não}s vezes o número de \emph{sim}s, temos $(1 - AUC) = 9 \div (5 * 9) = 0,2$, logo a AUC vale $80\%$.
+
+Isso comprova que a AUC, comparada à acurácia, pode sofrer um impacto maior devido a erros de classificação.
 
 Langford explica que um classificador que gere um erro de ordem $\alpha$ na acurácia pode gerar um erro teórico máximo de $\alpha \cdot n$ na AUC, onde $n$ é a cardinalidade do conjunto de instâncias avaliado.
 
