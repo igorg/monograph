@@ -4,32 +4,7 @@ A posição ocupada pela seleção brasileira somada as posições ocupadas pela
 
 Todos os \emph{rankings} citados são ordenados de acordo com um critério. Por exemplo, para a definição do \emph{ranking} de seleções da FIFA, calcula-se o total de pontos para cada seleção vinculada à FIFA e ordenam-se as seleções com base nas pontuações. As seleções com maior pontuação ocupam o topo do \emph{ranking}, enquanto as seleções com menor pontuação ocupam a base.
 
-A pontuação total de uma seleção em um período de quatro anos é definida por meio da soma da média de pontos ganhos em partidas disputados nos 12 últimos meses e da média de pontos ganhos em partidas que ocorreram há mais de 12 meses, a qual se deprecia anualmente.
-
-A pontuação para uma partida é calculada pela seguinte fórmula:
-
-\[P = M \times I \times T \times C \times 100\]
-
-Onde:
-\begin{itemize}
-
-    \item {\bf M}: Pontos por vitória (3 pontos), empate (1 ponto) ou derrota (0 pontos). Se a partida for decidida nos penaltis, o vencedor recebe 2 pontos e o derrotado recebe 1 ponto.
-
-    \item {\bf I}: Importância da partida com os seguintes pesos:
-    \begin{itemize}
-        \item Amistoso: 1,0
-        \item Eliminatórias da copa e eliminatórias continentais: 2,5
-        \item Torneio continental e Copa da Confedarações: 3,0
-        \item Copa do Mundo: 4,0
-    \end{itemize}
-
-    \item {\bf T}: Dificuldade do adversário de acordo com a seguinte fórmula:
-    \[(200 - posicao \; do \; adversario \; no \; ranking) \div 100\]
-    O time no topo do ranking reprensenta dificuldade 2,00. Os times abaixo da posicao 150 tem dificuldade fixa de 0,5.
-
-    \item {\bf C}: Dificuldade de confederação: É a média entre as duas confederações envolvidas em uma partida. Cada confederação tem um peso, variando de 1 a 0.85, definido pela FIFA.
-    
-\end{itemize}
+A pontuação total de uma seleção em um período de quatro anos é definida por meio da soma da média de pontos ganhos em partidas disputados nos 12 últimos meses e da média de pontos ganhos em partidas que ocorreram há mais de 12 meses, a qual se deprecia anualmente. Há uma fórmula matemática para definir a pontuação de uma equipe em uma partida.
 
 Podemos afirmar que as fórmulas utilizadas pela FIFA para definir as pontuações das seleções constituem um modelo que determina uma ordem parcial do conjunto de seleções FIFA. Dizer que o as fórmulas utilizadas pela FIFA constituem um modelo caracteriza a tarefa de ordenação das seleções FIFA como computável, ou seja, o modelo pode ser escrito em forma de algoritmo e avaliado, junto aos dados necessários, por um computador.
 
@@ -43,6 +18,12 @@ Um problema beneficiado pela aprendizagem de um modelo de ordenação seria: Dad
 
 O problema de ordenação de documentos é um dos problemas de interesse de uma área  conhecida como \emph{Learning to Rank} que tem atraído a atenção de muitos pesquisadores nos últimos anos. Já conta com sites especializados no assunto\footnote{http://research.microsoft.com/en-us/um/beijing/projects/letor/}, competições\footnote{http://learningtorankchallenge.yahoo.com/} além do apoio das gigantes de TI.
 
-Essa área de pesquisa é constituída por uma conjunção de conhecimentos sobre \emph{Aprendizagem de máquina} e \emph{Recuperação de informação} e está inserida no contexto de \emph{inteligência artificial}.
+Essa área de pesquisa está inserida no contexto de \emph{inteligência artificial} e compartilha conhecimentos com áreas como \emph{Aprendizado de máquina}, \emph{Recuperação de informação} e \emph{processamento de linguagem natural}.
 
-Estudaremos a implantação e avaliação de um método de aprendizagem para ordenação de um conjunto de elementos passíveis de rotulação. O método consiste na aplicação de técnicas consolidadas em \emph{aprendizagem de máquina} (regressão e classificação) com finalidade de ordenar dados.
+Estudaremos a implantação e avaliação de uma técnica de aprendizado para ordenação de um conjunto no qual os elementos são passíveis de rotulação. Tal técnica reduz o problema de ordenação a uma problema de classificação de acordo com o descrito em [\cite{langford08}].
+
+Essa técnica, que havia sido especificada apenas teoricamente, foi implantada, avaliada e comparada com outras técnicas. Essa é a  principal contribuição desse estudo.
+
+Para a implantação do algoritmo de \emph{ranking} foi escolhida a ferramenta \emph{WEKA}\footnote{http://www.cs.waikato.ac.nz/ml/weka/}, descrita no livro [\cite{wekabook}]. Essa ferramenta fornece vários recursos para \emph{aprendizado de máquina}.
+
+O restante dessa monografia está organizado da seguinte forma: O capítulo \ref{chap:nocoes_preliminares} faz uma introdução aos conceitos necessários para o entendimento do algoritmo \emph{Ranking}; o capítulo \ref{chap:implantacao} mostra os problemas e soluções que derivaram da implantação do \emph{Ranking}; o capítulo \ref{chap:avaliacao} descreve a estrategia usada para avaliar o algoritmo e os resultados obtidos; e o capítulo \ref{conclusao} apresenta as principais descobertas obtidas nesse estudo.
