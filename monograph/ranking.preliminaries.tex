@@ -1,3 +1,29 @@
+Na área de \emph{aprendizado de máquina}, classificação é tarefa de atribuir rótulos a cada elemento de um dado conjunto tendo como entrada pares elemento-rótulo. Comparativamente, \emph{ranking} é a tarefa de atribuir posições a cada elemento de um dado conjunto tendo como entrada pares elemento-rótulo, uma relação de ordem parcial entre os elementos, ou uma relação de ordem total entre os elementos [\cite{tieyan09}].
+
+Embora desempenhem tarefas diferentes com saídas diferentes, algoritmos de classificação e de \emph{ranking} podem compartilhar o mesmo tipo de entrada: pares elemento-rótulo. Isso é uma evidência de que se pode usar um algoritmo de classificação para compor um algoritmo de \emph{ranking}.
+
+De fato, a técnica de \emph{ranking} descrita em [\cite{langford08}] propõe envolver  um algoritmo de classificação com etapas de pré-processamento e pós-processamento de forma que o produto final seja uma ordenação. Nesse estudo, essa técnica é chamada de \emph{ranking com base em classificação}.
+
+\section{Introdução ao problema}
+
+Dado um conjunto composto por elementos aos quais é possível atribuir um rótulo de valor $0$ ou $1$, deseja-se encontrar uma permutação dos elementos de maneira que os elementos que apresentem maior chance de receber o rótulo $0$ devem preceder os com maior chance de receber o rótulo $1$. Cada elemento é composto por um conjunto de características e a chance de um elemento receber o rótulo $0$ ou o rótulo $1$ deve ser calculada com base nessas características.
+
+De acordo com o enunciado do problema, uma técnica adequada para solução é o aprendizado para classificação. Os conceitos envolvidos nessa técnica tem uma nomeação mais estrita do que o exposto até agora: o conjunto é chamado de base; os elementos do conjunto a serem classificados são chamados de exemplos ou instâncias; as características, de atributos e o rótulo é chamado de classe.
+
+Um algoritmo de aprendizado para classificação recebe como entrada uma base em que cada exemplo possui uma classe assinalada e, partindo dessa entrada, deve aprender um classificador capaz atribuir uma classe a qualquer instância. A etapa em que o aprendizado ocorre é chamada de treinamento.
+
+O treinamento de um classificador é um aprendizado supervisionado, pois cada exemplo submetido à etapa de treinamento está vinculado à sua classe verdadeira. Dessa forma, pode-se medir a qualidade do classificador aprendido usando exemplos com classes conhecidas, porém suprimindo-as quando forem submetidas a classificação.
+
+O produto da classificação de uma instância é a previsão da classe à qual aquela instância pertence. Essa previsão é composta pelo valor da classe e pela probabilidade da instância pertencer à classe prevista. Supondo que se submeta uma base a um classificador, de posse das previsões feitas para todas as instâncias da base é possível ordenar tais instâncias de acordo com a probabilidade de cada instância pertencer à classe $0$.
+
+Segundo \cite{langford08}, esse método para ordenar as instâncias pode resultar em um erro teórico máximo muito alto, dependendo da performance do classificador. A técnica de \emph{ranking reduzido a classificação}, proposta no mesmo artigo, reduz o erro teórico máximo envolvendo o treinamento e avaliação do classificador com etapas de pré-processamento e pós-processamento.
+
+Na técnica de \emph{ranking reduzido a classificação}, o treinamento do classificador binário ocorre após uma etapa inicial em que se aplica uma transformação nos exemplos da base de treinamento. Após o treinamento, a definição da ordem das instâncias na base de avaliação é feita por um algoritmo chamado \emph{torneio}, que usa as previsões do classificador treinado.
+
+\section{Definições}
+
+Algumas definições são necessárias para a descrição do problema feita acima. Começando pelo conceito de \emph{ranking}, o conjunto a ser ordenado é chamado de base. Os elementos do conjunto a serem ordenados são denominados instâncias. As características dos elementos a que nos referimos são chamadas de atributos das instâncias. Dentre os atributos, um é nomeado classe, encarregado da ordenação no \emph{ranking}, além disso, para nosso problema, o atributo classe deve ter um domínio binário $\{0, 1\}$.
+
 \begin{table}[h!]
     \centering
     \begin{tabular}{ccccc}
@@ -24,73 +50,19 @@
     \caption{Base de dados de tempo}
 \end{table}
 
+\section{Medidas de eficiência}
 
-Na área de \emph{aprendizado de máquina}, classificação é tarefa de atribuir rótulos a cada elemento de um dado conjunto tendo como entrada pares elemento-rótulo. Comparativamente, \emph{ranking} é a tarefa de atribuir posições a cada elemento de um dado conjunto tendo como entrada pares elemento-rótulo, uma relação de ordem parcial entre os elementos, ou uma relação de ordem total entre os elementos [\cite{tieyan09}].
+Geralmente, a medida de eficiência mais utilizada para classificação é a acurácia: uma razão entre o número de instâncias corretamente classificadas sobre o número total de instâncias no conjunto de avaliação.
 
-Embora desempenhem tarefas diferentes com saídas diferentes, algoritmos de classificação e de \emph{ranking} podem compartilhar o mesmo tipo de entrada: pares elemento-rótulo. Isso é uma evidência de que se pode usar um algoritmo de classificação para compor um algoritmo de \emph{ranking}.
+O erro decorrente de uma classificação afeta a acurácia de maneira linear. Como, para ordenações, a quantidade de acertos não é tão relevante quanto a posição das instâncias ordenadas, propõe-se outro tipo de medida para avaliação do \emph{ranking} aprendido.
 
-De fato, a técnica de \emph{ranking} descrita em [\cite{langford08}] propõe envolver  um algoritmo de classificação com etapas de pré-processamento e pós-processamento de forma que o produto final seja uma ordenação dos elementos de entrada.
-
-\section{Introdução ao problema}
-
-\emph{Alguma coisa que descreva o ranking como um subproblema de classificação, aprendizado supervisionado e ordena com relação a uma característica binária}
-
-Segundo \cite{langford08}, há uma correlação entre um problema de ordenação e um problema classificação, sendo possível ordenar um conjunto a partir de avaliações de um classificador. Por causa dessa correlação, a solução de \emph{ranking} tem característica de apredizagem supervisionada.
-
-Partindo desse princípio, o algoritmo foi projetado envolvendo o treinamento de classificador binário com uma etapa anterior e outra posterior. A etapa anterior ao treinamento aplica uma transformação na base de dados de exemplos e a etapa posterior  ordena a base a partir das previsões do classificador.
-
-% Cada instância possui uma característica binária \emph{C} em comum, isso
-% significa que \emph{C} pode assumir um de dois valores possíveis para uma dada
-% instância. Fixando um valor \emph{V} para a característica \emph{C} como base,
-% podemos dizer, de forma simplória, que a pontuação dessa instância é a
-% probabilidade de \emph{C} possuir o valor \emph{V}.
-
-Algumas definições são necessárias para a descrição do problema feita acima.
-Começando pelo conceito de \emph{ranking}, o conjunto a ser ordenado é chamado
-de base. Os elementos do conjunto a serem ordenados são denominados instâncias.
-As características dos elementos a que nos referimos são chamadas de atributos
-das instâncias. Dentre os atributos, um é nomeado classe, encarregado da
-ordenação no \emph{ranking}, além disso, para nosso problema, o atributo classe
-deve ter um domínio binário $\{0, 1\}$.
-
-Tendo como entrada uma base composta por instâncias para as quais os valores
-das classes são desconhecidos, espera-se como saída uma ordenação de tais
-instâncias que siga o critério: as instâncias com maior chance de pertencer à
-classe $0$ devem preceder as com maior chance de pertencer à classe $1$. Isso
-deve ser concluído com base apenas nos atributos das instâncias.
-
-A via para definir uma solução passa pelo aprendizado de máquina. O algoritmo
-projetado funciona em duas etapas. Na primeira, denominada treinamento, recebe
-uma base com instâncias compostas por atributos e classe e tenta extrair algum
-conhecimento dessas. Na segunda etapa, o algoritmo recebe uma base com
-instâncias compostas apenas por atributos e deve usar o conhecimento obtido na
-primeira etapa para ordenar tais instâncias.
-
-O uso da classe como critério para ordenação sugere uma relação com os problemas
-de classificação e regressão em aprendizagem de máquina. Realmente, pode-se
-derivar uma ordenação diretamente das pontuações obtidas em uma classificação ou
-regressão. Se desejamos que instâncias da classe $0$ ocupem as primeiras
-posições do \emph{ranking}, basta ordenar de forma crescente as pontuações
-obtidas considerando a classe $0$.
-
-\section{Definições}
-
-\section{Medidas para avaliação de \emph{rankings}}
-
-Geralmente, a medida de eficiência mais utilizada para classificação é a
-acurácia: uma razão entre o número de instâncias corretamente classificadas
-sobre o número total de instâncias no conjunto de avaliação. O erro decorrente
-de uma classificação afeta a acurácia de uma forma pontual.
-
-Uma medida comum de avaliação para algoritmos de \emph{ranking} é a área sobre a
-curva \emph{ROC (Receiver Operating Characteristic)}, comumente chamada de
-\emph{AUC (Area Under the Curve)}.
+Uma medida comum de avaliação para algoritmos de \emph{ranking} é a área sobre a curva \emph{ROC (Receiver Operating Characteristic)}, comumente chamada de \emph{AUC (Area Under the Curve)}.
 
 A perda, $1 - AUC$, associada a essa medida é calculada pelo número de instâncias, normalizado pela quantidade de $0$s vezes a quantidade de $1$s, que necessitam ser trocadas para um \emph{ranking} perfeito.
 
 Uma ordenação é perfeita, quando todas as instâncias com classe $0$ precedem as com classe $1$, nesse caso a perda na \emph{AUC} é $0$. No pior caso, em que todos os $1$s precedem os $0$s, a perda na \emph{AUC} é $1$.
 
-Comparativamente, um erro de classificação pode ter maior influência na medida \emph{AUC} que na acurácia, portanto afetar consideravelmente um \emph{ranking}. A causa disso é a \emph{AUC} considerar a relação entre as instâncias, enquanto a acurácia considera apenas as instâncias pontualmente. Abaixo ilustramos através de um exemplo uma relação entre essas medidas que comprova o intuído sobre erros na classificação.
+Comparativamente, um erro de classificação pode ter maior influência na medida \emph{AUC} que na acurácia afetando consideravelmente um \emph{ranking}, mas não a classificação. A causa disso é a \emph{AUC} considerar a relação entre as instâncias ordenadas, enquanto a acurácia considera apenas erros e acertos pontualmente. Abaixo ilustramos através de um exemplo uma relação entre essas medidas que comprova o intuído sobre erros na classificação.
 
 \begin{table}[h!]
     \centering
@@ -122,10 +94,8 @@ No exemplo acima, temos quatorze instâncias ordenadas em um \emph{ranking} com 
 
 Calculando a acurácia, temos treze acertos em quatorze possíveis, o que equivale a aproximadamente $93\%$ de acerto.
 
-Calculando a perda da AUC considerando como base a classe \emph{sim}, a primeira instância precisa retroceder nove posições para uma ordenação perfeita, normalizando pelo número de \emph{não}s vezes o número de \emph{sim}s, temos $(1 - AUC) = 9 \div (5 * 9) = 0,2$, logo a AUC vale $80\%$.
+Calculando a perda da AUC considerando como base a classe \emph{sim}, a primeira instância precisa retroceder nove posições para uma ordenação perfeita, normalizando pelo número de \emph{não}s vezes o número de \emph{sim}s, temos $(1 - AUC) = 9 \div (5 * 9) = 0,2$, logo a AUC vale $80\%$. Esse exemplo comprova que a AUC sofre um impacto maior devido a erros de classificação se comparada à acurácia.
 
-Esse exemplo comprova que a AUC sofre um impacto maior devido a erros de classificação se comparada à acurácia.
-
-Langford explica que um classificador que gere um erro de ordem $\alpha$ na acurácia pode gerar um erro teórico máximo de $\alpha \cdot n$ na AUC, onde $n$ é a cardinalidade do conjunto de instâncias avaliado.
+De acordo com \cite{langford08}, um classificador que gere um erro de ordem $\alpha$ na acurácia pode gerar um erro teórico máximo de $\alpha \cdot n$ na AUC, onde $n$ é a cardinalidade do conjunto de instâncias avaliado. Enquanto para o mesmo classificador, a técnica de \emph{ranking reduzido a classificação} apresenta um erro teórico máximo de $\alpha \cdot 2$.
 
 O erro na AUC se intensifica a medida que o desbalanceamento de classes do conjunto usado no treinamento aumenta pois, quanto mais desbalanceadas as classes, mais provável que o classificador resultante seja tendencioso para a classe majoritária.
