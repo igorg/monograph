@@ -1,8 +1,8 @@
-Na área de \emph{aprendizado de máquina}, classificação é tarefa de atribuir rótulos a cada elemento de um dado conjunto tendo como entrada pares elemento-rótulo. Comparativamente, \emph{ranking} é a tarefa de atribuir posições a cada elemento de um dado conjunto tendo como entrada pares elemento-rótulo, uma relação de ordem parcial entre os elementos, ou uma relação de ordem total entre os elementos [\cite{tieyan09}].
+Na área de \emph{aprendizado de máquina}, classificação é tarefa de atribuir rótulos a cada elemento de um dado conjunto tendo como entrada pares elemento-rótulo. Comparativamente, \emph{ranking} é a tarefa de atribuir posições a cada elemento de um dado conjunto tendo como entrada pares elemento-rótulo, uma relação de ordem parcial entre os elementos, ou uma relação de ordem total entre os elementos \cite{tieyan09}.
 
 Embora desempenhem tarefas diferentes com saídas diferentes, algoritmos de classificação e de \emph{ranking} podem compartilhar o mesmo tipo de entrada: pares elemento-rótulo. Isso é uma evidência de que se pode usar um algoritmo de classificação para compor um algoritmo de \emph{ranking}.
 
-De fato, a técnica de \emph{ranking} descrita em [\cite{langford08}] propõe envolver  um algoritmo de classificação com etapas de pré-processamento e pós-processamento de forma que o produto final seja uma ordenação. Nesse estudo, essa técnica é chamada de \emph{ranking com base em classificação}.
+De fato, a técnica de \emph{ranking} descrita em \cite{langford08} propõe envolver  um algoritmo de classificação com etapas de pré-processamento e pós-processamento de forma que o produto final seja uma ordenação. Nesse estudo, essa técnica é chamada de \emph{ranking com base em classificação}.
 
 \section{Introdução ao problema}
 
@@ -16,13 +16,15 @@ O treinamento de um classificador é um aprendizado supervisionado, pois cada ex
 
 O produto da classificação de uma instância é a previsão da classe à qual aquela instância pertence. Essa previsão é composta pelo valor da classe e pela probabilidade da instância pertencer à classe prevista. Supondo que se submeta uma base a um classificador, de posse das previsões feitas para todas as instâncias da base é possível ordenar tais instâncias de acordo com a probabilidade de cada instância pertencer à classe $0$.
 
-Segundo \cite{langford08}, esse método para ordenar as instâncias pode resultar em um erro teórico máximo muito alto, dependendo da performance do classificador. A técnica de \emph{ranking reduzido a classificação}, proposta no mesmo artigo, reduz o erro teórico máximo envolvendo o treinamento e avaliação do classificador com etapas de pré-processamento e pós-processamento.
+Segundo \cite{langford08}, esse método para ordenar as instâncias pode resultar em um erro teórico máximo muito alto, dependendo da performance do classificador. A técnica de \emph{ranking reduzido a classificação}, proposta no mesmo artigo, reduz o erro teórico máximo envolvendo o treinamento do classificador com uma etapa de pré-processamento e a avaliação com uma etapa de pós-processamento.
 
 Na técnica de \emph{ranking reduzido a classificação}, o treinamento do classificador binário ocorre após uma etapa inicial em que se aplica uma transformação nos exemplos da base de treinamento. Após o treinamento, a definição da ordem das instâncias na base de avaliação é feita por um algoritmo chamado \emph{torneio}, que usa as previsões do classificador treinado.
 
 \section{Definições}
 
 Algumas definições são necessárias para a descrição do problema feita acima. Começando pelo conceito de \emph{ranking}, o conjunto a ser ordenado é chamado de base. Os elementos do conjunto a serem ordenados são denominados instâncias. As características dos elementos a que nos referimos são chamadas de atributos das instâncias. Dentre os atributos, um é nomeado classe, encarregado da ordenação no \emph{ranking}, além disso, para nosso problema, o atributo classe deve ter um domínio binário $\{0, 1\}$.
+
+
 
 \begin{table}[h!]
     \centering
@@ -47,6 +49,7 @@ Algumas definições são necessárias para a descrição do problema feita acim
         \hline
     \end{tabular}
 
+    \label{tbl}
     \caption{Base de dados de tempo}
 \end{table}
 
