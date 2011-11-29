@@ -2,29 +2,39 @@ Na área de \emph{aprendizado de máquina}, classificação é tarefa de atribui
 
 Embora desempenhem tarefas diferentes com saídas diferentes, algoritmos de classificação e de \emph{ranking} podem compartilhar o mesmo tipo de entrada: pares elemento-rótulo. Isso é uma evidência de que se pode usar um algoritmo de classificação para compor um algoritmo de \emph{ranking}.
 
-De fato, a técnica de \emph{ranking} descrita em \cite{langford08} propõe envolver  um algoritmo de classificação com etapas de pré-processamento e pós-processamento de forma que o produto final seja uma ordenação. Nesse estudo, essa técnica é chamada de \emph{ranking com base em classificação}.
+De fato, a técnica de \emph{ranking} descrita em \cite{langford08} propõe envolver  um algoritmo de classificação com etapas de pré-processamento e pós-processamento de forma que o produto final seja uma ordenação. Nesse estudo, essa técnica é chamada de \emph{ranking reduzido a classificação}.
 
 \section{Introdução ao problema}
 
 Dado um conjunto composto por elementos aos quais é possível atribuir um rótulo de valor $0$ ou $1$, deseja-se encontrar uma permutação dos elementos de maneira que os elementos que apresentem maior chance de receber o rótulo $0$ devem preceder os com maior chance de receber o rótulo $1$. Cada elemento é composto por um conjunto de características e a chance de um elemento receber o rótulo $0$ ou o rótulo $1$ deve ser calculada com base nessas características.
 
-De acordo com o enunciado do problema, uma técnica adequada para solução é o aprendizado para classificação. Os conceitos envolvidos nessa técnica tem uma nomeação mais estrita do que o exposto até agora: o conjunto é chamado de base; os elementos do conjunto a serem classificados são chamados de exemplos ou instâncias; as características, de atributos e o rótulo é chamado de classe.
+Substituindo-se a palavra rótulo pela palavra classe no enunciado acima, percebe-se que o problema de ordenação pode ser tratado como um problema de classificação. Mais especificamente, um problema de classificação binária, pois os valores de classe possíveis são $0$ e $1$.
 
-Um algoritmo de aprendizado para classificação recebe como entrada uma base em que cada exemplo possui uma classe assinalada e, partindo dessa entrada, deve aprender um classificador capaz atribuir uma classe a qualquer instância. A etapa em que o aprendizado ocorre é chamada de treinamento.
+Um algoritmo de aprendizado para classificação recebe como entrada um conjunto em que cada elemento possui uma classe assinalada e, partindo dessa entrada, deve aprender um classificador capaz atribuir uma classe a qualquer elemento. A etapa em que o aprendizado ocorre é chamada de treinamento.
 
-O treinamento de um classificador é um aprendizado supervisionado, pois cada exemplo submetido à etapa de treinamento está vinculado à sua classe verdadeira. Dessa forma, pode-se medir a qualidade do classificador aprendido usando exemplos com classes conhecidas, porém suprimindo-as quando forem submetidas a classificação.
+O treinamento de um classificador é um aprendizado supervisionado, pois cada elemento submetido à etapa de treinamento está vinculado à sua classe verdadeira. Dessa forma, pode-se medir a qualidade do classificador aprendido usando elementos com classes conhecidas, porém suprimindo-as quando forem os elementos forem submetidos a classificação.
 
-O produto da classificação de uma instância é a previsão da classe à qual aquela instância pertence. Essa previsão é composta pelo valor da classe e pela probabilidade da instância pertencer à classe prevista. Supondo que se submeta uma base a um classificador, de posse das previsões feitas para todas as instâncias da base é possível ordenar tais instâncias de acordo com a probabilidade de cada instância pertencer à classe $0$.
+O produto da classificação de um elemento é a previsão da classe à qual aquele elemento pertence. Essa previsão é composta pelo valor da classe e pela probabilidade do elemento pertencer à classe prevista. Nesso caso, por se tratar de um problema de classificação binária, se a chance de um elemento pertencer à classe $0$ é $p$, a chance dele pertencer à classe $1$ é $1 - p$.
 
-Segundo \cite{langford08}, esse método para ordenar as instâncias pode resultar em um erro teórico máximo muito alto, dependendo da performance do classificador. A técnica de \emph{ranking reduzido a classificação}, proposta no mesmo artigo, reduz o erro teórico máximo envolvendo o treinamento do classificador com uma etapa de pré-processamento e a avaliação com uma etapa de pós-processamento.
+Supondo que se submeta um conjunto a um classificador, de posse das previsões feitas para todas os elementos do conjunto, é possível ordenar tais elementos, de forma decrescente, de acordo com a probabilidade de cada instância pertencer à classe $0$. De fato, essa é uma possível solução para o problema de ordenação.
+
+Segundo \cite{langford08}, esse método para ordenação dos elementos pode resultar em um erro teórico máximo muito alto, dependendo da performance do classificador. A técnica de \emph{ranking reduzido a classificação}, proposta no mesmo artigo, reduz o erro teórico máximo envolvendo o treinamento do classificador com uma etapa de pré-processamento e a avaliação com uma etapa de pós-processamento.
 
 Na técnica de \emph{ranking reduzido a classificação}, o treinamento do classificador binário ocorre após uma etapa inicial em que se aplica uma transformação nos exemplos da base de treinamento. Após o treinamento, a definição da ordem das instâncias na base de avaliação é feita por um algoritmo chamado \emph{torneio}, que usa as previsões do classificador treinado.
 
 \section{Definições}
 
-Algumas definições são necessárias para a descrição do problema feita acima. Começando pelo conceito de \emph{ranking}, o conjunto a ser ordenado é chamado de base. Os elementos do conjunto a serem ordenados são denominados instâncias. As características dos elementos a que nos referimos são chamadas de atributos das instâncias. Dentre os atributos, um é nomeado classe, encarregado da ordenação no \emph{ranking}, além disso, para nosso problema, o atributo classe deve ter um domínio binário $\{0, 1\}$.
+Como dito anteriormente, o treinamento e avaliação de um classificador é um processo que manipula conjuntos compostos por elementos. Definições mais rigorosas são necessárias para a descrição da implantação da técnica de \emph{ranking reduzido a classificação} no capítulo \ref{chap:implantacao}. As definições abaixo foram feitas levando-se em consideração o funcionamento da ferramenta WEKA e os requisitos necessários para se modelar a solução de \emph{ranking reduzido a classificação} exposta em \cite{langford08}.
 
+\begin{itemize}
+    \item Uma base $B$ é um conjunto de instâncias com cardinalidade $n$.
+    \[B = \{i_1, ..., i_n\} \qquad |B| = n\]
 
+    \item Uma instância $I$ é uma tupla $A, C$ na qual $A$ é um conjunto de atributos com cardinalidade $m$ e $C$ é a classe da instância e pode valer $0$ ou $1$.
+    \[I = (A, C) \qquad A = \{a_1, ..., a_m\} \qquad C = x \; | \; x \in \{0, 1\}\]
+\end{itemize}
+
+Não será necessária a definição do conceito de atributo. Uma vez que os atributos são manipulados pelo classificador e o funcionamento dos classificadores nas soluções aqui propostas é uma caixa preta, os atributos são transparentes para os propósitos desse trabalho.
 
 \begin{table}[h!]
     \centering
@@ -49,11 +59,17 @@ Algumas definições são necessárias para a descrição do problema feita acim
         \hline
     \end{tabular}
 
-    \label{tbl}
+    \label{tbl:weather_data}
     \caption{Base de dados de tempo}
 \end{table}
 
-\section{Medidas de eficiência}
+A tabela \ref{tbl:weather_data} aprensenta um exemplo de base extraido do livro \cite{wekabook}. Essa base indica se há condições para a prática de um esporte de acordo com medições meteorológicas. Um exemplo dessa base apresenta um conjunto de medições meteorológicas e, de acordo com essas medições, a classe do exemplo pode ser \emph{sim} ou \emph{não}.
+
+Nessa tabela, a primeira linha nomeia os quatro atributos da base e a classe (adequado para jogo), as linhas seguintes representam as instâncias da base. Nota-se que a classe recebe valores \emph{sim} e \emph{não}, apesar de serem valores diferentes de $0$ e $1$, como dito na definição, ainda se trata de uma base com classe binária.
+
+Escrevendo a primeira instância da base na notação definida acima, tem-se: ({ensolarado, quente, alta, falso}, não). O primeiro elemento da tupla é o conjunto de atributos e o segundo elemento é a classe da instância.
+
+\section{Medidas de desempenho}
 
 Geralmente, a medida de eficiência mais utilizada para classificação é a acurácia: uma razão entre o número de instâncias corretamente classificadas sobre o número total de instâncias no conjunto de avaliação.
 
