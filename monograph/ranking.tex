@@ -1,25 +1,72 @@
-O algoritmo proposto em {{langford08}} é composto de duas etapas: uma de treinamento e outra de ordenação que gera o \emph{ranking}. Porém, o custo computacional desse algoritmo é alto em ambas etapas. Com bases de dados extensas o desempenho do algoritmo degrada consideravelmente, isso motivou a busca de alternativas para reduzir o tempo tanto de treinamento quanto de ordenação.
+Como dito anteriormente, a técnica de \emph{ranking reduzido a classificação} aplica uma transformação à base original antes da etapa de treinamento do classificador e modifica a etapa de avaliação a fim de ordenar as instâncias.
+
+A transformação consiste em formar novas instâncias a partir de pares entre instâncias de classes diferentes. A ordem em que as instâncias aparecem no par é relevante, assim, se existe um par $\langle i_\alpha, i_\beta \rangle$, deve existir também um par $\langle i_\beta, i_\alpha \rangle$. Além disso, as classes das duas instâncias que formam um par são combinadas a fim de gerar uma nova classe para a nova instância.
+
+Essa transformação foi implantada separando a base de treinamento em dois subconjuntos, um subconjunto $S_0$ com as instâncias de classe $0$ e outro, $S_1$, com as instâncias de classe $1$, e efetuando o produto cartesiano entre os dois conjuntos da seguinte maneira $S_r = (S_0 \times S_1) \cup (S_1 \times S_0)$.
+
+Após a aplicação do produto cartesiano, uma instância da base resultante tem a forma $\langle (A_\alpha, C_\alpha), (A_\beta, C_\beta) \rangle$. As classes das duas instâncias devem ser combinadas em uma nova classe, isso se dá com o uso do operador $1$. Ao fim desse processo, uma instancia da nova base terá forma $\langle (A_\alpha, A_\beta), 1 \cdot (C_\alpha < C_\beta)$.
+
+O operador $1$, aplicado para obter a classe da nova instância, retorna $1$, se o resultado da expressão avaliada é verdadeiro, ou $0$, se o resultado da expressão é falsa. Como o argumento para o operador é $C_\alpha < C_\beta$, se $C_\alpha$ valer $1$, a classe da nova instância será $0$, se valer $0$, a classe da nova instância será $1$. A transformação da base é o treinamento do classificador compõe um algoritmo de nome \emph{AUC-Train} (algoritmo \ref{alg:auc-train}).
+
+\begin{algorithm}
+    \begin{algorithmic}
+
+        \STATE Let $S' = \{\langle (x_1, x_2), 1 \cdot (y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S \wedge y_1 \neq y_2\}$
+        \STATE return $c = A(S')$
+
+        \caption{AUC-Train}
+        \label{alg:auc-train}
+
+    \end{algorithmic}
+\end{algorithm}
+
+A modificação da etapa de avaliação para gerar o \emph{ranking} da base de avaliação.
+
+O algoritmo de torneio está transcrito no algoritmo \ref{alg:degree}.
+
+\begin{algorithm}
+    \begin{algorithmic}
+
+        \FOR{$x \in U$}
+            \STATE let $deg(x) = |\{x':c(x, x') = 1, x' \in U\}|$
+        \ENDFOR
+
+        \STATE Sort U in descending order of deg(x), breaking ties arbitrarily
+
+        \caption{AUC-Train}
+        \label{alg:degree}
+
+    \end{algorithmic}
+\end{algorithm}
+
+O pior caso para o algoritmo \ref{alg:auc-train} acontece quando o conjunto de treinamento possui metade das instâncias com classe $0$ e a outra metade com classe $1$. O meio convencional de solucionar o produto cartesiano (algoritmo \ref{alg:cross-product}) é aninhar dois \emph{loops}. Supondo uma base com $n$ instâncias, o produto cartesiano ocorrerá em dois conjuntos com $n/2$ instâncias, resultando na complexidade assintótica $O(\frac{n}{2} \cdot \frac{n}{2}) = O(\frac{n^2}{4}) = O(n^2)$.
+
+\begin{algorithm}
+    \begin{algorithmic}
+        \STATE $S \gets \emptyset$
+
+        \FOR{$x \in S_1$}
+            \FOR{$y \in S_2$}
+                \STATE $S \gets S \cup \{(x, y)\}$
+            \ENDFOR
+        \ENDFOR
+
+        \STATE returns S
+
+        \caption{Cross Product}
+        \label{alg:cross-product}
+
+    \end{algorithmic}
+\end{algorithm}
+
+\emph{Não foi necessário se preocupar com os classificadores usados como base para o ordenador, essa é uma das vantagens do método em \cite{langford08}}.
+
+O algoritmo proposto em é composto de duas etapas: uma de treinamento e outra de ordenação que gera o \emph{ranking}. Porém, o custo computacional desse algoritmo é alto em ambas etapas. Com bases de dados extensas o desempenho do algoritmo degrada consideravelmente, isso motivou a busca de alternativas para reduzir o tempo tanto de treinamento quanto de ordenação.
 
 Duas abordagens foram consideradas para reduzir a complexidade do algoritmo: uma para a fase de treinamento e outra para a fase de geração do \emph{ranking}. Para a fase de classificação, foi pensada uma estratégia de votação entre classificadores e para a geração do \emph{ranking}, foi pensada uma estratégia de torneio baseada em \emph{quicksort}. Nesse capítulo, estão explicados tanto o algoritmo original quanto essas abordagens para reduzir a complexidade.
 
 \section{Otimização do treinamento: Amostragem e Votação}
 O algoritmo original chama a etapa de treinamento de AUC-Train. Nessa etapa, são feitas combinações entre as instâncias de classe $0$ e de classe $1$, como mostrado no \emph{algoritmo \ref{alg:auc-train}}.
-
-\begin{algorithm}
-\begin{algorithmic}
-
-\STATE Let $S' = \{\langle (x_1, x_2), 1 \cdot (y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S \wedge y_1 \neq y_2\}$
-\STATE return $c = A(S')$
-
-\caption{AUC-Train}
-\label{alg:auc-train}
-
-\end{algorithmic}
-\end{algorithm}
-
-O AUC-Train faz a combinação de cada instância com classe $0$ com todas as instâncias de classe $1$ nas formas $(z, u)$ e $(u, z)$, onde $z$ é a instância com classe $0$ e $u$ é a instância com classe $1$.
-
-Para o pior caso, com um conjunto de treinamento em que metade das instâncias é da classe $0$ e a outra metade é da classe $1$, a complexidade assintótica é de $O(n^2)$.
 
 Esse algoritmo de mesclagem das instâncias é executado uma vez e seu resultado é usado como massa de dados para um algoritmo de aprendizado; no caso específico dessa implantação, um classificador.
 
