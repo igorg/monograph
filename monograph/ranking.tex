@@ -20,7 +20,7 @@ O operador $1$, aplicado para obter a classe da nova instância, retorna $1$, se
     \end{algorithmic}
 \end{algorithm}
 
-A modificação da etapa de avaliação para gerar o \emph{ranking} da base de avaliação.
+A modificação da etapa de avaliação tem como objetivo usar as previsões do classificador treinado pelo \emph{AUC-Train} para gerar o \emph{ranking} da base de avaliação. O algoritmo que efetua a ordenação recebe o nome de \emph{Tournament}, torneio em português. Recebe esse nome pois a idéia do algoritmo se assemelha muito a uma competição em que muitos competidores participam formam um \emph{ranking} de acordo com suas performances. 
 
 O algoritmo de torneio está transcrito no algoritmo \ref{alg:degree}.
 
@@ -33,8 +33,8 @@ O algoritmo de torneio está transcrito no algoritmo \ref{alg:degree}.
 
         \STATE Sort U in descending order of deg(x), breaking ties arbitrarily
 
-        \caption{AUC-Train}
-        \label{alg:degree}
+        \caption{Tournament}
+        \label{alg:tournament}
 
     \end{algorithmic}
 \end{algorithm}
