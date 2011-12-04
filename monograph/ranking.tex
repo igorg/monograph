@@ -11,7 +11,7 @@ O operador $1$, aplicado para obter a classe da nova instância, retorna $1$, se
 \begin{algorithm}
     \begin{algorithmic}
 
-        \STATE Let $S' = \{\langle (x_1, x_2), 1 \cdot (y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S \wedge y_1 \neq y_2\}$
+        \STATE Let $S' = \{\langle (A_\alpha, A_\beta), 1 \cdot (C_\alpha < C_\beta) \rangle : (A_\alpha, C_\alpha), (x_\beta, y_\beta) \in S \wedge C_\alpha \neq C_\beta\}$
         \STATE return $c = A(S')$
 
         \caption{AUC-Train}
@@ -20,9 +20,13 @@ O operador $1$, aplicado para obter a classe da nova instância, retorna $1$, se
     \end{algorithmic}
 \end{algorithm}
 
-A modificação da etapa de avaliação tem como objetivo usar as previsões do classificador treinado pelo \emph{AUC-Train} para gerar o \emph{ranking} da base de avaliação. O algoritmo que efetua a ordenação recebe o nome de \emph{Tournament}, torneio em português. Recebe esse nome pois a idéia do algoritmo se assemelha muito a uma competição em que muitos competidores participam formam um \emph{ranking} de acordo com suas performances. 
+A modificação da etapa de avaliação tem como objetivo usar as previsões do classificador treinado pelo \emph{AUC-Train} para gerar o \emph{ranking} da base de avaliação. O algoritmo que efetua a ordenação recebe o nome de \emph{Tournament}, torneio em português. O porquê do nome é devido a idéia do algoritmo se assemelhar muito a uma competição em que muitos competidores participam, formando um \emph{ranking} de acordo com suas performances.
 
-O algoritmo de torneio está transcrito no algoritmo \ref{alg:degree}.
+Continuando a analogia com uma competição, a performance de cada instância na avaliação é medida como a quantidade de "vitórias" que essa instância obteve diante das outras instâncias na base de avaliação. Para gerar o \emph{ranking}, basta promover o embate entre todas as instâncias na base e ordenar pelo número de "vitórias".
+
+Como desejamos ordenar as instâncias de forma que as que tenham maior chance de pertencer à classe $0$ estejam no topo, a semântica de "vitoria" é tal que, entre duas instâncias competindo, a instância vencedora tem maior chance de pertencer à classe $0$. Quem define a instância vitoriosa em um embate entre duas instâncias é a previsão do classificador binário.
+
+Tecnicamente, um embate entre as instâncias $i_\alpha$ e $i_\beta$ consiste em criar uma nova instância com formato $\langle (A_\alpha, A_\beta)\rangle$ e submetê-la à classificação; se a classe prevista da nova instância for $1$, $i_\alpha$ ganha, se for $0$, $i_\beta$ ganha. Nota-se que o formato da instância a ser classificada é o mesmo que o de uma instância usada no treinamento do classificador, exceto pela ausência de classe. O algoritmo \ref{alg:tournament} demonstra o processo de ordenação.
 
 \begin{algorithm}
     \begin{algorithmic}
@@ -39,7 +43,9 @@ O algoritmo de torneio está transcrito no algoritmo \ref{alg:degree}.
     \end{algorithmic}
 \end{algorithm}
 
-O pior caso para o algoritmo \ref{alg:auc-train} acontece quando o conjunto de treinamento possui metade das instâncias com classe $0$ e a outra metade com classe $1$. O meio convencional de solucionar o produto cartesiano (algoritmo \ref{alg:cross-product}) é aninhar dois \emph{loops}. Supondo uma base com $n$ instâncias, o produto cartesiano ocorrerá em dois conjuntos com $n/2$ instâncias, resultando na complexidade assintótica $O(\frac{n}{2} \cdot \frac{n}{2}) = O(\frac{n^2}{4}) = O(n^2)$.
+Uma das vantagens da técnica de \emph{ranking reduzido a classificação} é que o uso de um algoritmo de aprendizado para classificação é transparente. Essa característica possibilitou o uso dos algoritmos de classificação existentes na ferramenta \emph{WEKA}. Já um dos pontos negativos é a performance da técnica no que diz respeito a tempo.
+
+Em questão de custo computacional, o pior caso para o algoritmo \ref{alg:auc-train} acontece quando o conjunto de treinamento possui metade das instâncias com classe $0$ e a outra metade com classe $1$. O meio convencional de solucionar o produto cartesiano (algoritmo \ref{alg:cross-product}) é aninhar dois \emph{loops}. Supondo uma base com $n$ instâncias, o produto cartesiano ocorrerá em dois conjuntos com $n/2$ instâncias, resultando na complexidade assintótica $O(\frac{n}{2} \cdot \frac{n}{2}) = O(\frac{n^2}{4}) = O(n^2)$.
 
 \begin{algorithm}
     \begin{algorithmic}
@@ -59,11 +65,11 @@ O pior caso para o algoritmo \ref{alg:auc-train} acontece quando o conjunto de t
     \end{algorithmic}
 \end{algorithm}
 
-\emph{Não foi necessário se preocupar com os classificadores usados como base para o ordenador, essa é uma das vantagens do método em \cite{langford08}}.
+Para o algoritmo de torneio, o pior caso, o caso médio e o melhor caso apresentam o mesmo tempo de execução, pois é sempre necessário formar todos os pares de instâncias possíveis a fim de obter a ordem de todas as instâncias. Como mostrado no algoritmo \ref{alg:tournament}, a operação de gerar todos os pares aninha dois \emph{loops}o que resulta em um custo de ordem $O(n^2)$, onde $n$ é o tamanho da base a ser ordenada.
 
-O algoritmo proposto em é composto de duas etapas: uma de treinamento e outra de ordenação que gera o \emph{ranking}. Porém, o custo computacional desse algoritmo é alto em ambas etapas. Com bases de dados extensas o desempenho do algoritmo degrada consideravelmente, isso motivou a busca de alternativas para reduzir o tempo tanto de treinamento quanto de ordenação.
+Tanto o algoritmo \emph{AUC-Train} quanto o \emph{Tournament} apresentam tempos elevados de execução. A prática de comparar as instâncias em pares onera tanto os processos de treinamento e de ordenação e, usando bases extensas, o tempo de execução do algoritmo degrada consideravelmente. Essa característica levou à busca de alternativas para tornar ambos treinamento e ordenação mais rápidos.
 
-Duas abordagens foram consideradas para reduzir a complexidade do algoritmo: uma para a fase de treinamento e outra para a fase de geração do \emph{ranking}. Para a fase de classificação, foi pensada uma estratégia de votação entre classificadores e para a geração do \emph{ranking}, foi pensada uma estratégia de torneio baseada em \emph{quicksort}. Nesse capítulo, estão explicados tanto o algoritmo original quanto essas abordagens para reduzir a complexidade.
+Duas abordagens foram consideradas para amortizar a complexidade do algoritmo: uma para a fase de treinamento e outra para a fase de geração do \emph{ranking}. Para a fase de classificação, foi pensada uma estratégia de amostragem da base original e votação entre classificadores e para a geração do \emph{ranking}, foi pensada uma estratégia de torneio baseada em \emph{quicksort}.
 
 \section{Otimização do treinamento: Amostragem e Votação}
 O algoritmo original chama a etapa de treinamento de AUC-Train. Nessa etapa, são feitas combinações entre as instâncias de classe $0$ e de classe $1$, como mostrado no \emph{algoritmo \ref{alg:auc-train}}.
