@@ -45,7 +45,33 @@ Tecnicamente, um embate entre as instâncias $i_\alpha$ e $i_\beta$ consiste em 
 
 Uma das vantagens da técnica de \emph{ranking reduzido a classificação} é que o uso de um algoritmo de aprendizado para classificação é transparente. Essa característica possibilitou o uso dos algoritmos de classificação existentes na ferramenta \emph{WEKA}. Já um dos pontos negativos é a performance da técnica no que diz respeito a tempo.
 
-Em questão de custo computacional, o pior caso para o algoritmo \ref{alg:auc-train} acontece quando o conjunto de treinamento possui metade das instâncias com classe $0$ e a outra metade com classe $1$. O meio convencional de solucionar o produto cartesiano (algoritmo \ref{alg:cross-product}) é aninhar dois \emph{loops}. Supondo uma base com $n$ instâncias, o produto cartesiano ocorrerá em dois conjuntos com $n/2$ instâncias, resultando na complexidade assintótica $O(\frac{n}{2} \cdot \frac{n}{2}) = O(\frac{n^2}{4}) = O(n^2)$.
+O algoritmo \ref{alg:auc-train} executa duas etapas: na primeira, particiona-se a base de treinamento em duas bases $S_0$ e $S_1$; $S_0$ possui as instâncias de classe $0$ e $S_1$ possui as instâncias de classe $1$. Na segunda etapa, aplica-se o produto cartesiano duas vezes de forma que o conjunto de treinamento seja $S' = S_0 \times S_1 \cup S_1 \times S_0$.
+
+Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é a soma dos tempos do particionamento da base de treinamento e da aplicação de dois produtos cartesianos. O particionamento da base executa em tempo linear para todos os casos, o gargalo do algoritmo está na aplicação dos produtos cartesianos.
+
+O melhor caso ocorre quando todas as instâncias pertencem à mesma classe; dessa forma  não é necessária a executação do produto cartesiano e o tempo computacional é composto apenas pela etapa de particionamento, portanto o tempo total do algoritmo é $O(n)$.
+
+No caso médio, parte-se da hipótese que todas as entradas são uniformemente prováveis. Tomando como entrada uma base com $n$ instâncias em que $k$ instâncias são da classe $0$ e $n - k$ são da classe $1$. A probabilidade de uma entrada para um dado $k$ é $1/n$ e a quantidade de iterações geradas por essa entrada é $k \cdot (n - k)$. Partindo desses dados, a complexidade do caso médio pode ser calculada pela fórmula $O(f_{avg}(n))$ na qual:
+
+\[f_{avg}(n) = \sum_{k = 0}^{n} \frac{k \cdot (n - k)}{n}\]
+
+Desenvolvendo o somatório:
+
+\begin{align*}
+    f_{avg}(n) &= \frac{1}{n} \cdot \sum_{k = 0}^{n} k(n - k) \\
+               &= \frac{1}{n} \cdot \sum_{k = 0}^{n} kn - k^2 \\
+               &= \frac{1}{n} \cdot \left(\sum_{k = 0}^{n} kn - \sum_{k = 0}^{n} k^2\right) \\
+               &= \frac{1}{n} \cdot \left(n \cdot \sum_{k = 0}^{n} k - \sum_{k = 0}^{n} k^2\right) \\
+               &= \frac{1}{n} \cdot \left(n \cdot \sum_{k = 1}^{n} k - \sum_{k = 1}^{n} k^2\right) \\
+               &= \frac{1}{n} \cdot \left(n \cdot \frac{n(n + 1)}{2} - \frac{n(n + 1)(2n + 1)}{6}\right) \\
+               &= \frac{1}{n} \cdot \frac{n^3 + n}{6} = \frac{n^2 -1}{6}
+\end{align*}
+
+Logo, o caso médio é igual a $O(f_{avg}) = O(\frac{n^2 -1}{6}) = O(n^2)$.
+
+O pior caso para o algortimo \ref{alg:auc-train} acontece quando o conjunto de treinamento possui metade das instâncias com classe $0$ e a outra metade com classe $1$. O meio convencional de solucionar o produto cartesiano (algoritmo \ref{alg:cross-product}) é aninhar dois \emph{loops}. Supondo uma base com $n$ instâncias, o produto cartesiano ocorrerá em dois conjuntos com $n/2$ instâncias, resultando na complexidade assintótica $O(\frac{n}{2} \cdot \frac{n}{2}) = O(\frac{n^2}{4}) = O(n^2)$.
+
+Algumas otimizações podem e foram aplicadas no algoritmo final escrito em \emph{Java} para o \emph{workbench WEKA}. O algoritmo de produto cartesiano é levemente alterado para gerar tanto o par $(x, y)$ quanto o par $(y, x)$, isso evita a necessidade de aplicar duas vezes o produto cartesiano. O uso do operador $1$ está embutido no algoritmo de produto cartesiano e não acrescenta complexidade extra ao algoritmo. Apesar da aplicação dessas otimizações, a complexidade assintótica do algoritmo continua inalterada.
 
 \begin{algorithm}
     \begin{algorithmic}
