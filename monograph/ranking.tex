@@ -11,7 +11,7 @@ O operador $1$, aplicado para obter a classe da nova instância, retorna $1$, se
 \begin{algorithm}
     \begin{algorithmic}
 
-        \STATE Let $S' = \{\langle (A_\alpha, A_\beta), 1 \cdot (C_\alpha < C_\beta) \rangle : (A_\alpha, C_\alpha), (x_\beta, y_\beta) \in S \wedge C_\alpha \neq C_\beta\}$
+        \STATE Let $S' = \{\langle (A_\alpha, A_\beta), 1 \cdot (C_\alpha < C_\beta) \rangle : (A_\alpha, C_\alpha), (A_\beta, C_\beta) \in S \wedge C_\alpha \neq C_\beta\}$
         \STATE return $c = A(S')$
 
         \caption{AUC-Train}
@@ -43,17 +43,73 @@ Tecnicamente, um embate entre as instâncias $i_\alpha$ e $i_\beta$ consiste em 
     \end{algorithmic}
 \end{algorithm}
 
-Uma das vantagens da técnica de \emph{ranking reduzido a classificação} é que o uso de um algoritmo de aprendizado para classificação é transparente. Essa característica possibilitou o uso dos algoritmos de classificação existentes na ferramenta \emph{WEKA}. Já um dos pontos negativos é a performance da técnica no que diz respeito a tempo.
+Uma das vantagens da técnica de \emph{ranking reduzido a classificação} é que o uso de um algoritmo de aprendizado para classificação é transparente. Essa característica possibilitou o uso dos algoritmos de classificação existentes na ferramenta \emph{WEKA}.
 
-O algoritmo \ref{alg:auc-train} executa duas etapas: na primeira, particiona-se a base de treinamento em duas bases $S_0$ e $S_1$; $S_0$ possui as instâncias de classe $0$ e $S_1$ possui as instâncias de classe $1$. Na segunda etapa, aplica-se o produto cartesiano duas vezes de forma que o conjunto de treinamento seja $S' = S_0 \times S_1 \cup S_1 \times S_0$.
+O principal ponto negativo é a performance da técnica no que diz respeito a tempo. Os algoritmos \emph{AUC-Train} (\ref{alg:auc-train}) e \emph{Tournament} (\ref{alg:tournament}) que constituem o cerne da técnica de \emph{ranking reduzido a classificação} possuem elevada complexidade assintótica.
 
-Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento e da aplicação de dois produtos cartesianos. Para o estudo da complexidade do algoritmo considera-se uma base com $n$ instâncias das quais $k$ possuem a classe $0$ e $n - k$ possuem a classe $1$.
 
-Para o particionamento da base, basta iterar uma vez pela base original incluindo as instâncias de classe $0$ no conjunto $S_0$ e as de classe $1$ no conjunto $S_1$. Essa etapa executa em tempo $O(n)$.
+\section{Estudo da Complexidade Assintótica}
+
+Assim como a maioria das técnicas de aprendizagem supervisionada, o \emph{ranking reduzido a classificação} pode ser dividido em duas partes: a primeira é o treinamento de um ordenador e a segunda é a avaliação do ordenador treinado.
+
+Os principais algoritmos nas etapas de treinamento e avaliação são, respectivamente, \emph{AUC-Train} e \emph{Tournament}. A complexidade da técnica de \emph{ranking reduzido a classificação} será estudada a partir das complexidades desses dois algoritmos separadamente.
+
+Para esse estudo, considera-se como entrada para os algoritmos uma base $S$ com $n$ instâncias das quais $k$ possuem a classe $0$ e $n - k$ possuem a classe $1$.
+
+O algoritmo \ref{alg:auc-train} executa em três etapas:
+
+\begin{enumerate}
+    \item particionar a base de treinamento em duas bases $S_0$ e $S_1$; $S_0$ possui as instâncias de classe $0$ e $S_1$ possui as instâncias de classe $1$
+    \item aplicar o produto cartesiano duas vezes de forma que o conjunto de treinamento seja $S' = S_0 \times S_1 \cup S_1 \times S_0$
+    \item iterar sobre a base de treinamento $S'$ aplicando o operador $1$ às instancias a fim de definir suas classes.
+\end{enumerate}
+
+Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento; da aplicação de dois produtos cartesianos e da aplicação do operador $1$ para todas as instâncias geradas.
+
+Para o particionamento da base, basta iterar uma vez pela base original incluindo as instâncias de classe $0$ no conjunto $S_0$ e as de classe $1$ no conjunto $S_1$, como mostrado no algoritmo \ref{alg:partition}. Essa etapa executa sempre em tempo $O(n)$.
+
+\begin{algorithm}
+    \begin{algorithmic}
+        \STATE $S_0, S_1 \gets \emptyset$
+
+        \FOR{$i \in S$}
+            \IF {$i(C) = 0$}
+                \STATE $S_0 \gets S_0 \cup {i}$
+            \ELSE
+                \STATE $S_1 \gets S_1 \cup {i}$
+            \ENDIF
+        \ENDFOR
+        
+        \STATE return $S_0$, $S_1$
+
+        \caption{Particionamento da base}
+        \label{alg:partition}
+    \end{algorithmic}
+\end{algorithm}
 
 Após o particionamento da base, são executados os produtos cartesianos $S_0 \times S_1$ e $S_1 \times S_0$. O meio convencional de solucionar o produto cartesiano é aninhar dois \emph{loops} como mostrado no algoritmo \ref{alg:cross-product}.
 
-Para o produto cartesiano, o melhor caso ocorre quando $k = 0$ ou $k = n$, nesses casos todas as instâncias pertencem à mesma classe; dessa forma, o produto cartesiano não executa os loops e o tempo computacional é $O(1)$.
+\begin{algorithm}
+    \begin{algorithmic}
+        \STATE $S' \gets \emptyset$
+
+        \IF{$S_0 \neq \emptyset \wedge S_1 \neq \emptyset$}
+            \FOR{$x \in S_0$}
+                \FOR{$y \in S_1$}
+                    \STATE $S' \gets S' \cup \{(x, y)\}$
+                \ENDFOR
+            \ENDFOR
+        \ENDIF
+
+        \STATE return $S'$
+
+        \caption{Produto cartesiano}
+        \label{alg:cross-product}
+
+    \end{algorithmic}
+\end{algorithm}
+
+Para o produto cartesiano, o melhor caso ocorre quando $k = 0$ ou $k = n$ com tempo computacional de $O(1)$. Nesses casos, todas as instâncias pertencem à mesma classe, dessa forma o produto cartesiano não executa os loops.
 
 No caso médio, parte-se da hipótese que todas as entradas são uniformemente prováveis. A probabilidade de uma entrada para um dado $k$ é $\frac{1}{n}$ e a quantidade de iterações geradas por essa entrada é $k \cdot (n - k)$. Partindo desses dados, a complexidade do caso médio pode ser calculada pela fórmula $O(f_{avg}(n))$, na qual:
 
@@ -74,6 +130,8 @@ Logo, o caso médio é igual a $O(f_{avg}) = O(\frac{n^2 -1}{6}) = O(n^2)$.
 
 O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento possui metade das instâncias com classe $0$ e a outra metade com classe $1$. O produto cartesiano ocorrerá em dois conjuntos com $\frac{n}{2}$ instâncias, resultando na complexidade assintótica $O(\frac{n}{2} \cdot \frac{n}{2}) = O(\frac{n^2}{4}) = O(n^2)$.
 
+Para a definicão das classes das novas instâncias geradas na base $S'$, basta iterar sobre $S'$, 
+
 \begin{table}[h]
     \centering
     \begin{tabular}{ c | c c | c }
@@ -91,28 +149,14 @@ O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento 
     \end{tabular}
 
     \caption{Complexidade do algoritmo AUC-Train}
-    \label{j48_results_table}
+    \label{auc-train-complexity}
 \end{table}
 
-Algumas otimizações podem e foram aplicadas no algoritmo final escrito em \emph{Java} para o \emph{workbench WEKA}, por exemplo: o algoritmo de produto cartesiano é levemente alterado para gerar tanto o par $(x, y)$ quanto o par $(y, x)$, isso evita a necessidade de aplicar duas vezes o produto cartesiano; o uso do operador $1$ está embutido no algoritmo de produto cartesiano e não acrescenta complexidade extra ao algoritmo, entre outras. Apesar da aplicação dessas otimizações, a complexidade assintótica do algoritmo continua inalterada.
+Analisando a tabela \ref{auc-train-complexity}, percebe-se que o gargalo do algoritmo \emph{AUC-Train} reside na aplicação do produto cartesiano. Na prática, algumas otimizações foram aplicadas ao algoritmo final escrito para o \emph{workbench WEKA}:
+O algoritmo de produto cartesiano foi levemente alterado para gerar tanto o par $(x, y)$ quanto o par $(y, x)$; isso elimina a necessidade da aplicação de dois produtos cartesianos.
+Apesar da aplicação dessas otimizações, a complexidade do algoritmo se manteve inalterada.
 
-\begin{algorithm}
-    \begin{algorithmic}
-        \STATE $S \gets \emptyset$
-
-        \FOR{$x \in S_1$}
-            \FOR{$y \in S_2$}
-                \STATE $S \gets S \cup \{(x, y)\}$
-            \ENDFOR
-        \ENDFOR
-
-        \STATE returns S
-
-        \caption{Cross Product}
-        \label{alg:cross-product}
-
-    \end{algorithmic}
-\end{algorithm}
+O algoritmo de produto cartesiano é levemente alterado para gerar tanto o par $(x, y)$ quanto o par $(y, x)$, isso evita a necessidade de aplicar duas vezes o produto cartesiano; o uso do operador $1$ está embutido no algoritmo de produto cartesiano e não acrescenta complexidade extra ao algoritmo, entre outras.
 
 Para o algoritmo de torneio, o pior caso, o caso médio e o melhor caso apresentam o mesmo tempo de execução, pois é sempre necessário formar todos os pares de instâncias possíveis a fim de obter a ordem de todas as instâncias. Como mostrado no algoritmo \ref{alg:tournament}, a operação de gerar todos os pares aninha dois \emph{loops}o que resulta em um custo de ordem $O(n^2)$, onde $n$ é o tamanho da base a ser ordenada.
 
