@@ -8,17 +8,17 @@ Após a aplicação do produto cartesiano, uma instância da base resultante tem
 
 O operador $1$, aplicado para obter a classe da nova instância, retorna $1$, se o resultado da expressão avaliada é verdadeiro, ou $0$, se o resultado da expressão é falsa. Como o argumento para o operador é $C_\alpha < C_\beta$, se $C_\alpha$ valer $1$, a classe da nova instância será $0$, se valer $0$, a classe da nova instância será $1$. A transformação da base é o treinamento do classificador compõe um algoritmo de nome \emph{AUC-Train} (algoritmo \ref{alg:auc-train}).
 
-\begin{algorithm}
-    \begin{algorithmic}
-
-        \STATE Let $S' = \{\langle (A_\alpha, A_\beta), 1 \cdot (C_\alpha < C_\beta) \rangle : (A_\alpha, C_\alpha), (A_\beta, C_\beta) \in S \wedge C_\alpha \neq C_\beta\}$
-        \STATE return $c = A(S')$
-
-        \caption{AUC-Train}
-        \label{alg:auc-train}
-
-    \end{algorithmic}
-\end{algorithm}
+% \begin{algorithm}
+%     \begin{algorithmic}
+% 
+%         \STATE Let $S' = \{\langle (A_\alpha, A_\beta), 1 \cdot (C_\alpha < C_\beta) \rangle : (A_\alpha, C_\alpha), (A_\beta, C_\beta) \in S \wedge C_\alpha \neq C_\beta\}$
+%         \STATE return $c = A(S')$
+% 
+%         \caption{AUC-Train}
+%         \label{alg:auc-train}
+% 
+%     \end{algorithmic}
+% \end{algorithm}
 
 A modificação da etapa de avaliação tem como objetivo usar as previsões do classificador treinado pelo \emph{AUC-Train} para gerar o \emph{ranking} da base de avaliação. O algoritmo que efetua a ordenação recebe o nome de \emph{Tournament}, torneio em português. O porquê do nome é devido a idéia do algoritmo se assemelhar muito a uma competição em que muitos competidores participam, formando um \emph{ranking} de acordo com suas performances.
 
@@ -28,20 +28,20 @@ Como desejamos ordenar as instâncias de forma que as que tenham maior chance de
 
 Tecnicamente, um embate entre as instâncias $i_\alpha$ e $i_\beta$ consiste em criar uma nova instância com formato $\langle (A_\alpha, A_\beta)\rangle$ e submetê-la à classificação; se a classe prevista da nova instância for $1$, $i_\alpha$ ganha, se for $0$, $i_\beta$ ganha. Nota-se que o formato da instância a ser classificada é o mesmo que o de uma instância usada no treinamento do classificador, exceto pela ausência de classe. O algoritmo \ref{alg:tournament} demonstra o processo de ordenação.
 
-\begin{algorithm}
-    \begin{algorithmic}
-
-        \FOR{$x \in U$}
-            \STATE let $deg(x) = |\{x':c(x, x') = 1, x' \in U\}|$
-        \ENDFOR
-
-        \STATE Sort U in descending order of deg(x), breaking ties arbitrarily
-
-        \caption{Tournament}
-        \label{alg:tournament}
-
-    \end{algorithmic}
-\end{algorithm}
+% \begin{algorithm}
+%     \begin{algorithmic}
+% 
+%         \FOR{$x \in U$}
+%             \STATE let $deg(x) = |\{x':c(x, x') = 1, x' \in U\}|$
+%         \ENDFOR
+% 
+%         \STATE Sort U in descending order of deg(x), breaking ties arbitrarily
+% 
+%         \caption{Tournament}
+%         \label{alg:tournament}
+% 
+%     \end{algorithmic}
+% \end{algorithm}
 
 Uma das vantagens da técnica de \emph{ranking reduzido a classificação} é que o uso de um algoritmo de aprendizado para classificação é transparente. Essa característica possibilitou o uso dos algoritmos de classificação existentes na ferramenta \emph{WEKA}.
 
@@ -59,55 +59,79 @@ Para esse estudo, considera-se como entrada para os algoritmos uma base $S$ com 
 O algoritmo \ref{alg:auc-train} executa em três etapas:
 
 \begin{enumerate}
-    \item particionar a base de treinamento em duas bases $S_0$ e $S_1$; $S_0$ possui as instâncias de classe $0$ e $S_1$ possui as instâncias de classe $1$
-    \item aplicar o produto cartesiano duas vezes de forma que o conjunto de treinamento seja $S' = S_0 \times S_1 \cup S_1 \times S_0$
+    \item particionar a base de treinamento em duas bases $S_0$ e $S_1$; $S_0$ possui as instâncias de classe $0$ e $S_1$ possui as instâncias de classe $1$;
+    \item aplicar o produto cartesiano duas vezes de forma que o conjunto de treinamento seja $S' \gets S_0 \times S_1 \cup S_1 \times S_0$;
     \item iterar sobre a base de treinamento $S'$ aplicando o operador $1$ às instancias a fim de definir suas classes.
 \end{enumerate}
 
-Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento; da aplicação de dois produtos cartesianos e da aplicação do operador $1$ para todas as instâncias geradas.
+Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento; da aplicação de dois produtos cartesianos e da geração das novas instâncias para treinamento do classificador .
 
 Para o particionamento da base, basta iterar uma vez pela base original incluindo as instâncias de classe $0$ no conjunto $S_0$ e as de classe $1$ no conjunto $S_1$, como mostrado no algoritmo \ref{alg:partition}. Essa etapa executa sempre em tempo $O(n)$.
 
+% \begin{algorithm}
+%     \begin{algorithmic}
+%         \STATE $S_0, S_1 \gets \emptyset$
+% 
+%         \FOR{$i \in S$}
+%             \IF {$i(C) = 0$}
+%                 \STATE $S_0 \gets S_0 \cup {i}$
+%             \ELSE
+%                 \STATE $S_1 \gets S_1 \cup {i}$
+%             \ENDIF
+%         \ENDFOR
+%         
+%         \RETURN $S_0$, $S_1$
+% 
+%         \caption{Particionamento da base}
+%         \label{alg:partition}
+%     \end{algorithmic}
+% \end{algorithm}
+
+Após o particionamento da base, o conjunto $S'$ é gerado a partir de produtos cartesianos:
+
+\[S' \gets (S_0 \times S_1) \cup (S_1 \times S_0)\]
+
+O meio convencional de solucionar o produto cartesiano é aninhar dois \emph{loops} como mostrado no algoritmo \ref{alg:cross-product}.
+
 \begin{algorithm}
-    \begin{algorithmic}
-        \STATE $S_0, S_1 \gets \emptyset$
+    \Entrada{Conjuntos de instâncias $S_{\alpha}$ e $S_{\beta}$}
+    \Saida{Produto cartesiano $S_{\times} = S_{\alpha} \times S_{\beta}$}
 
-        \FOR{$i \in S$}
-            \IF {$i(C) = 0$}
-                \STATE $S_0 \gets S_0 \cup {i}$
-            \ELSE
-                \STATE $S_1 \gets S_1 \cup {i}$
-            \ENDIF
-        \ENDFOR
-        
-        \STATE return $S_0$, $S_1$
+    $S_{\times} \gets \emptyset$
+    
+    \Se{$S_{\alpha} \neq \emptyset \wedge S_{\beta} \neq \emptyset$}{
+        \ParaTodo{$\alpha \in S_{\alpha}$}{
+            \ParaTodo{$\beta \in S_{\beta}$}{
+                $S_{\times} \gets S_{\times} \cup \{ \langle \alpha, \beta \rangle \}$
+            }
+        }
+    }
+    
+    \Retorna{$S_{\times}$}
 
-        \caption{Particionamento da base}
-        \label{alg:partition}
-    \end{algorithmic}
+    \caption{Produto cartesiano}
+    \label{alg:cross-product}
 \end{algorithm}
 
-Após o particionamento da base, são executados os produtos cartesianos $S_0 \times S_1$ e $S_1 \times S_0$. O meio convencional de solucionar o produto cartesiano é aninhar dois \emph{loops} como mostrado no algoritmo \ref{alg:cross-product}.
-
-\begin{algorithm}
-    \begin{algorithmic}
-        \STATE $S' \gets \emptyset$
-
-        \IF{$S_0 \neq \emptyset \wedge S_1 \neq \emptyset$}
-            \FOR{$x \in S_0$}
-                \FOR{$y \in S_1$}
-                    \STATE $S' \gets S' \cup \{(x, y)\}$
-                \ENDFOR
-            \ENDFOR
-        \ENDIF
-
-        \STATE return $S'$
-
-        \caption{Produto cartesiano}
-        \label{alg:cross-product}
-
-    \end{algorithmic}
-\end{algorithm}
+% \begin{algorithm}
+%     \begin{algorithmic}
+%         \STATE $S_{crossed} \gets \emptyset$
+% 
+%         \IF{$S_{\alpha} \neq \emptyset \wedge S_{\beta} \neq \emptyset$}
+%             \FOR{$x \in S_{\alpha}$}
+%                 \FOR{$y \in S_{\beta}$}
+%                     \STATE $S_{crossed} \gets S_{crossed} \cup \{(x, y)\}$
+%                 \ENDFOR
+%             \ENDFOR
+%         \ENDIF
+% 
+%         \STATE return $S_{crossed}$
+% 
+%         \caption{Produto cartesiano}
+%         \label{alg:cross-product}
+% 
+%     \end{algorithmic}
+% \end{algorithm}
 
 Para o produto cartesiano, o melhor caso ocorre quando $k = 0$ ou $k = n$ com tempo computacional de $O(1)$. Nesses casos, todas as instâncias pertencem à mesma classe, dessa forma o produto cartesiano não executa os loops.
 
@@ -130,7 +154,9 @@ Logo, o caso médio é igual a $O(f_{avg}) = O(\frac{n^2 -1}{6}) = O(n^2)$.
 
 O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento possui metade das instâncias com classe $0$ e a outra metade com classe $1$. O produto cartesiano ocorrerá em dois conjuntos com $\frac{n}{2}$ instâncias, resultando na complexidade assintótica $O(\frac{n}{2} \cdot \frac{n}{2}) = O(\frac{n^2}{4}) = O(n^2)$.
 
-Para a definicão das classes das novas instâncias geradas na base $S'$, basta iterar sobre $S'$, 
+Para a definicão das novas instâncias, basta iterar sobre as tuplas em $S'$ transformando-as em novas instâncias compostas pelos atributos das instâncias que compõe a tupla e uma class gerada através do operador $1$. Esse processo é descrito nos algoritmos \ref{alg:one} e \ref{alg:transform}
+
+
 
 \begin{table}[h]
     \centering
@@ -173,28 +199,28 @@ O custo total do AUC-Train é composto pelos custos da etapa de mesclagem e do a
 
 Na estratégia adotada para reduzir o tempo de mesclagem figuram duas técnicas conhecidas em \emph{data mining}, a primeira é efetuar uma amostragem do conjunto original e a segunda é promover uma votação entre vários classificadores treinados com as amostragens como massa de dados.
 
-\begin{algorithm}
-\begin{algorithmic}
-
-\STATE Let $S_0 = \{\langle (x, y) \rangle: (x, y) \in S \wedge y = 0\}$
-\STATE Let $S_1\,=\,S\,-\,S_0$
-
-\STATE $V\,\gets\,\emptyset$
-
-\FOR{$i\,=\,1,\;i\,\to\,iterations$}
-\STATE Let $S_{sample} = S' : S' \subset S_1 \wedge |S'| = limit$
-\STATE Let $S_{train} = \{\langle ((x_{0},\,x_{s}),\, 1),\; ((x_{s},\, x_{0}),\,0) \rangle:
-       (x_{0},\,y_{0})\,\in\,S_{0}\,\wedge\,
-       (x_{s},\,y_{s})\,\in\,S_{sample}\}$
-\STATE $c\,\gets\,A(S_{train})$
-\STATE $V\,\gets\,V\,\bigcup\,\{c\}$
-\ENDFOR
-
-\caption{AUC-Train com amostragem}
-\label{alg:auc-train-amostragem-votacao}
-
-\end{algorithmic}
-\end{algorithm}
+% \begin{algorithm}
+% \begin{algorithmic}
+% 
+% \STATE Let $S_0 = \{\langle (x, y) \rangle: (x, y) \in S \wedge y = 0\}$
+% \STATE Let $S_1\,=\,S\,-\,S_0$
+% 
+% \STATE $V\,\gets\,\emptyset$
+% 
+% \FOR{$i\,=\,1,\;i\,\to\,iterations$}
+% \STATE Let $S_{sample} = S' : S' \subset S_1 \wedge |S'| = limit$
+% \STATE Let $S_{train} = \{\langle ((x_{0},\,x_{s}),\, 1),\; ((x_{s},\, x_{0}),\,0) \rangle:
+%        (x_{0},\,y_{0})\,\in\,S_{0}\,\wedge\,
+%        (x_{s},\,y_{s})\,\in\,S_{sample}\}$
+% \STATE $c\,\gets\,A(S_{train})$
+% \STATE $V\,\gets\,V\,\bigcup\,\{c\}$
+% \ENDFOR
+% 
+% \caption{AUC-Train com amostragem}
+% \label{alg:auc-train-amostragem-votacao}
+% 
+% \end{algorithmic}
+% \end{algorithm}
 
 O produto gerado pelo algoritmo \ref{alg:auc-train-amostragem-votacao} é um conjunto de classificadores treinados a partir de amostragens do conjunto original. Se passarmos os parâmetros $limit=all$ e $iterations=1$, ele gera o mesmo resultado do algortimo descrito por {{langford}}.
 
@@ -202,19 +228,19 @@ O produto gerado pelo algoritmo \ref{alg:auc-train-amostragem-votacao} é um con
 \section{Otimização da ordenação: Quicksort}
 A etapa de ordenação original é chamada de \emph{torneio}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
 
-\begin{algorithm}
-\begin{algorithmic}
-
-\FORALL{$x\,\in\,U$}
-\STATE $deg(x) = |\{x': c(x, x')=1, x'\in U\}|$
-\ENDFOR
-\STATE Ordene U de forma descendente com base em $deg(x)$, resolva os empates arbitrariamente
-
-\caption{Degree}
-\label{alg:degree}
-
-\end{algorithmic}
-\end{algorithm}
+% \begin{algorithm}
+% \begin{algorithmic}
+% 
+% \FORALL{$x\,\in\,U$}
+% \STATE $deg(x) = |\{x': c(x, x')=1, x'\in U\}|$
+% \ENDFOR
+% \STATE Ordene U de forma descendente com base em $deg(x)$, resolva os empates arbitrariamente
+% 
+% \caption{Degree}
+% \label{alg:degree}
+% 
+% \end{algorithmic}
+% \end{algorithm}
 
 
 \section{Definições}
@@ -222,14 +248,14 @@ Algumas definições necessárias para o funcionamento do algoritmo final.
 
 \section{Algoritmo final}
 
-\begin{algorithm}
-\begin{algorithmic}
-
-\STATE $c \gets train(TS, LA, pairs, iterations)$
-\STATE $rank(RS, c, quicksort)$
-
-\caption{Algoritmo final do \emph{Ranking}}
-\label{alg:ranking}
-
-\end{algorithmic}
-\end{algorithm}
+% \begin{algorithm}
+% \begin{algorithmic}
+% 
+% \STATE $c \gets train(TS, LA, pairs, iterations)$
+% \STATE $rank(RS, c, quicksort)$
+% 
+% \caption{Algoritmo final do \emph{Ranking}}
+% \label{alg:ranking}
+% 
+% \end{algorithmic}
+% \end{algorithm}
