@@ -8,17 +8,13 @@ Após a aplicação do produto cartesiano, uma instância da base resultante tem
 
 O operador $1$, aplicado para obter a classe da nova instância, retorna $1$, se o resultado da expressão avaliada é verdadeiro, ou $0$, se o resultado da expressão é falsa. Como o argumento para o operador é $C_\alpha < C_\beta$, se $C_\alpha$ valer $1$, a classe da nova instância será $0$, se valer $0$, a classe da nova instância será $1$. A transformação da base é o treinamento do classificador compõe um algoritmo de nome \emph{AUC-Train} (algoritmo \ref{alg:auc-train}).
 
-% \begin{algorithm}
-%     \begin{algorithmic}
-% 
-%         \STATE Let $S' = \{\langle (A_\alpha, A_\beta), 1 \cdot (C_\alpha < C_\beta) \rangle : (A_\alpha, C_\alpha), (A_\beta, C_\beta) \in S \wedge C_\alpha \neq C_\beta\}$
-%         \STATE return $c = A(S')$
-% 
-%         \caption{AUC-Train}
-%         \label{alg:auc-train}
-% 
-%     \end{algorithmic}
-% \end{algorithm}
+\begin{algorithm}
+    Let $S' = \{\langle (x_1, x_2), 1 \cdot (y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S and y_1 \neq y_2\}$
+    \Return{return $c = A(S')$}
+    
+    \caption{AUC-Train}
+    \label{alg:auc-train}
+\end{algorithm}
 
 A modificação da etapa de avaliação tem como objetivo usar as previsões do classificador treinado pelo \emph{AUC-Train} para gerar o \emph{ranking} da base de avaliação. O algoritmo que efetua a ordenação recebe o nome de \emph{Tournament}, torneio em português. O porquê do nome é devido a idéia do algoritmo se assemelhar muito a uma competição em que muitos competidores participam, formando um \emph{ranking} de acordo com suas performances.
 
@@ -28,20 +24,13 @@ Como desejamos ordenar as instâncias de forma que as que tenham maior chance de
 
 Tecnicamente, um embate entre as instâncias $i_\alpha$ e $i_\beta$ consiste em criar uma nova instância com formato $\langle (A_\alpha, A_\beta)\rangle$ e submetê-la à classificação; se a classe prevista da nova instância for $1$, $i_\alpha$ ganha, se for $0$, $i_\beta$ ganha. Nota-se que o formato da instância a ser classificada é o mesmo que o de uma instância usada no treinamento do classificador, exceto pela ausência de classe. O algoritmo \ref{alg:tournament} demonstra o processo de ordenação.
 
-% \begin{algorithm}
-%     \begin{algorithmic}
-% 
-%         \FOR{$x \in U$}
-%             \STATE let $deg(x) = |\{x':c(x, x') = 1, x' \in U\}|$
-%         \ENDFOR
-% 
-%         \STATE Sort U in descending order of deg(x), breaking ties arbitrarily
-% 
-%         \caption{Tournament}
-%         \label{alg:tournament}
-% 
-%     \end{algorithmic}
-% \end{algorithm}
+\begin{algorithm}
+    For $x \in U$, let $deg(x) = |\{x':c(x, x') = 1, x' \in U\}|$
+    Sort U in descending order of deg(x), breaking ties arbitrarily
+    
+    \caption{Tournament}
+    \label{alg:tournament}
+\end{algorithm}
 
 Uma das vantagens da técnica de \emph{ranking reduzido a classificação} é que o uso de um algoritmo de aprendizado para classificação é transparente. Essa característica possibilitou o uso dos algoritmos de classificação existentes na ferramenta \emph{WEKA}.
 
@@ -64,41 +53,38 @@ O algoritmo \ref{alg:auc-train} executa em três etapas:
     \item iterar sobre a base de treinamento $S'$ aplicando o operador $1$ às instancias a fim de definir suas classes.
 \end{enumerate}
 
-Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento; da aplicação de dois produtos cartesianos e da geração das novas instâncias para treinamento do classificador .
+Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento; da aplicação de dois produtos cartesianos e da geração das novas instâncias para treinamento do classificador.
 
 Para o particionamento da base, basta iterar uma vez pela base original incluindo as instâncias de classe $0$ no conjunto $S_0$ e as de classe $1$ no conjunto $S_1$, como mostrado no algoritmo \ref{alg:partition}. Essa etapa executa sempre em tempo $O(n)$.
 
-% \begin{algorithm}
-%     \begin{algorithmic}
-%         \STATE $S_0, S_1 \gets \emptyset$
-% 
-%         \FOR{$i \in S$}
-%             \IF {$i(C) = 0$}
-%                 \STATE $S_0 \gets S_0 \cup {i}$
-%             \ELSE
-%                 \STATE $S_1 \gets S_1 \cup {i}$
-%             \ENDIF
-%         \ENDFOR
-%         
-%         \RETURN $S_0$, $S_1$
-% 
-%         \caption{Particionamento da base}
-%         \label{alg:partition}
-%     \end{algorithmic}
-% \end{algorithm}
+\begin{algorithm}
+    \Entrada{Conjuntos de instâncias $S$}
+    \Saida{Partições de instâncias $S_0, S_1$}
 
-Após o particionamento da base, o conjunto $S'$ é gerado a partir de produtos cartesianos:
+        $S_0, S_1 \gets \emptyset$
 
-\[S' \gets (S_0 \times S_1) \cup (S_1 \times S_0)\]
+        \ParaTodo{$i \in S$}{
+            \eSe{$i(C) = 0$}{
+                $S_0 \gets S_0 \cup {i}$
+            }{
+                $S_1 \gets S_1 \cup {i}$
+            }
+        }
 
-O meio convencional de solucionar o produto cartesiano é aninhar dois \emph{loops} como mostrado no algoritmo \ref{alg:cross-product}.
+        \Retorna{$S_0 \; S_1$}
+
+    \caption{Particionamento da base}
+    \label{alg:partition}
+\end{algorithm}
+
+Após o particionamento da base, gera-se o conjunto $S'$ a partir de produtos cartesianos: $S' \gets (S_0 \times S_1) \cup (S_1 \times S_0)$. O meio convencional de solucionar o produto cartesiano é aninhar dois \emph{loops} como mostrado no algoritmo \ref{alg:cross-product}.
 
 \begin{algorithm}
     \Entrada{Conjuntos de instâncias $S_{\alpha}$ e $S_{\beta}$}
     \Saida{Produto cartesiano $S_{\times} = S_{\alpha} \times S_{\beta}$}
 
     $S_{\times} \gets \emptyset$
-    
+
     \Se{$S_{\alpha} \neq \emptyset \wedge S_{\beta} \neq \emptyset$}{
         \ParaTodo{$\alpha \in S_{\alpha}$}{
             \ParaTodo{$\beta \in S_{\beta}$}{
@@ -106,34 +92,14 @@ O meio convencional de solucionar o produto cartesiano é aninhar dois \emph{loo
             }
         }
     }
-    
+
     \Retorna{$S_{\times}$}
 
     \caption{Produto cartesiano}
     \label{alg:cross-product}
 \end{algorithm}
 
-% \begin{algorithm}
-%     \begin{algorithmic}
-%         \STATE $S_{crossed} \gets \emptyset$
-% 
-%         \IF{$S_{\alpha} \neq \emptyset \wedge S_{\beta} \neq \emptyset$}
-%             \FOR{$x \in S_{\alpha}$}
-%                 \FOR{$y \in S_{\beta}$}
-%                     \STATE $S_{crossed} \gets S_{crossed} \cup \{(x, y)\}$
-%                 \ENDFOR
-%             \ENDFOR
-%         \ENDIF
-% 
-%         \STATE return $S_{crossed}$
-% 
-%         \caption{Produto cartesiano}
-%         \label{alg:cross-product}
-% 
-%     \end{algorithmic}
-% \end{algorithm}
-
-Para o produto cartesiano, o melhor caso ocorre quando $k = 0$ ou $k = n$ com tempo computacional de $O(1)$. Nesses casos, todas as instâncias pertencem à mesma classe, dessa forma o produto cartesiano não executa os loops.
+Para o produto cartesiano, o melhor caso ocorre quando $k = 0$ ou $k = n$ com tempo computacional de $O(1)$. Nesses casos, todas as instâncias pertencem à mesma classe e $S_{\alpha} = \emptyset$ ou $S_{\beta} = \emptyset$, dessa forma o produto cartesiano não executa os loops.
 
 No caso médio, parte-se da hipótese que todas as entradas são uniformemente prováveis. A probabilidade de uma entrada para um dado $k$ é $\frac{1}{n}$ e a quantidade de iterações geradas por essa entrada é $k \cdot (n - k)$. Partindo desses dados, a complexidade do caso médio pode ser calculada pela fórmula $O(f_{avg}(n))$, na qual:
 
@@ -155,8 +121,6 @@ Logo, o caso médio é igual a $O(f_{avg}) = O(\frac{n^2 -1}{6}) = O(n^2)$.
 O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento possui metade das instâncias com classe $0$ e a outra metade com classe $1$. O produto cartesiano ocorrerá em dois conjuntos com $\frac{n}{2}$ instâncias, resultando na complexidade assintótica $O(\frac{n}{2} \cdot \frac{n}{2}) = O(\frac{n^2}{4}) = O(n^2)$.
 
 Para a definicão das novas instâncias, basta iterar sobre as tuplas em $S'$ transformando-as em novas instâncias compostas pelos atributos das instâncias que compõe a tupla e uma class gerada através do operador $1$. Esse processo é descrito nos algoritmos \ref{alg:one} e \ref{alg:transform}
-
-
 
 \begin{table}[h]
     \centering
@@ -199,11 +163,31 @@ O custo total do AUC-Train é composto pelos custos da etapa de mesclagem e do a
 
 Na estratégia adotada para reduzir o tempo de mesclagem figuram duas técnicas conhecidas em \emph{data mining}, a primeira é efetuar uma amostragem do conjunto original e a segunda é promover uma votação entre vários classificadores treinados com as amostragens como massa de dados.
 
+\begin{algorithm}
+    \Entrada{Partições de instâncias $S_0$, $S_1$; Número de amostragens $n$; Tamanho da amostra $s$}
+    \Saida{Produto cartesiano $S_{\times} = S_{\alpha} \times S_{\beta}$}
+
+    $V \gets \emptyset$
+
+    \For{$i=1 \to n$}{
+        \For{$j=1 \to s$}{
+            $S_{s1} \gets S$
+        }
+    }
+
+    \Retorna{$S_{\times}$}
+
+    \caption{AUC-Train com amostragem e votação}
+    \label{alg:auc-train-amostragem-votacao}
+\end{algorithm}
+
+O parâmetro de pares por instância indica a quantidade pares $(i, y)$ que a instância $i$ deve formar; $y$ é qualquer instância de classe antagônica à classe de $i$.
+
+Supondo que todos os classificadores possuem a mesma configuração, não há sentido em executar uma votação em que os classificadores foram aprendidos a partir da base de treinamento completa. Isso resultaria em votos iguais para todos os classificadores.
+
 % \begin{algorithm}
 % \begin{algorithmic}
 % 
-% \STATE Let $S_0 = \{\langle (x, y) \rangle: (x, y) \in S \wedge y = 0\}$
-% \STATE Let $S_1\,=\,S\,-\,S_0$
 % 
 % \STATE $V\,\gets\,\emptyset$
 % 
