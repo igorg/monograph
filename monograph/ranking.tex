@@ -88,14 +88,14 @@ Após o particionamento da base, gera-se o conjunto $S'$ a partir de produtos ca
     \Se{$S_{\alpha} \neq \emptyset \wedge S_{\beta} \neq \emptyset$}{
         \ParaTodo{$\alpha \in S_{\alpha}$}{
             \ParaTodo{$\beta \in S_{\beta}$}{
-                $S_{\times} \gets S_{\times} \cup \{ \langle \alpha, \beta \rangle \}$
+                $S_{\times} \gets S_{\times} \cup \{ f(\alpha, \beta) \}$
             }
         }
     }
 
     \Retorna{$S_{\times}$}
 
-    \caption{produto cartesiano($S_{\alpha}$, $S_{\beta}$)}
+    \caption{combinar($S_{\alpha}, S_{\beta}, f$)}
     \label{alg:cross-product}
 \end{function}
 
@@ -165,29 +165,34 @@ Na estratégia adotada para reduzir o tempo de mesclagem figuram duas técnicas 
 
 \begin{algorithm}
     \Entrada{
-        Partições de instâncias $S_0$, $S_1$;\;
+        Partições de instâncias $S_0$, $S_1$\;
         Algoritmo de aprendizagem para classificação $A$\;
-        Quantidade de amostragens $n$;\;
+        Quantidade de amostragens $n$\;
         Pares por instância $p$
     }
     \Saida{Conjunto de classificadores $C$}
 
     $C \gets \emptyset$
 
-    \Para{$i=1 \to n$}{
-        $S_a \gets amostragem(S_0, S_1, p)$\;
-        $C \gets C \cup A(S_a)$
+    \eSe{$i > 1$}{
+        \Para{$i=1 \to n$}{
+            $S' \gets amostragem(S_0, S_1, p)$\;
+            $C \gets C \cup A(S')$
+        }
+    }{
+        $S' \gets combinar(S_0, S_1, mesclar)$\;
+        $C \gets \{ A(S') \}$
     }
 
     \Retorna{$C$}
 
-    \caption{AUC-Train com amostragem e votação}
-    \label{alg:auc-train-amostragem-votacao}
+    \caption{AUC-Train}
+    \label{alg:auc-train}
 \end{algorithm}
 
 \begin{function}
     \Entrada{
-        Partições de instâncias $S_0$, $S_1$;\;
+        Partições de instâncias $S_0$, $S_1$\;
         Pares por instância $p$
     }
     \Saida{Amostra com pares $S_a$}
@@ -216,7 +221,7 @@ O parâmetro de pares por instância indica a quantidade pares $(i, y)$ que a in
 
 Supondo que todos os classificadores possuem a mesma configuração, não há sentido em executar uma votação em que os classificadores foram aprendidos a partir da base de treinamento completa. Isso resultaria em votos iguais para todos os classificadores.
 
-O produto gerado pelo algoritmo \ref{alg:auc-train-amostragem-votacao} é um conjunto de classificadores treinados a partir de amostragens do conjunto original. Se passarmos os parâmetros $limit=all$ e $iterations=1$, ele gera o mesmo resultado do algortimo descrito por {{langford}}.
+O produto gerado pelo algoritmo \ref{alg:auc-train} é um conjunto de classificadores treinados a partir de amostragens do conjunto original. Se passarmos os parâmetros $limit=all$ e $iterations=1$, ele gera o mesmo resultado do algortimo descrito por {{langford}}.
 
 \section{Otimização da ordenação: Quicksort}
 A etapa de ordenação original é chamada de \emph{torneio}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
