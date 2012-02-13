@@ -77,26 +77,36 @@ Para o particionamento da base, basta iterar uma vez pela base original incluind
     \label{alg:partition}
 \end{function}
 
-Após o particionamento da base, gera-se o conjunto $S'$ a partir de produtos cartesianos: $S' \gets (S_0 \times S_1) \cup (S_1 \times S_0)$. O meio convencional de solucionar o produto cartesiano é aninhar dois \emph{loops} como mostrado no algoritmo \ref{alg:cross-product}.
+Após o particionamento da base, gera-se o conjunto $S'$ a partir de produtos cartesianos: $S' \gets (S_0 \times S_1) \cup (S_1 \times S_0)$. O meio convencional de solucionar o produto cartesiano é aninhar dois \emph{loops} como mostrado no algoritmo \ref{alg:combinar}.
 
 \begin{function}
     \Entrada{Conjuntos de instâncias $S_{\alpha}$ e $S_{\beta}$}
-    \Saida{Produto cartesiano $S_{\times} = S_{\alpha} \times S_{\beta}$}
+    \Saida{Combinacao de $S_{\alpha}$ com $S_{\beta}$}
 
     $S_{\times} \gets \emptyset$
 
     \Se{$S_{\alpha} \neq \emptyset \wedge S_{\beta} \neq \emptyset$}{
         \ParaTodo{$\alpha \in S_{\alpha}$}{
             \ParaTodo{$\beta \in S_{\beta}$}{
-                $S_{\times} \gets S_{\times} \cup \{ f(\alpha, \beta) \}$
+                $S_C \gets S_C \cup \{ f(\alpha, \beta) \}$
             }
         }
     }
 
-    \Retorna{$S_{\times}$}
+    \Retorna{$S_C$}
 
     \caption{combinar($S_{\alpha}, S_{\beta}, f$)}
-    \label{alg:cross-product}
+    \label{alg:combinar}
+\end{function}
+
+\begin{function}
+    \Entrada{Instâncias $\alpha$ e $\beta$}
+    \Saida{Nova instância, mescla de $\alpha$ com $\beta$}
+
+    \Retorna{$\langle (\alpha(A) \cup \beta(A)), 1 \cdot (\alpha(C), \beta(C)) \rangle $}
+
+    \caption{combinar($S_{\alpha}, S_{\beta}, f$)}
+    \label{alg:combinar}
 \end{function}
 
 Para o produto cartesiano, o melhor caso ocorre quando $k = 0$ ou $k = n$ com tempo computacional de $O(1)$. Nesses casos, todas as instâncias pertencem à mesma classe e $S_{\alpha} = \emptyset$ ou $S_{\beta} = \emptyset$, dessa forma o produto cartesiano não executa os loops.
