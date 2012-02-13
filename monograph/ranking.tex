@@ -1,4 +1,12 @@
-Como dito anteriormente, a técnica de \emph{ranking reduzido a classificação} aplica uma transformação à base original antes da etapa de treinamento do classificador e modifica a etapa de avaliação a fim de ordenar as instâncias.
+Como dito anteriormente, a técnica de \emph{ranking reduzido a classificação} aplica uma transformação à base original antes da etapa de treinamento do classificador e modifica a etapa de avaliação a fim de ordenar as instâncias. A transformação da base e o treinamento do classificador compõe um algoritmo de nome \emph{AUC-Train} (algoritmo \ref{alg:auc-train}).
+
+\begin{algorithm}
+    Let $S' = \{\langle (x_1, x_2), 1(y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S and y_1 \neq y_2\}$\;
+    \Return{$c = A(S')$}
+    
+    \caption{AUC-Train}
+    \label{alg:auc-train}
+\end{algorithm}
 
 A transformação consiste em formar novas instâncias a partir de pares entre instâncias de classes diferentes. A ordem em que as instâncias aparecem no par é relevante, assim, se existe um par $\langle i_\alpha, i_\beta \rangle$, deve existir também um par $\langle i_\beta, i_\alpha \rangle$. Além disso, as classes das duas instâncias que formam um par são combinadas a fim de gerar uma nova classe para a nova instância.
 
@@ -6,15 +14,8 @@ Essa transformação foi implantada separando a base de treinamento em dois subc
 
 Após a aplicação do produto cartesiano, uma instância da base resultante tem a forma $\langle (A_\alpha, C_\alpha), (A_\beta, C_\beta) \rangle$. As classes das duas instâncias devem ser combinadas em uma nova classe, isso se dá com o uso do operador $1$. Ao fim desse processo, uma instancia da nova base terá forma $\langle (A_\alpha, A_\beta), 1 \cdot (C_\alpha < C_\beta)$.
 
-O operador $1$, aplicado para obter a classe da nova instância, retorna $1$, se o resultado da expressão avaliada é verdadeiro, ou $0$, se o resultado da expressão é falsa. Como o argumento para o operador é $C_\alpha < C_\beta$, se $C_\alpha$ valer $1$, a classe da nova instância será $0$, se valer $0$, a classe da nova instância será $1$. A transformação da base é o treinamento do classificador compõe um algoritmo de nome \emph{AUC-Train} (algoritmo \ref{alg:auc-train}).
+O operador $1$, aplicado para obter a classe da nova instância, retorna $1$, se o resultado da expressão avaliada é verdadeiro, ou $0$, se o resultado da expressão é falsa. Como o argumento para o operador é $C_\alpha < C_\beta$, se $C_\alpha$ valer $1$, a classe da nova instância será $0$, se valer $0$, a classe da nova instância será $1$.
 
-\begin{algorithm}
-    Let $S' = \{\langle (x_1, x_2), 1(y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S and y_1 \neq y_2\}$
-    \Return{return $c = A(S')$}
-    
-    \caption{AUC-Train}
-    \label{alg:auc-train}
-\end{algorithm}
 
 \begin{function}
     $avaliacao \gets 1$
@@ -118,8 +119,8 @@ Após o particionamento da base, gera-se o conjunto $S'$ a partir de produtos ca
 
     \Retorna{$\langle (\alpha(A) \cup \beta(A)), 1 \cdot (\alpha(C), \beta(C)) \rangle $}
 
-    \caption{combinar($S_{\alpha}, S_{\beta}, f$)}
-    \label{alg:combinar}
+    \caption{mesclar($\alpha, \beta$)}
+    \label{alg:mesclar}
 \end{function}
 
 Para o produto cartesiano, o melhor caso ocorre quando $k = 0$ ou $k = n$ com tempo computacional de $O(1)$. Nesses casos, todas as instâncias pertencem à mesma classe e $S_{\alpha} = \emptyset$ ou $S_{\beta} = \emptyset$, dessa forma o produto cartesiano não executa os loops.
@@ -199,7 +200,7 @@ Na estratégia adotada para reduzir o tempo de mesclagem figuram duas técnicas 
 
     \eSe{$i > 1$}{
         \Para{$i=1 \to n$}{
-            $S' \gets amostragem(S_0, S_1, p)$\;
+            $S' \gets amostragem(S_0, S_1, p, mesclar)$\;
             $C \gets C \cup A(S')$
         }
     }{
@@ -209,8 +210,8 @@ Na estratégia adotada para reduzir o tempo de mesclagem figuram duas técnicas 
 
     \Retorna{$C$}
 
-    \caption{AUC-Train}
-    \label{alg:auc-train}
+    \caption{Training}
+    \label{alg:training}
 \end{algorithm}
 
 \begin{function}
@@ -224,27 +225,27 @@ Na estratégia adotada para reduzir o tempo de mesclagem figuram duas técnicas 
     
     \ParaTodo{$i \in S_0$}{
         \ParaTodo{$y \in S_{s1} \; tal\; que\; S_{s1} \subseteq S_1 \wedge |S_{s1}| = p$}{
-            $S_a \gets S_a \cup \{\langle (A_i \cup A_y), 1 \cdot (C_i, C_y) \rangle\}$\;
+            $S_a \gets S_a \cup \{ f(i, y) \}$\;
         }
     }
-    
+
     \ParaTodo{$i \in S_1$}{
         \ParaTodo{$y \in S_{s0} \; tal \; que\; S_{s0} \subseteq S_1 \wedge |S_{s0}| = p$}{
-            $S_a \gets S_a \cup \{\langle (A_i \cup A_y), 1 \cdot (C_i, C_y) \rangle\}$\;
+            $S_a \gets S_a \cup \{ f(i, y) \}$\;
         }
     }
 
     \Retorna{$S_a$}
 
-    \caption{amostragem($S_0$, $S_1$, $p$)}
-    \label{func:amostra}
+    \caption{amostragem($S_0, S_1, p, f$)}
+    \label{func:amostragem}
 \end{function}
 
-O parâmetro de pares por instância indica a quantidade pares $(i, y)$ que a instância $i$ deve formar; $y$ é qualquer instância de classe antagônica à classe de $i$.
+O parâmetro de pares por instância indica a quantidade pares que uma instância $i$ deve formar como primeiro item da tupla $(i, y)$ onde $y$ é qualquer instância de classe antagônica à classe de $i$.
 
 Supondo que todos os classificadores possuem a mesma configuração, não há sentido em executar uma votação em que os classificadores foram aprendidos a partir da base de treinamento completa. Isso resultaria em votos iguais para todos os classificadores.
 
-O produto gerado pelo algoritmo \ref{alg:auc-train} é um conjunto de classificadores treinados a partir de amostragens do conjunto original. Se passarmos os parâmetros $limit=all$ e $iterations=1$, ele gera o mesmo resultado do algortimo descrito por {{langford}}.
+O produto gerado pelo algoritmo \ref{alg:training} é um conjunto de classificadores treinados a partir de amostragens do conjunto original. Se passarmos os parâmetros $limit=all$ e $iterations=1$, ele gera o mesmo resultado do algortimo descrito por {{langford}}.
 
 \section{Otimização da ordenação: Quicksort}
 A etapa de ordenação original é chamada de \emph{torneio}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
