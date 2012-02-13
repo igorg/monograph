@@ -1,0 +1,420 @@
+% Contador de Figuras
+\setcounter{figure}{0}
+
+% Contador de Tabelas
+\setcounter{table}{0}
+
+%Fonte do título dos capítulos 
+\renewcommand{\ABNTchapterfont}{\bfseries\upshape}
+\renewcommand{\ABNTtocchapterfont}{\ABNTchapterfont\upshape}
+
+%Tamanho da fonte do título dos capítulos
+\renewcommand{\ABNTchaptersize}{\Large}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Apêndices e Capítulos
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Redefinindo a Formatação do Título dos Capítulos
+\def\@makeschapterhead#1{%
+  \vspace*{0pt}\par
+  {\flushleft\normalfont\upshape\ABNTchaptersize\ABNTchapterfont%
+  \MakeUppercase{#1}%
+  \par}%
+  \vspace{45pt}%
+  \par%
+}
+
+% Redefinido a Formatação dos capítulos pré-textuais.
+\def\@makepchapterhead#1{%
+  \vspace*{0pt}\par
+  {\center\upshape\ABNTchaptersize\ABNTchapterfont%
+  \MakeUppercase{#1}%
+  \par}%
+  \vspace{45pt}%
+  \par%
+}
+
+% Redefinido a Formatação dos capítulos pré-textuais que não aparecerão 
+% no sumário
+\def\@makesprechaphead#1{%
+  \vspace*{0pt}\par
+  {\centering\normalfont\ABNTchaptersize\ABNTchapterfont%
+  \MakeUppercase{#1}%
+  \par}%
+  \vspace{45pt}%
+  \par%
+}
+
+
+%Redefinição dos ambientes de seção e sub-seção (tamanho da fonte e itálico)
+\renewcommand\section{\ABNTstartsection{section}{1}{\z@}%
+                           {-3.5ex \@plus -1ex \@minus -.2ex}%
+                           {2.3ex \@plus.2ex}%
+                           {\espaco{simples}\normalfont\noindent%
+                            \ABNTsectionfont\large\textit}}
+\renewcommand\subsection{\ABNTstartsection{subsection}{2}{\z@}%
+                           {-3.25ex\@plus -1ex \@minus -.2ex}%
+                           {1.5ex \@plus .2ex}%
+                           {\espaco{simples}\normalfont\noindent%
+                            \ABNTsectionfont\normalsize\textit}}
+
+% Sumário: alterações na fonte exibida no título da página
+\renewcommand{\tableofcontents}{%
+  \ifthenelse{\boolean{@twocolumn}}%
+    {\setboolean{ABNTrestorecol}{true}\onecolumn}%
+    {\setboolean{ABNTrestorecol}{false}}%
+  \if@openright\cleardoublepage\else\clearpage\fi
+  \thispagestyle{\chaptertitlepagestyle}
+  \global\@topnum\z@
+  \@afterindentfalse
+  \@makesprechaphead{\contentsname}%
+  \@afterheading
+  \@mkboth{\contentsname}{\contentsname}
+  \@starttoc{toc}%
+  \ifthenelse{\boolean{ABNTrestorecol}}{\twocolumn}{}%
+  \if@openright\cleardoublepage\else\clearpage\fi%
+  \setboolean{ABNTaftertoc}{true}
+}%
+
+\let\sumario\tableofcontents\relax
+
+% Lista de Figuras: alterações na fonte exibida no título da página
+\renewcommand{\listoffigures}{%
+  \ifthenelse{\boolean{@twocolumn}}%
+    {\setboolean{ABNTrestorecol}{true}\onecolumn}%
+    {\setboolean{ABNTrestorecol}{false}}%
+  \ifthenelse{\boolean{ABNThypertoc}}{\renewcommand{\chaptertype}{listoffigures.}}{}
+  \pretextualchapter{\listfigurename}
+  \ifthenelse{\boolean{ABNThypertoc}}{\renewcommand{\chaptertype}{}}{}
+  \@starttoc{lof}%
+  \ifthenelse{\boolean{ABNTrestorecol}}{\twocolumn}{}%
+}%
+
+\let\listadefiguras\listoffigures\relax
+
+% Lista de Tabelas: alterações na fonte exibida no título da página
+\renewcommand\listoftables{%
+  \ifthenelse{\boolean{@twocolumn}}%
+    {\setboolean{ABNTrestorecol}{true}\onecolumn}%
+    {\setboolean{ABNTrestorecol}{false}}%
+  \ifthenelse{\boolean{ABNThypertoc}}{\renewcommand{\chaptertype}{listoftables.}}{}
+  \pretextualchapter{\listtablename}
+  \ifthenelse{\boolean{ABNThypertoc}}{\renewcommand{\chaptertype}{}}{}
+  \@starttoc{lot}%
+  \ifthenelse{\boolean{ABNTrestorecol}}{\twocolumn}{}%
+}%
+
+\let\listadetabelas\listoftables\relax
+
+% Bibliografia: apenas alterado o nome ("Bibliografia" ao invés de "Referencias Bibliograficas")
+\renewenvironment{thebibliography}[1]%
+  {
+   \if@openright\cleardoublepage\else\clearpage\fi%
+   \thispagestyle{\chaptertitlepagestyle}%
+   \global\@topnum\z@%
+   \@afterindentfalse%
+   \@mkboth{\bibname}{\bibname}%
+   \ifthenelse{\boolean{ABNTincludeintoc}}%
+      {\ABNTaddcontentsline{toc}{chapter}{\uppercase{\bibname}}}%
+      {}%
+    \if@twocolumn%
+      \@topnewpage[\@makeschapterhead{\bibname}]%
+    \else%
+      \@makeschapterhead{\bibname}%
+      \@afterheading%
+    \fi%
+   \list{\@biblabel{\@arabic\c@enumiv}}%
+        {\settowidth\labelwidth{\@biblabel{#1}}%
+         \leftmargin\labelwidth%
+         \advance\leftmargin\labelsep%
+         \@openbib@code%
+         \usecounter{enumiv}%
+         \let\p@enumiv\@empty%
+         \renewcommand\theenumiv{\@arabic\c@enumiv}}%
+   \sloppy%
+   \espaco{simples}
+   \clubpenalty4000%
+   \@clubpenalty \clubpenalty%
+   \widowpenalty4000%
+   \sfcode`\.\@m%
+}
+{\def\@noitemerr
+	{\@latex@warning{Empty `thebibliography' environment}}%
+	\endlist%
+}
+
+% Definição de comando de novo capítulo. Utilizado para formatação correta do nome e 
+% da numeração
+\newcommand{\capitulo}[1]{%
+	\refstepcounter{chapter}
+	\setcounter{section}{0}
+	\setcounter{subsection}{0}
+	\chapter*{\uppercase{Capítulo \arabic{chapter} - #1}}
+}
+
+% Comando de criação dos apêndices. Atualiza o sumário e formata a página.
+% Deve ser chamado ao início dos apêndices.
+\newcommand{\apendices}{%
+	\newcounter{apendicenum}
+	\setcounter{apendicenum}{0}
+	\chapter*{\uppercase{Apêndice}}
+	\noindent
+	\flushleft
+}
+
+% Comando de criação de um novo apêndice. Ele não será listado no sumário.
+\renewcommand{\apendice}[1]{%
+	\addtocounter{apendicenum}{1}
+	\ifthenelse{\equal{\value{apendicenum}}{1}}
+		{\vspace{-1cm}}
+		{\vspace{1cm}}
+	\large
+	\bf{
+		Apêndice \Alph{apendicenum}\\[0.5cm]
+		#1
+	}\\[1cm]
+	\normalsize
+	\mdseries
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Figuras e Tabelas
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Comando de criação de legenda em figuras.
+% Substitui o \caption, para alterar a forma de exibição das entradas 
+% na tabela de figuras.
+\newcommand{\FigLegenda}[1]{
+	\refstepcounter\@captype
+	\addcontentsline{lof}{figure}{\uppercase{Figura \arabic{figure}: #1}}
+	\normalsize
+	\@makecaption{Figura \arabic{figure}}{#1}\par
+}
+
+% Comando de criação de legenda em tabelas.
+% Substitui o \caption, para alterar a forma de exibição das entradas 
+% na tabela de tabelas.
+\newcommand{\TabLegenda}[1]{
+	\refstepcounter\@captype
+	\addcontentsline{lot}{table}{\uppercase{Tabela \arabic{table}: #1}}
+	\normalsize
+	\@makecaption{Tabela \arabic{table}}{#1}\par
+}
+
+%%%%%%%%%%%%%%%%%%%%%
+% Premâbulo         
+%%%%%%%%%%%%%%%%%%%%%
+
+% Atributos:
+
+\renewcommand{\autor}[1]{\renewcommand{\UFFautor}{#1}}
+\renewcommand{\titulo}[1]{\renewcommand{\UFFtitulo}{#1}}
+\newcommand{\mes}[1]{\renewcommand{\UFFmes}{#1}}
+\newcommand{\ano}[1]{\renewcommand{\UFFano}{#1}}
+\renewcommand{\local}[1]{\renewcommand{\UFFlocal}{#1}}
+\renewcommand{\orientador}[1]{\renewcommand{\UFForientador}{#1}}
+\renewcommand{\coorientador}[1]{\renewcommand{\UFFcoorientador}{#1}}
+
+% Alguns valores padrão:
+
+\newcommand{\UFFautor}{Autor}
+\newcommand{\UFFtitulo}{Título}
+\newcommand{\UFFano}{2006}
+\newcommand{\UFFmes}{agosto}
+\newcommand{\UFFlocal}{Niterói}
+\newcommand{\UFForientador}{Orientador}
+\newcommand{\UFFcoorientador}{}
+
+% Comando de geração da capa
+
+\renewcommand{\capa}{
+	\begin{titlepage}
+	   \begin{center}
+	      \centering{ 
+		       \normalsize{
+	          	\uppercase{UNIVERSIDADE FEDERAL FLUMINENSE} \\
+	 	       }
+		       \normalsize {
+	           	\uppercase{INSTITUTO DE COMPUTAÇÃO} \\
+		       }
+	         \normalsize {
+	            \uppercase{DEPARTAMENTO DE CIÊNCIA DA COMPUTAÇÃO} \\[2.8cm]
+	         }
+	      }
+	   \end{center}
+	   \begin{center}
+	       \bf{
+	       \normalsize{\UFFautor}  \\
+	       }
+	   \end{center}
+	   \vspace{3cm}
+	   \begin{center}
+	       \bf{	
+	      	 \Large{\UFFtitulo} \\
+	       }
+	   \end{center}
+	
+	   \vfill
+	   \begin{center}
+	      \normalsize{
+	          \UFFlocal \\
+	          \UFFano 
+       }
+	 \end{center}
+	\end{titlepage}
+}
+
+% Comando para geração da folha de rosto
+
+\renewcommand{\folhaderosto}{
+	\begin{titlepage}
+	 \vfill
+	 \begin{center}
+	   {\normalsize \bf{ \uppercase{\UFFautor} } } \\[4cm]
+	   {\Large \bf{\UFFtitulo} }\\[3.5cm]
+	   \hspace{.45\textwidth} % posicionando a minipage
+	   \begin{minipage}{.5\textwidth}
+	     \begin{espacosimples}
+	       \bf{
+		Monografia apresentada ao Departamento de Ciência da Computação da Universidade Federal Fluminense como parte dos requisitos para obtenção do Grau de Bacharel em Ciência da Computação. \\[1cm] 
+	       }      
+	     \end{espacosimples}
+	   \end{minipage}
+	  \end{center}
+	   \begin{espacosimples}   
+	    \noindent 
+		  Orientador: \UFForientador \\[0.9mm]
+		  \ifthenelse{\equal{\UFFcoorientador}{}}
+		  	{}
+		  	{Co-orientador: \UFFcoorientador \\}
+		  \indent
+	   \end{espacosimples}
+	  \begin{center}
+	   \vfill
+	   \UFFlocal \\
+	   \UFFano
+	 \end{center}
+	\end{titlepage}
+}
+
+% Definição do ambiente usado para o termo de aprovação
+
+\newenvironment{termo}{
+	\begin{titlepage}
+	 \vfill
+	 \begin{center}
+	   {\normalsize \bf{ \uppercase{\UFFautor} } } \\[2cm]
+	   {\Large \bf{\UFFtitulo} }\\[2cm]
+	   \hspace{.45\textwidth}
+	   \begin{minipage}{.5\textwidth}
+	     \begin{espacosimples}
+	       \bf{
+		Monografia apresentada ao Departamento de Ciência da Computação da Universidade Federal Fluminense como parte dos requisitos para obtenção do Grau de Bacharel em Ciência da Computação. \\[0.3cm] 
+	       }      
+	     \end{espacosimples}
+	   \end{minipage}
+	  \end{center}
+	   \begin{espacosimples}    
+	    Aprovado em \UFFmes \ de \UFFano
+	   \end{espacosimples}
+	  \begin{center}
+	   {\normalsize \uppercase{\bf{ Banca Examinadora}}}\\%[0.9cm]
+	  \begin{espacosimples}}
+{	   \end{espacosimples}
+	  \vfill
+	   \UFFlocal \\
+	   \UFFano
+	 \end{center}
+	\end{titlepage}
+}
+
+% Comando de adição de membros da banca.
+% Argumentos: 
+% 1° obrigatório: nome do membro, com seu cargo e formação.
+% 2° obrigatório: instituição de origem
+% opcional: texto que ficará entre as duas informações acima. Tipicamente, "Orientador".
+
+\newcommand{\banca}[3][]{
+		\vspace{7mm}
+		\rule{11cm}{.1mm} \\[.3mm]
+		#2 \\
+		\ifthenelse{\equal{#1}{}}{}
+		{#1 \\}
+		#3 \\
+}
+
+% Ambiente do resumo
+\renewenvironment{resumo}{
+	\begin{titlepage}
+		\begin{center}
+			\bf{ \Large{ \uppercase{Resumo}}}\\[36pt]
+		\end{center}
+		\begin{singlespace}
+}
+{	
+		\end{singlespace}
+	\end{titlepage}
+}
+
+% Comando de adição de palavras chave
+\newcommand{\palavrasChave}[1]{
+	\vspace{72pt}
+	\begin{onehalfspace}
+		\noindent
+		\bf{Palavras Chave:}\\
+		\normalfont{#1}
+	\end{onehalfspace}
+}
+
+% Ambiente do abstract
+\renewenvironment{abstract}{
+	\begin{titlepage}
+		\begin{center}
+			\bf{ \Large{ \uppercase{Abstract}}}\\[36pt]
+		\end{center}
+		\begin{singlespace}
+}
+{	
+		\end{singlespace}
+	\end{titlepage}
+}
+
+% Comando de adição de keywords
+\newcommand{\keywords}[1]{
+	\vspace{72pt}
+	\begin{onehalfspace}
+		\noindent
+		\bf{Keywords:}\\
+		\normalfont{#1}
+	\end{onehalfspace}
+}
+
+% Ambiente da tabela de acrônimos
+\newenvironment{acronimos}{
+	\begin{titlepage}
+		\begin{center}
+			\bf{ \Large{ \uppercase{LISTA DE ACRÔNIMOS}}}\\[36pt]
+		\end{center}
+		\noindent
+		\begin{onehalfspace}
+			\begin{flushleft}
+				\begin{tabbing}
+				\hspace{60pt} \= \\
+}
+{	
+				\end{tabbing}
+			\end{flushleft}
+		\end{onehalfspace}
+	\end{titlepage}
+}
+
+% Comando de inserção de acrônimos. Só deve ser utilizado dentro do arquivo de acrônimos.
+% Parâmetros: acrônimo e significado, respectivamente.
+\newcommand{\acronimo}[2]{%
+		#1: \> #2\\%
+}
+
+\endinput
+
