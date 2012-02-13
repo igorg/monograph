@@ -9,12 +9,25 @@ Após a aplicação do produto cartesiano, uma instância da base resultante tem
 O operador $1$, aplicado para obter a classe da nova instância, retorna $1$, se o resultado da expressão avaliada é verdadeiro, ou $0$, se o resultado da expressão é falsa. Como o argumento para o operador é $C_\alpha < C_\beta$, se $C_\alpha$ valer $1$, a classe da nova instância será $0$, se valer $0$, a classe da nova instância será $1$. A transformação da base é o treinamento do classificador compõe um algoritmo de nome \emph{AUC-Train} (algoritmo \ref{alg:auc-train}).
 
 \begin{algorithm}
-    Let $S' = \{\langle (x_1, x_2), 1 \cdot (y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S and y_1 \neq y_2\}$
+    Let $S' = \{\langle (x_1, x_2), 1(y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S and y_1 \neq y_2\}$
     \Return{return $c = A(S')$}
     
     \caption{AUC-Train}
     \label{alg:auc-train}
 \end{algorithm}
+
+\begin{function}
+    $avaliacao \gets 1$
+
+    \Se{$expr = False$}{
+        $avaliacao \gets 0$
+    }
+
+    \Retorna{$avaliacao$}
+
+    \caption{1($expr$)}
+    \label{alg:one}
+\end{function}
 
 A modificação da etapa de avaliação tem como objetivo usar as previsões do classificador treinado pelo \emph{AUC-Train} para gerar o \emph{ranking} da base de avaliação. O algoritmo que efetua a ordenação recebe o nome de \emph{Tournament}, torneio em português. O porquê do nome é devido a idéia do algoritmo se assemelhar muito a uma competição em que muitos competidores participam, formando um \emph{ranking} de acordo com suas performances.
 
