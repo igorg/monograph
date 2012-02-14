@@ -8,12 +8,11 @@ Como dito anteriormente, a técnica de \emph{ranking reduzido a classificação}
     \label{alg:auc-train}
 \end{algorithm}
 
-A transformação consiste em formar novas instâncias a partir de pares entre instâncias de classes diferentes. A ordem em que as instâncias aparecem no par é relevante, o par $\langle i_\alpha, i_\beta \rangle$ e o par $\langle i_\beta, i_\alpha \rangle$ representam informações diferentes para o aprendizado do classificador. Além disso, as classes das duas instâncias que formam um par são combinadas a fim de gerar uma nova classe para a nova instância.
+A transformação consiste em formar novas instâncias a partir de pares entre instâncias de classes diferentes. A ordem em que as instâncias aparecem no par é relevante; o par $\langle i_{\alpha}, i_{\beta} \rangle$ e o par $\langle i_{\beta}, i_{\alpha} \rangle$ representam informações diferentes para o aprendizado do classificador. Além disso, as classes das duas instâncias que formam um par são combinadas a fim de gerar uma nova classe para a nova instância.
 
-Essa transformação foi implantada particionando a base de treinamento em dois subconjuntos, um subconjunto $S_0$ com as instâncias de classe $0$ e outro, $S_1$, com as instâncias de classe $1$. Com as duas partições definidas, basta combiná-las em um conjunto de elementos com formato final $\langle (\alpha(A), \beta(A)), 1(\alpha(C) < \beta(C))$.
+Essa transformação foi implantada particionando a base de treinamento em dois subconjuntos, um subconjunto $S_0$ com as instâncias de classe $0$ e outro, $S_1$, com as instâncias de classe $1$. Com as duas partições definidas, basta combiná-las em um conjunto de elementos com formato final $\langle (i_{\alpha}(A), i{\beta}(A)), 1(i_{\alpha}(C) < i_{\beta}(C)) \rangle$.
 
-O operador $1$, aplicado para obter a classe da nova instância, retorna $1$, se o resultado da expressão avaliada é verdadeiro, ou $0$, se o resultado da expressão é falsa. Como o argumento para o operador é $C_\alpha < C_\beta$, se $C_\alpha$ valer $1$, a classe da nova instância será $0$, se valer $0$, a classe da nova instância será $1$.
-
+A \emph{função $\ref{func:one}$}, aplicada para obter a classe da nova instância, retorna $1$, se o resultado da expressão avaliada é verdadeiro, ou $0$, se o resultado da expressão é falsa. Como o argumento para a função é $i_{\alpha}(C) < i_{\beta}(C)$, se $i_{\alpha}(C)$ valer $1$, a classe da nova instância será $0$, se valer $0$, a classe da nova instância será $1$.
 
 \begin{function}
     $avaliacao \gets 1$
@@ -28,13 +27,13 @@ O operador $1$, aplicado para obter a classe da nova instância, retorna $1$, se
     \label{func:one}
 \end{function}
 
-A modificação da etapa de avaliação tem como objetivo usar as previsões do classificador treinado pelo \emph{AUC-Train} para gerar o \emph{ranking} da base de avaliação. O algoritmo que efetua a ordenação recebe o nome de \emph{Tournament}, torneio em português. O porquê do nome é devido a idéia do algoritmo se assemelhar muito a uma competição em que muitos competidores participam, formando um \emph{ranking} de acordo com suas performances.
+A modificação da etapa de avaliação tem como objetivo usar as previsões do classificador treinado pelo \emph{algoritmo \emph{AUC-Train}} para gerar o \emph{ranking} da base de avaliação. O algoritmo que efetua a ordenação recebe o nome de \emph{Tournament}, torneio em português. O porquê do nome é devido ao algoritmo se assemelhar muito a um torneio em que muitos competidores se enfrentam, formando um \emph{ranking} de acordo com suas performances.
 
 Continuando a analogia com uma competição, a performance de cada instância na avaliação é medida como a quantidade de "vitórias" que essa instância obteve diante das outras instâncias na base de avaliação. Para gerar o \emph{ranking}, basta promover o embate entre todas as instâncias na base e ordenar pelo número de "vitórias".
 
-Como desejamos ordenar as instâncias de forma que as que tenham maior chance de pertencer à classe $0$ estejam no topo, a semântica de "vitoria" é tal que, entre duas instâncias competindo, a instância vencedora tem maior chance de pertencer à classe $0$. Quem define a instância vitoriosa em um embate entre duas instâncias é a previsão do classificador binário.
+Como desejamos ordenar as instâncias de forma que as que tenham maior chance de pertencer à classe $0$ estejam no topo, a semântica de "vitoria" é: em um embate entre duas instâncias, a instância vencedora é a que possui a maior chance de pertencer à classe $0$. Quem define a instância vitoriosa em um embate é a previsão do classificador binário.
 
-Tecnicamente, um embate entre as instâncias $i_\alpha$ e $i_\beta$ consiste em criar uma nova instância com formato $\langle (A_\alpha, A_\beta)\rangle$ e submetê-la à classificação; se a classe prevista da nova instância for $1$, $i_\alpha$ ganha, se for $0$, $i_\beta$ ganha. Nota-se que o formato da instância a ser classificada é o mesmo que o de uma instância usada no treinamento do classificador, exceto pela ausência de classe. O algoritmo \ref{alg:tournament} demonstra o processo de ordenação.
+Tecnicamente, um embate entre as instâncias $i_\alpha$ e $i_\beta$ consiste em criar uma nova instância com formato $\langle (i_{\alpha}(A), i_{\beta}(A))\rangle$ e submetê-la à classificação; se a classe prevista da nova instância for $1$, $i_{\alpha}$ ganha, se for $0$, $i_{\beta}$ ganha. Nota-se que o formato da instância a ser classificada é o mesmo que o de uma instância usada no treinamento do classificador, exceto pela ausência de classe. O algoritmo \ref{alg:tournament} demonstra o processo de ordenação.
 
 \begin{algorithm}
     For $x \in U$, let $deg(x) = |\{x':c(x, x') = 1, x' \in U\}|$
@@ -46,7 +45,7 @@ Tecnicamente, um embate entre as instâncias $i_\alpha$ e $i_\beta$ consiste em 
 
 Uma das vantagens da técnica de \emph{ranking reduzido a classificação} é que o uso de um algoritmo de aprendizado para classificação é transparente. Essa característica possibilitou o uso dos algoritmos de classificação existentes na ferramenta \emph{WEKA}.
 
-O principal ponto negativo é a performance da técnica no que diz respeito a tempo. Os algoritmos \emph{AUC-Train} (\ref{alg:auc-train}) e \emph{Tournament} (\ref{alg:tournament}) que constituem o cerne da técnica de \emph{ranking reduzido a classificação} possuem elevada complexidade assintótica.
+O principal ponto negativo é a performance da técnica no que diz respeito a tempo. Os algoritmos \emph{AUC-Train (\ref{alg:auc-train})} e \emph{Tournament (\ref{alg:tournament})} que constituem o cerne da técnica de \emph{ranking reduzido a classificação} possuem elevada complexidade assintótica.
 
 
 \section{Estudo da Complexidade Assintótica}
@@ -61,11 +60,10 @@ O algoritmo \ref{alg:auc-train} executa em três etapas:
 
 \begin{enumerate}
     \item particionar a base de treinamento em duas bases $S_0$ e $S_1$; $S_0$ possui as instâncias de classe $0$ e $S_1$ possui as instâncias de classe $1$;
-    \item aplicar o produto cartesiano duas vezes de forma que o conjunto de treinamento seja $S' \gets S_0 \times S_1 \cup S_1 \times S_0$;
-    \item iterar sobre a base de treinamento $S'$ aplicando o operador $1$ às instancias a fim de definir suas classes.
+    \item combinar duas vezes as partições $S_0$ e $S_1$ de forma que o conjunto de treinamento possua todos os pares entre instâncias de classe $1$ e de classe $0$
 \end{enumerate}
 
-Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento; da aplicação de dois produtos cartesianos e da geração das novas instâncias para treinamento do classificador.
+Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento e da aplicação de duas combinações entre as partições.
 
 Para o particionamento da base, basta iterar uma vez pela base original incluindo as instâncias de classe $0$ no conjunto $S_0$ e as de classe $1$ no conjunto $S_1$, como mostrado na \emph{função \ref{func:particionar}}. Essa etapa executa sempre em tempo $O(n)$.
 
@@ -89,7 +87,7 @@ Para o particionamento da base, basta iterar uma vez pela base original incluind
     \label{func:particionar}
 \end{function}
 
-Após o particionamento da base, gera-se o conjunto $S'$ a partir de produtos cartesianos: $S' \gets (S_0 \times S_1) \cup (S_1 \times S_0)$. O meio convencional de solucionar o produto cartesiano é aninhar dois \emph{loops} como mostrado na \emph{função \ref{func:combinar}}.
+Após o particionamento da base, gera-se o conjunto $S'$ a partir das combinações entre as partições $S_0$ e $S_1$. A \emph{função \ref{func:combinar}} é a encarregada de formar novas instâncias a partir da mesclagem das instâncias nas partições $S_0$ e $S_1$.
 
 \begin{function}
     \Entrada{Conjuntos de instâncias $S_{\alpha}$ e $S_{\beta}$}
@@ -111,6 +109,8 @@ Após o particionamento da base, gera-se o conjunto $S'$ a partir de produtos ca
     \label{func:combinar}
 \end{function}
 
+A mesclagem das instâncias consiste em gerar uma nova instância a partir de duas outras instâncias de acordo com o algoritmo original do \emph{AUC-Train (\ref{alg:auc-train})}. A \emph{função \ref{func:mesclar}} desempenha esse papel.
+
 \begin{function}
     \Entrada{Instâncias $\alpha$ e $\beta$}
     \Saida{Nova instância, mescla de $\alpha$ com $\beta$}
@@ -121,7 +121,9 @@ Após o particionamento da base, gera-se o conjunto $S'$ a partir de produtos ca
     \label{func:mesclar}
 \end{function}
 
-Para o produto cartesiano, o melhor caso ocorre quando $k = 0$ ou $k = n$ com tempo computacional de $O(1)$. Nesses casos, todas as instâncias pertencem à mesma classe e $S_{\alpha} = \emptyset$ ou $S_{\beta} = \emptyset$, dessa forma o produto cartesiano não executa os loops.
+
+
+Para a \emph{função \ref{func:combinar}}, o melhor caso ocorre quando $k = 0$ ou $k = n$ com tempo computacional de $O(1)$. Nesses casos, todas as instâncias pertencem à mesma classe e $S_{\alpha} = \emptyset$ ou $S_{\beta} = \emptyset$, dessa forma os loops não são executados.
 
 No caso médio, parte-se da hipótese que todas as entradas são uniformemente prováveis. A probabilidade de uma entrada para um dado $k$ é $\frac{1}{n}$ e a quantidade de iterações geradas por essa entrada é $k \cdot (n - k)$. Partindo desses dados, a complexidade do caso médio pode ser calculada pela fórmula $O(f_{avg}(n))$, na qual:
 
@@ -138,11 +140,9 @@ Desenvolvendo o somatório:
                &= \frac{1}{n} \cdot \frac{n^3 + n}{6} = \frac{n^2 -1}{6}
 \end{align*}
 
-Logo, o caso médio é igual a $O(f_{avg}) = O(\frac{n^2 -1}{6}) = O(n^2)$.
+Logo, a complexidade do caso médio é igual a $O(f_{avg}) = O(\frac{n^2 -1}{6}) = O(n^2)$.
 
-O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento possui metade das instâncias com classe $0$ e a outra metade com classe $1$. O produto cartesiano ocorrerá em dois conjuntos com $\frac{n}{2}$ instâncias, resultando na complexidade assintótica $O(\frac{n}{2} \cdot \frac{n}{2}) = O(\frac{n^2}{4}) = O(n^2)$.
-
-Para a definicão das novas instâncias, basta iterar sobre as tuplas em $S'$ transformando-as em novas instâncias compostas pelos atributos das instâncias que compõe a tupla e uma class gerada através do operador $1$. Esse processo é descrito nos algoritmos \ref{alg:one} e \ref{alg:transform}
+O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento possui metade das instâncias com classe $0$ e a outra metade com classe $1$. A combinação ocorrerá entre dois conjuntos com $\frac{n}{2}$ instâncias, resultando na complexidade assintótica $O(\frac{n}{2} \cdot \frac{n}{2}) = O(\frac{n^2}{4}) = O(n^2)$.
 
 \begin{table}[h]
     \centering
@@ -164,11 +164,8 @@ Para a definicão das novas instâncias, basta iterar sobre as tuplas em $S'$ tr
     \label{auc-train-complexity}
 \end{table}
 
-Analisando a tabela \ref{auc-train-complexity}, percebe-se que o gargalo do algoritmo \emph{AUC-Train} reside na aplicação do produto cartesiano. Na prática, algumas otimizações foram aplicadas ao algoritmo final escrito para o \emph{workbench WEKA}:
-O algoritmo de produto cartesiano foi levemente alterado para gerar tanto o par $(x, y)$ quanto o par $(y, x)$; isso elimina a necessidade da aplicação de dois produtos cartesianos.
-Apesar da aplicação dessas otimizações, a complexidade do algoritmo se manteve inalterada.
-
-O algoritmo de produto cartesiano é levemente alterado para gerar tanto o par $(x, y)$ quanto o par $(y, x)$, isso evita a necessidade de aplicar duas vezes o produto cartesiano; o uso do operador $1$ está embutido no algoritmo de produto cartesiano e não acrescenta complexidade extra ao algoritmo, entre outras.
+Analisando a tabela \ref{auc-train-complexity}, percebe-se que o gargalo do algoritmo \emph{AUC-Train} reside na combinação das instâncias. Na prática, algumas otimizações foram aplicadas ao algoritmo final escrito para o \emph{workbench WEKA}:
+O algoritmo de produto cartesiano foi levemente alterado para gerar tanto o par $(x, y)$ quanto o par $(y, x)$; isso elimina a necessidade da aplicação de dois produtos cartesianos. Apesar da aplicação dessas otimizações, a complexidade do algoritmo se manteve inalterada.
 
 Para o algoritmo de torneio, o pior caso, o caso médio e o melhor caso apresentam o mesmo tempo de execução, pois é sempre necessário formar todos os pares de instâncias possíveis a fim de obter a ordem de todas as instâncias. Como mostrado no algoritmo \ref{alg:tournament}, a operação de gerar todos os pares aninha dois \emph{loops}o que resulta em um custo de ordem $O(n^2)$, onde $n$ é o tamanho da base a ser ordenada.
 
@@ -187,29 +184,23 @@ Na estratégia adotada para reduzir o tempo de mesclagem figuram duas técnicas 
 
 \begin{function}
     \Entrada{
-        Partições de instâncias $S_0$, $S_1$\;
+        Partições de instâncias $S_{\alpha}$, $S_{\beta}$\;
         Pares por instância $p$\;
         Função para manipulacão das instâncias $f$
     }
-    \Saida{Amostra com pares $S_a$}
+    \Saida{Amostra com pares $S$}
 
-    $S_a \gets \emptyset$\;
+    $Set \gets \emptyset$\;
     
-    \ParaTodo{$i \in S_0$}{
-        \ParaTodo{$y \in S_{s1} \; tal\; que\; S_{s1} \subseteq S_1 \wedge |S_{s1}| = p$}{
-            $S_a \gets S_a \cup \{ f(i, y) \}$\;
-        }
-    }
-
-    \ParaTodo{$i \in S_1$}{
-        \ParaTodo{$y \in S_{s0} \; tal \; que\; S_{s0} \subseteq S_1 \wedge |S_{s0}| = p$}{
-            $S_a \gets S_a \cup \{ f(i, y) \}$\;
+    \ParaTodo{$\alpha \in S_{\alpha}$}{
+        \ParaTodo{$\beta \in Subset_{\beta} \; tal\; que\; Subset_{\beta} \subseteq S_{\beta} \wedge |Subset_{\beta}| = p$}{
+            $Set \gets Set \cup \{ f(\alpha, \beta) \}$\;
         }
     }
 
     \Retorna{$S_a$}
 
-    \caption{amostragem($S_0, S_1, p, f$)}
+    \caption{amostragem($S_{\alpha}, S_{\beta}, p, f$)}
     \label{func:amostragem}
 \end{function}
 
