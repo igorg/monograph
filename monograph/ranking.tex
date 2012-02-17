@@ -47,6 +47,7 @@ Uma das vantagens da técnica de \emph{ranking reduzido a classificação} é qu
 
 O principal ponto negativo é a performance da técnica no que diz respeito a tempo. Os algoritmos \emph{AUC-Train (\ref{alg:auc-train})} e \emph{Tournament (\ref{alg:tournament})} que constituem o cerne da técnica de \emph{ranking reduzido a classificação} possuem elevada complexidade assintótica.
 
+Os algoritmos expostos nesse capítulo estão descritos em pseudo-código e em sua maioria se baseiam em conceitos de teoria de conjuntos, uma vez que base e instâncias foram definidas sobre a noção de conjunto e tuplas.
 
 \section{Estudo da Complexidade Assintótica}
 
@@ -56,14 +57,17 @@ Os principais algoritmos nas etapas de treinamento e avaliação são, respectiv
 
 Para esse estudo, considera-se como entrada para os algoritmos uma base $S$ com $n$ instâncias das quais $k$ possuem a classe $0$ e $n - k$ possuem a classe $1$.
 
-O algoritmo \ref{alg:auc-train} executa em três etapas:
+O algoritmo \ref{alg:auc-train} executa em três grandes etapas:
 
 \begin{enumerate}
     \item particionar a base de treinamento em duas bases $S_0$ e $S_1$; $S_0$ possui as instâncias de classe $0$ e $S_1$ possui as instâncias de classe $1$;
-    \item combinar duas vezes as partições $S_0$ e $S_1$ de forma que o conjunto de treinamento possua todos os pares entre instâncias de classe $1$ e de classe $0$
+    \item combinar as partições $S_0$ e $S_1$ de forma que a base de treinamento $S'$ possua todos os pares entre instâncias de classe $1$ e de classe $0$;
+    \item aplicar um algoritmo de aprendizagem $A$ à base $S'$ obtendo um classificador $c$ como saída.
 \end{enumerate}
 
-Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento e da aplicação de duas combinações entre as partições.
+Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento, da aplicação de duas combinações entre as partições e da aplicação do algoritmo de aprendizagem.
+
+Por se tratar de uma técnica baseada em meta classificação, não é possível determinar um custo computacional para a $3^a$ etapa pois diferentes algoritmos de aprendizagem para classificação possuem tempos de execução distintos. Portanto, o estudo da complexidade da técnica \emph{AUC-Train} será baseado na computação extra que as etapas 1 e 2 acrescentam ao aprendizado.
 
 Para o particionamento da base, basta iterar uma vez pela base original incluindo as instâncias de classe $0$ no conjunto $S_0$ e as de classe $1$ no conjunto $S_1$, como mostrado na \emph{função \ref{func:particionar}}. Essa etapa executa sempre em tempo $O(n)$.
 
@@ -173,7 +177,8 @@ Tanto o algoritmo \emph{AUC-Train} quanto o \emph{Tournament} apresentam tempos 
 
 Duas abordagens foram consideradas para amortizar a complexidade do algoritmo: uma para a fase de treinamento e outra para a fase de geração do \emph{ranking}. Para a fase de classificação, foi pensada uma estratégia de amostragem da base original e votação entre classificadores e para a geração do \emph{ranking}, foi pensada uma estratégia de torneio baseada em \emph{quicksort}.
 
-\section{Otimização do treinamento: Amostragem e Votação}
+
+\section{Treinamento: \emph{AUC-Train} e Otimizações}
 O algoritmo original chama a etapa de treinamento de AUC-Train. Nessa etapa, são feitas combinações entre as instâncias de classe $0$ e de classe $1$, como mostrado no \emph{algoritmo \ref{alg:auc-train}}.
 
 Esse algoritmo de mesclagem das instâncias é executado uma vez e seu resultado é usado como massa de dados para um algoritmo de aprendizado; no caso específico dessa implantação, um classificador.
@@ -218,10 +223,12 @@ Na estratégia adotada para reduzir o tempo de mesclagem figuram duas técnicas 
     \eSe{$i > 1$}{
         \Para{$i=1 \to n$}{
             $S' \gets amostragem(S_0, S_1, p, mesclar)$\;
+            $S' \gets S' \cup amostragem(S_1, S_0, p, mesclar)$
             $C \gets C \cup \{ A(S') \}$
         }
     }{
         $S' \gets combinar(S_0, S_1, mesclar)$\;
+        $S' \gets combinar(S_1, S_0, mesclar)$
         $C \gets \{ A(S') \}$
     }
 
@@ -231,6 +238,15 @@ Na estratégia adotada para reduzir o tempo de mesclagem figuram duas técnicas 
     \label{alg:treinamento}
 \end{algorithm}
 
+O parâmetro de pares por instância indica a quantidade pares que uma instância $i$ deve formar como primeiro item da tupla $(i, y)$ onde $y$ é qualquer instância de classe antagônica à classe de $i$.
+
+Supondo que todos os classificadores possuem a mesma configuração, não há sentido em executar uma votação em que os classificadores foram aprendidos a partir da base de treinamento completa. Isso resultaria em votos iguais para todos os classificadores.
+
+O produto gerado pelo algoritmo \ref{alg:treinamento} é um conjunto de classificadores treinados a partir de amostragens do conjunto original. Se passarmos os parâmetros $limit=all$ e $iterations=1$, ele gera o mesmo resultado do algortimo descrito por {{langford}}.
+
+\section{Avaliação: }
+A etapa de ordenação original é chamada de \emph{torneio}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
+
 \begin{algorithm}
     \Entrada{
         Conjunto de classificadores $C$\;
@@ -238,33 +254,17 @@ Na estratégia adotada para reduzir o tempo de mesclagem figuram duas técnicas 
     }
     \Saida{\emph{Ranking} $O$ da base $B$}
 
-    Seja $pontos$, um mapeamento das instâncias de $B$ com suas respectivas pontuações
+    Seja $pontuacao$, um mapeamento das instâncias de $B$ com suas respectivas pontuações
 
     \ParaTodo{$\alpha \in B$}{
         \ParaTodo{$\beta \in B \wedge \beta \neq \alpha$}{
-            $i \gets \langle (\alpha(A) \cup \beta(A)) \rangle$
-
-            $classe \gets 0$\;
-            $zero \gets 0$
-
-            \ParaTodo{$c \in C$}{
-                \eSe{$c(i) = 0$}{
-                    $zero \gets zero + 1$
-                }{
-                    $zero \gets zero - 1$
-                }
-            }
-    
-            \Se{$zero < 0$}{
-                $classe \gets 1$
-            }
-    
-            \Retorna{$classe$}
+            $i \gets \langle (\alpha(A) \cup \beta(A)) \rangle$\;
+            $classe \gets votacao(C, i)$
 
             \eSe{$classe = 1$}{
-                $pontos[\alpha] \gets pontos[\alpha] + 1$
+                $pontuacao[\alpha] \gets pontuacao[\alpha] + 1$
             }{
-                $pontos[\beta] \gets pontos[\beta] - 1$
+                $pontuacao[\beta] \gets pontuacao[\beta] - 1$
             }
         }
     }
@@ -275,11 +275,24 @@ Na estratégia adotada para reduzir o tempo de mesclagem figuram duas técnicas 
     \label{alg:avaliacao}
 \end{algorithm}
 
-O parâmetro de pares por instância indica a quantidade pares que uma instância $i$ deve formar como primeiro item da tupla $(i, y)$ onde $y$ é qualquer instância de classe antagônica à classe de $i$.
+\begin{function}
+    $classe \gets 0$\;
+    $zero \gets 0$
 
-Supondo que todos os classificadores possuem a mesma configuração, não há sentido em executar uma votação em que os classificadores foram aprendidos a partir da base de treinamento completa. Isso resultaria em votos iguais para todos os classificadores.
+    \ParaTodo{$c \in C$}{
+        \eSe{$c(i) = 0$}{
+            $zero \gets zero + 1$
+        }{
+            $zero \gets zero - 1$
+        }
+    }
 
-O produto gerado pelo algoritmo \ref{alg:treinamento} é um conjunto de classificadores treinados a partir de amostragens do conjunto original. Se passarmos os parâmetros $limit=all$ e $iterations=1$, ele gera o mesmo resultado do algortimo descrito por {{langford}}.
+    \Se{$zero < 0$}{
+        $classe \gets 1$
+    }
 
-\section{Otimização da ordenação: Quicksort}
-A etapa de ordenação original é chamada de \emph{torneio}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
+    \Retorna{$classe$}
+
+    \caption{votacao(C, i)}
+    \label{func:votacao}
+\end{function}
