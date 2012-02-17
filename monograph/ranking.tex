@@ -91,7 +91,7 @@ Para o particionamento da base, basta iterar uma vez pela base original incluind
     \label{func:particionar}
 \end{function}
 
-Após o particionamento da base, gera-se o conjunto $S'$ a partir das combinações entre as partições $S_0$ e $S_1$. A \emph{função \ref{func:combinar}} é a encarregada de formar novas instâncias a partir da mesclagem das instâncias nas partições $S_0$ e $S_1$.
+Após o particionamento da base, gera-se o conjunto $S'$ a partir das combinações entre as partições $S_0$ e $S_1$. A \emph{função \ref{func:combinar}} é a encarregada de formar novas instâncias a partir da mesclagem das instâncias nas partições $S_0$ e $S_1$. Essa função deve ser executada duas vezes a fim de formar todos os pares.
 
 \begin{function}
     \Entrada{Conjuntos de instâncias $S_{\alpha}$ e $S_{\beta}$}
@@ -99,11 +99,9 @@ Após o particionamento da base, gera-se o conjunto $S'$ a partir das combinaç�
 
     $S_{\times} \gets \emptyset$
 
-    \Se{$S_{\alpha} \neq \emptyset \wedge S_{\beta} \neq \emptyset$}{
-        \ParaTodo{$\alpha \in S_{\alpha}$}{
-            \ParaTodo{$\beta \in S_{\beta}$}{
-                $S_C \gets S_C \cup \{ f(\alpha, \beta) \}$
-            }
+    \ParaTodo{$\alpha \in S_{\alpha}$}{
+        \ParaTodo{$\beta \in S_{\beta}$}{
+            $S_C \gets S_C \cup \{ f(\alpha, \beta) \}$
         }
     }
 
@@ -113,7 +111,7 @@ Após o particionamento da base, gera-se o conjunto $S'$ a partir das combinaç�
     \label{func:combinar}
 \end{function}
 
-A mesclagem das instâncias consiste em gerar uma nova instância a partir de duas outras instâncias de acordo com o algoritmo original do \emph{AUC-Train (\ref{alg:auc-train})}. A \emph{função \ref{func:mesclar}} desempenha esse papel.
+A mesclagem das instâncias consiste em gerar uma nova instância a partir de duas outras instâncias de acordo com o algoritmo original do \emph{AUC-Train (\ref{alg:auc-train})}. A \emph{função \ref{func:mesclar}} desempenha esse papel. Essa função executa sempre em tempo $O(1)$.
 
 \begin{function}
     \Entrada{Instâncias $\alpha$ e $\beta$}
@@ -125,23 +123,23 @@ A mesclagem das instâncias consiste em gerar uma nova instância a partir de du
     \label{func:mesclar}
 \end{function}
 
+Para a \emph{função \ref{func:combinar}}, o melhor caso ocorre quando $k = 1$ ou $k = n - 1$ com tempo computacional de $O(1)$. Nesses casos, todas as instâncias pertencem à mesma classe, exceto por uma e $S_{\alpha} = \emptyset$ ou $S_{\beta} = \emptyset$, dessa forma os loops não são executados.
 
-
-Para a \emph{função \ref{func:combinar}}, o melhor caso ocorre quando $k = 0$ ou $k = n$ com tempo computacional de $O(1)$. Nesses casos, todas as instâncias pertencem à mesma classe e $S_{\alpha} = \emptyset$ ou $S_{\beta} = \emptyset$, dessa forma os loops não são executados.
+Na analise dos casos extremos, em que $k = 0$ ou $k = n$, todas as instâncias pertencem a mesma classe. Nesses casos, o algoritmo não conseguiria formar pares para treinar um classificador, logo esses casos não estarão incluídos em nossos estudos.
 
 No caso médio, parte-se da hipótese que todas as entradas são uniformemente prováveis. A probabilidade de uma entrada para um dado $k$ é $\frac{1}{n}$ e a quantidade de iterações geradas por essa entrada é $k \cdot (n - k)$. Partindo desses dados, a complexidade do caso médio pode ser calculada pela fórmula $O(f_{avg}(n))$, na qual:
 
-\[f_{avg}(n) = \sum_{k = 0}^{n} \frac{k \cdot (n - k)}{n}\]
+\[f_{avg}(n) = \sum_{k = 1}^{n - 1} \frac{k \cdot (n - k)}{n - 1}\]
 
 Desenvolvendo o somatório:
 
 \begin{align*}
-    f_{avg}(n) &= \frac{1}{n} \cdot \sum_{k = 0}^{n} k(n - k) \\
-               &= \frac{1}{n} \cdot \sum_{k = 0}^{n} kn - k^2 \\
-               &= \frac{1}{n} \cdot \left(\sum_{k = 0}^{n} kn - \sum_{k = 0}^{n} k^2\right) \\
-               &= \frac{1}{n} \cdot \left(n \cdot \sum_{k = 1}^{n} k - \sum_{k = 1}^{n} k^2\right) \\
-               &= \frac{1}{n} \cdot \left(n \cdot \frac{n(n + 1)}{2} - \frac{n(n + 1)(2n + 1)}{6}\right) \\
-               &= \frac{1}{n} \cdot \frac{n^3 + n}{6} = \frac{n^2 -1}{6}
+    f_{avg}(n) &= \frac{1}{n - 1} \cdot \sum_{k = 1}^{n - 1} k(n - k) \\
+               &= \frac{1}{n - 1} \cdot \sum_{k = 1}^{n - 1} kn - k^2 \\
+               &= \frac{1}{n - 1} \cdot \left(\sum_{k = 1}^{n - 1} kn - \sum_{k = 0}^{n} k^2\right) \\
+               &= \frac{1}{n - 1} \cdot \left(n \cdot \sum_{k = 1}^{n - 1} k - \sum_{k = 1}^{n} k^2\right) \\
+               &= \frac{1}{n - 1} \cdot \left(n \cdot \frac{n(n + 1)}{2} - \frac{n(n + 1)(2n + 1)}{6}\right) \\
+               &= \frac{1}{n - 1} \cdot \frac{n^3 + n}{6} = \frac{n^2 -1}{6}
 \end{align*}
 
 Logo, a complexidade do caso médio é igual a $O(f_{avg}) = O(\frac{n^2 -1}{6}) = O(n^2)$.
@@ -179,13 +177,24 @@ Duas abordagens foram consideradas para amortizar a complexidade do algoritmo: u
 
 
 \section{Treinamento: \emph{AUC-Train} e Otimizações}
-O algoritmo original chama a etapa de treinamento de AUC-Train. Nessa etapa, são feitas combinações entre as instâncias de classe $0$ e de classe $1$, como mostrado no \emph{algoritmo \ref{alg:auc-train}}.
 
-Esse algoritmo de mesclagem das instâncias é executado uma vez e seu resultado é usado como massa de dados para um algoritmo de aprendizado; no caso específico dessa implantação, um classificador.
+Recapitulando, o algoritmo \emph{AUC-Train (\ref{alg:auc-train})} é composto de três etapas principais: particionamento, com a \emph{função \ref{func:particionar}}; combinação das partições, com a \emph{função \ref{func:combinar}}; e treinamento do classificador.
 
-O custo total do AUC-Train é composto pelos custos da etapa de mesclagem e do algoritmo de aprendizagem somados. Vale ressaltar que a etapa de mesclagem tem um tempo maior de execução; a otimização endereça esse problema especificamente.
+De acordo com o estudo de complexidade , verificou-se que o custo computacional adicionado pelas duas primeiras etapas do algoritmo  original, principalmente a de combinação, é alto. Duas estratégias, familiares no campo de aprendizagem de máquina, são propostas para mitigar esse custo: Amostragem e Votação.
 
-Na estratégia adotada para reduzir o tempo de mesclagem figuram duas técnicas conhecidas em \emph{data mining}, a primeira é efetuar uma amostragem do conjunto original e a segunda é promover uma votação entre vários classificadores treinados com as amostragens como massa de dados.
+Amostragem consiste em utilizar apenas um subconjunto da base completa a ser usada no treinamento do classificador. O objetivo da estratégia não é reduzir a complexidade intríseca das etapas de particionamento e combinação, mas limitar a quantidade de instâncias a serem combinadas amortizando o que seria o tempo total de geração das novas instâncias.
+
+Votação consiste em treinar vários classificadores em vez de apenas um. Para avaliar uma instância, basta submetê-la aos classificadores e coletar as previsões. A classe que mais figurar entre as previsões é então a classe da instância.
+
+Apesar do uso da amostragem beneficiar o tempo de execução, o classificador resultante não será treinado com todas as informações disponíveis, o que pode causar um efeito de intensificação no erro da classificação. Com a votação, embora o treinamento de diversos classificadores resulte em acréscimo de tempo para o algoritmo, geralmente o resultado da classificação possuirá um erro menor.
+
+Há uma complementaridade entre as duas estratégias escolhidas para otimizar o tempo do \emph{algoritmo \ref{alg:auc-train}}. Enquanto uma preza por melhor tempo de execução, o outra preza por maior segurança na classificação. Basta combiná-las para balancear compromisso entre tempo de execução e menor erro na classificação.
+
+Supondo que todos os classificadores possuem a mesma configuração, não há sentido em executar uma votação em que os classificadores foram aprendidos a partir da base de treinamento completa. Isso resultaria em votos iguais para todos os classificadores.
+Não faz sentido uma votação entre classificadores treinados a partir da base completa.
+
+
+O algoritmo funciona para o algoritmo original do \emph{AUC-Train} e para as otimizações também.
 
 \begin{function}
     \Entrada{
@@ -240,11 +249,11 @@ Na estratégia adotada para reduzir o tempo de mesclagem figuram duas técnicas 
 
 O parâmetro de pares por instância indica a quantidade pares que uma instância $i$ deve formar como primeiro item da tupla $(i, y)$ onde $y$ é qualquer instância de classe antagônica à classe de $i$.
 
-Supondo que todos os classificadores possuem a mesma configuração, não há sentido em executar uma votação em que os classificadores foram aprendidos a partir da base de treinamento completa. Isso resultaria em votos iguais para todos os classificadores.
 
 O produto gerado pelo algoritmo \ref{alg:treinamento} é um conjunto de classificadores treinados a partir de amostragens do conjunto original. Se passarmos os parâmetros $limit=all$ e $iterations=1$, ele gera o mesmo resultado do algortimo descrito por {{langford}}.
 
-\section{Avaliação: }
+\section{Avaliação: \emph{Tournament} e Otimizações}
+
 A etapa de ordenação original é chamada de \emph{torneio}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
 
 \begin{algorithm}
