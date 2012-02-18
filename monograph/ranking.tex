@@ -138,11 +138,11 @@ Desenvolvendo o somatório:
                &= \frac{1}{n - 1} \cdot \sum_{k = 1}^{n - 1} kn - k^2 \\
                &= \frac{1}{n - 1} \cdot \left(\sum_{k = 1}^{n - 1} kn - \sum_{k = 0}^{n} k^2\right) \\
                &= \frac{1}{n - 1} \cdot \left(n \cdot \sum_{k = 1}^{n - 1} k - \sum_{k = 1}^{n} k^2\right) \\
-               &= \frac{1}{n - 1} \cdot \left(n \cdot \frac{n(n + 1)}{2} - \frac{n(n + 1)(2n + 1)}{6}\right) \\
-               &= \frac{1}{n - 1} \cdot \frac{n^3 + n}{6} = \frac{n^2 -1}{6}
+               &= \frac{1}{n - 1} \cdot \left(n \cdot \frac{n((n - 1) + 1)}{2} - \frac{(n - 1)((n - 1) + 1)(2(n - 1) + 1)}{6}\right) \\
+               &= \frac{1}{n - 1} \cdot \frac{n^3 - n}{6} = \frac{n^2 + n}{6}
 \end{align*}
 
-Logo, a complexidade do caso médio é igual a $O(f_{avg}) = O(\frac{n^2 -1}{6}) = O(n^2)$.
+Logo, a complexidade do caso médio é igual a $O(f_{avg}) = O(\frac{n^2 + n}{6}) = O(n^2)$.
 
 O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento possui metade das instâncias com classe $0$ e a outra metade com classe $1$. A combinação ocorrerá entre dois conjuntos com $\frac{n}{2}$ instâncias, resultando na complexidade assintótica $O(\frac{n}{2} \cdot \frac{n}{2}) = O(\frac{n^2}{4}) = O(n^2)$.
 
@@ -182,19 +182,7 @@ Recapitulando, o algoritmo \emph{AUC-Train (\ref{alg:auc-train})} é composto de
 
 De acordo com o estudo de complexidade , verificou-se que o custo computacional adicionado pelas duas primeiras etapas do algoritmo  original, principalmente a de combinação, é alto. Duas estratégias, familiares no campo de aprendizagem de máquina, são propostas para mitigar esse custo: Amostragem e Votação.
 
-Amostragem consiste em utilizar apenas um subconjunto da base completa a ser usada no treinamento do classificador. O objetivo da estratégia não é reduzir a complexidade intríseca das etapas de particionamento e combinação, mas limitar a quantidade de instâncias a serem combinadas amortizando o que seria o tempo total de geração das novas instâncias.
-
-Votação consiste em treinar vários classificadores em vez de apenas um. Para avaliar uma instância, basta submetê-la aos classificadores e coletar as previsões. A classe que mais figurar entre as previsões é então a classe da instância.
-
-Apesar do uso da amostragem beneficiar o tempo de execução, o classificador resultante não será treinado com todas as informações disponíveis, o que pode causar um efeito de intensificação no erro da classificação. Com a votação, embora o treinamento de diversos classificadores resulte em acréscimo de tempo para o algoritmo, geralmente o resultado da classificação possuirá um erro menor.
-
-Há uma complementaridade entre as duas estratégias escolhidas para otimizar o tempo do \emph{algoritmo \ref{alg:auc-train}}. Enquanto uma preza por melhor tempo de execução, o outra preza por maior segurança na classificação. Basta combiná-las para balancear compromisso entre tempo de execução e menor erro na classificação.
-
-Supondo que todos os classificadores possuem a mesma configuração, não há sentido em executar uma votação em que os classificadores foram aprendidos a partir da base de treinamento completa. Isso resultaria em votos iguais para todos os classificadores.
-Não faz sentido uma votação entre classificadores treinados a partir da base completa.
-
-
-O algoritmo funciona para o algoritmo original do \emph{AUC-Train} e para as otimizações também.
+Amostragem consiste em utilizar apenas um subconjunto da base completa a ser usada no treinamento do classificador. O objetivo da estratégia não é reduzir a complexidade intríseca das etapas de particionamento e combinação, mas limitar a quantidade de instâncias a serem combinadas amortizando o que seria o tempo total de geração das novas instâncias. A \emph{função \ref{func:amostragem}}) ilustra o processo de amostragem utilizado nesse estudo.
 
 \begin{function}
     \Entrada{
@@ -218,11 +206,21 @@ O algoritmo funciona para o algoritmo original do \emph{AUC-Train} e para as oti
     \label{func:amostragem}
 \end{function}
 
+Votação consiste em treinar vários classificadores em vez de apenas um. Para avaliar uma instância, basta submetê-la aos classificadores e coletar as previsões. A classe que mais figurar entre as previsões é então a classe da instância.
+
+Não há sentido em executar uma votação em que os classificadores foram aprendidos a partir da mesma base de treinamento. Isso resultaria em classificadores iguais e, portanto, seus votos também seriam iguais. Esse panorama só deixaria de ocorrer se o próprio algoritmo de aprendizagem inserisse alguma incerteza durante o treinamento.
+
+Apesar do uso da amostragem beneficiar o tempo de execução, o classificador resultante não será treinado com todas as informações disponíveis, o que pode causar um efeito de intensificação no erro da classificação. Com a votação, embora o treinamento de diversos classificadores resulte em acréscimo de tempo para o algoritmo, geralmente o resultado da classificação possuirá um erro menor.
+
+Há uma complementaridade entre as duas estratégias escolhidas para otimização do algoritmo \emph{AUC-Train (\ref{alg:auc-train})}. Enquanto uma preza por melhor tempo de execução, o outra preza por maior segurança na classificação. Basta combiná-las para balancear compromisso entre tempo de execução e menor erro na classificação.
+
+De posse das informações necessárias para a implantação do \emph{algoritmo AUC-Train (\ref{alg:auc-train})} e de suas otimizações, a etapa de treinamento do \emph{Ranking} está exposta no \emph{algoritmo \ref{alg:treinamento}}.
+
 \begin{algorithm}
     \Entrada{
         Partições de instâncias $S_0$, $S_1$\;
         Algoritmo de aprendizagem para classificação $A$\;
-        Quantidade de amostragens $n$\;
+        Quantidade de classificadores a serem treinados $n$\;
         Pares por instância $p$
     }
     \Saida{Conjunto de classificadores $C$}
@@ -247,14 +245,13 @@ O algoritmo funciona para o algoritmo original do \emph{AUC-Train} e para as oti
     \label{alg:treinamento}
 \end{algorithm}
 
-O parâmetro de pares por instância indica a quantidade pares que uma instância $i$ deve formar como primeiro item da tupla $(i, y)$ onde $y$ é qualquer instância de classe antagônica à classe de $i$.
+O parâmetro de pares por instância indica a quantidade pares que uma instância $i$ deve formar como primeiro item da combinação entre $i$ e $y$ onde $y$ é qualquer instância de classe antagônica à classe de $i$. O parâmetro $n$ constitui o número de classificadores a serem treinados para votação. O valor de retorno é sempre um conjunto de classificadores.
 
-
-O produto gerado pelo algoritmo \ref{alg:treinamento} é um conjunto de classificadores treinados a partir de amostragens do conjunto original. Se passarmos os parâmetros $limit=all$ e $iterations=1$, ele gera o mesmo resultado do algortimo descrito por {{langford}}.
+O algoritmo \emph{\ref{alg:treinamento}} atende tanto ao propósito do algoritmo \emph{AUC-Train \ref{alg:auc-train}} quanto às otimizações propostas para esse; para tal, manipula-se os parâmetros $n$ e $p$. Para executar o algoritmo original, basta definir $n$ como $1$ e $p$ como $todas$. Para executar o algoritmo com amostragens e votação, basta definir $n$ com um valor maior que $1$ e $p$ com um valor entre $1$ e o número de instâncias da classe minoritária.
 
 \section{Avaliação: \emph{Tournament} e Otimizações}
 
-A etapa de ordenação original é chamada de \emph{torneio}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
+A etapa de ordenação original é chamada de \emph{tournament}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
 
 \begin{algorithm}
     \Entrada{
