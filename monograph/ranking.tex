@@ -49,15 +49,14 @@ O principal ponto negativo é a performance da técnica no que diz respeito a te
 
 Os algoritmos expostos nesse capítulo estão descritos em pseudo-código e em sua maioria se baseiam em conceitos de teoria de conjuntos, uma vez que base e instâncias foram definidas sobre a noção de conjunto e tuplas.
 
-\section{Estudo da Complexidade Assintótica}
+Assim como a maioria das técnicas de aprendizagem supervisionada, o \emph{ranking reduzido a classificação} pode ser dividido em duas grandes partes distintas: a primeira é o treinamento de um ordenador e a segunda é a avaliação do ordenador treinado.
 
-Assim como a maioria das técnicas de aprendizagem supervisionada, o \emph{ranking reduzido a classificação} pode ser dividido em duas partes: a primeira é o treinamento de um ordenador e a segunda é a avaliação do ordenador treinado.
+Os principais algoritmos nas etapas de treinamento e avaliação para a técnica de \emph{ranking reduzido a classificação} são, respectivamente, \emph{AUC-Train} e \emph{Tournament}. A complexidade da técnica será estudada a partir das complexidades desses dois algoritmos separadamente.
 
-Os principais algoritmos nas etapas de treinamento e avaliação são, respectivamente, \emph{AUC-Train} e \emph{Tournament}. A complexidade da técnica de \emph{ranking reduzido a classificação} será estudada a partir das complexidades desses dois algoritmos separadamente.
 
-Para esse estudo, considera-se como entrada para os algoritmos uma base $S$ com $n$ instâncias das quais $k$ possuem a classe $0$ e $n - k$ possuem a classe $1$.
+\section{Treinamento: Estudo de complexidade do algoritmo \emph{AUC-Train (\ref{alg:auc-train})}}
 
-O algoritmo \ref{alg:auc-train} executa em três grandes etapas:
+Considera-se como entrada para o algoritmo de \emph{AUC-Train (\ref{alg:auc-train})} uma base $S$ com $n$ instâncias das quais $k$ possuem a classe $0$ e $n - k$ possuem a classe $1$. O algoritmo executa em três grandes etapas:
 
 \begin{enumerate}
     \item particionar a base de treinamento em duas bases $S_0$ e $S_1$; $S_0$ possui as instâncias de classe $0$ e $S_1$ possui as instâncias de classe $1$;
@@ -123,11 +122,11 @@ A mesclagem das instâncias consiste em gerar uma nova instância a partir de du
     \label{func:mesclar}
 \end{function}
 
-Para a \emph{função \ref{func:combinar}}, o melhor caso ocorre quando $k = 1$ ou $k = n - 1$ com tempo computacional de $O(1)$. Nesses casos, todas as instâncias pertencem à mesma classe, exceto por uma e $S_{\alpha} = \emptyset$ ou $S_{\beta} = \emptyset$, dessa forma os loops não são executados.
+Os casos extremos da \emph{função \ref{func:combinar}} ocorrem quando $k = 0$ ou $k = n$. Nesses casos, todas as instâncias pertencem a mesma classe e o algoritmo não conseguiria formar pares para treinar um classificador; logo, esses casos não estarão incluídos em nossos estudos.
 
-Na analise dos casos extremos, em que $k = 0$ ou $k = n$, todas as instâncias pertencem a mesma classe. Nesses casos, o algoritmo não conseguiria formar pares para treinar um classificador, logo esses casos não estarão incluídos em nossos estudos.
+O melhor caso ocorre, com tempo computacional de $O(n)$, quando $k = 1$ ou $k = n - 1$. Nesses casos, todas as instâncias pertencem à mesma classe, exceto por uma e $S_{\alpha} = \emptyset$ ou $S_{\beta} = \emptyset$, dessa forma um dos loops executa apenas uma vez, enquanto o outro executa $n$ vezes.
 
-No caso médio, parte-se da hipótese que todas as entradas são uniformemente prováveis. A probabilidade de uma entrada para um dado $k$ é $\frac{1}{n}$ e a quantidade de iterações geradas por essa entrada é $k \cdot (n - k)$. Partindo desses dados, a complexidade do caso médio pode ser calculada pela fórmula $O(f_{avg}(n))$, na qual:
+No caso médio, parte-se da hipótese que todas as entradas são uniformemente prováveis. A probabilidade de uma entrada para um dado $k$ é $\frac{1}{n - 1}$ e a quantidade de iterações geradas por essa entrada é $k \cdot (n - k)$. Partindo desses dados, a complexidade do caso médio pode ser calculada pela fórmula:
 
 \[f_{avg}(n) = \sum_{k = 1}^{n - 1} \frac{k \cdot (n - k)}{n - 1}\]
 
@@ -155,7 +154,7 @@ O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento 
 
         \hline
 
-        Melhor & $O(n)$ & $O(1)$ & $O(n) + O(1) = O(n)$ \\
+        Melhor & $O(n)$ & $O(n)$ & $O(n) + O(n) = O(n)$ \\
         Médio & $O(n)$ & $O(n^2)$ & $O(n) + O(n^2) = O(n^2)$ \\
         Pior  & $O(n)$ & $O(n^2)$ & $O(n) + O(n^2) = O(n^2)$ \\
 
@@ -169,14 +168,8 @@ O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento 
 Analisando a tabela \ref{auc-train-complexity}, percebe-se que o gargalo do algoritmo \emph{AUC-Train} reside na combinação das instâncias. Na prática, algumas otimizações foram aplicadas ao algoritmo final escrito para o \emph{workbench WEKA}:
 O algoritmo de produto cartesiano foi levemente alterado para gerar tanto o par $(x, y)$ quanto o par $(y, x)$; isso elimina a necessidade da aplicação de dois produtos cartesianos. Apesar da aplicação dessas otimizações, a complexidade do algoritmo se manteve inalterada.
 
-Para o algoritmo de torneio, o pior caso, o caso médio e o melhor caso apresentam o mesmo tempo de execução, pois é sempre necessário formar todos os pares de instâncias possíveis a fim de obter a ordem de todas as instâncias. Como mostrado no algoritmo \ref{alg:tournament}, a operação de gerar todos os pares aninha dois \emph{loops}o que resulta em um custo de ordem $O(n^2)$, onde $n$ é o tamanho da base a ser ordenada.
 
-Tanto o algoritmo \emph{AUC-Train} quanto o \emph{Tournament} apresentam tempos elevados de execução. A prática de comparar as instâncias em pares onera tanto os processos de treinamento e de ordenação e, usando bases extensas, o tempo de execução do algoritmo degrada consideravelmente. Essa característica levou à busca de alternativas para tornar ambos treinamento e ordenação mais rápidos.
-
-Duas abordagens foram consideradas para amortizar a complexidade do algoritmo: uma para a fase de treinamento e outra para a fase de geração do \emph{ranking}. Para a fase de classificação, foi pensada uma estratégia de amostragem da base original e votação entre classificadores e para a geração do \emph{ranking}, foi pensada uma estratégia de torneio baseada em \emph{quicksort}.
-
-
-\section{Treinamento: \emph{AUC-Train} e Otimizações}
+\section{Treinamento: Otimizações e implantacao do algoritmo \emph{AUC-Train}}
 
 Recapitulando, o algoritmo \emph{AUC-Train (\ref{alg:auc-train})} é composto de três etapas principais: particionamento, com a \emph{função \ref{func:particionar}}; combinação das partições, com a \emph{função \ref{func:combinar}}; e treinamento do classificador.
 
@@ -249,7 +242,19 @@ O parâmetro de pares por instância indica a quantidade pares que uma instânci
 
 O algoritmo \emph{\ref{alg:treinamento}} atende tanto ao propósito do algoritmo \emph{AUC-Train \ref{alg:auc-train}} quanto às otimizações propostas para esse; para tal, manipula-se os parâmetros $n$ e $p$. Para executar o algoritmo original, basta definir $n$ como $1$ e $p$ como $todas$. Para executar o algoritmo com amostragens e votação, basta definir $n$ com um valor maior que $1$ e $p$ com um valor entre $1$ e o número de instâncias da classe minoritária.
 
-\section{Avaliação: \emph{Tournament} e Otimizações}
+
+\section{Avaliação: Estudo de complexidade do algoritmo \emph{Tournament}}
+
+O algoritmo \emph{Tournament (\ref{alg:tournament})} executa em duas
+
+Para o algoritmo de torneio, o pior caso, o caso médio e o melhor caso apresentam o mesmo tempo de execução, pois é sempre necessário formar todos os pares de instâncias possíveis a fim de obter a ordem de todas as instâncias. Como mostrado no algoritmo \ref{alg:tournament}, a operação de gerar todos os pares aninha dois \emph{loops}o que resulta em um custo de ordem $O(n^2)$, onde $n$ é o tamanho da base a ser ordenada.
+
+Tanto o algoritmo \emph{AUC-Train} quanto o \emph{Tournament} apresentam tempos elevados de execução. A prática de comparar as instâncias em pares onera tanto os processos de treinamento e de ordenação e, usando bases extensas, o tempo de execução do algoritmo degrada consideravelmente. Essa característica levou à busca de alternativas para tornar ambos treinamento e ordenação mais rápidos.
+
+Duas abordagens foram consideradas para amortizar a complexidade do algoritmo: uma para a fase de treinamento e outra para a fase de geração do \emph{ranking}. Para a fase de classificação, foi pensada uma estratégia de amostragem da base original e votação entre classificadores e para a geração do \emph{ranking}, foi pensada uma estratégia de torneio baseada em \emph{quicksort}.
+
+
+\section{Avaliação: Otimizações e implantação do algoritmo \emph{Tournament}}
 
 A etapa de ordenação original é chamada de \emph{tournament}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
 
