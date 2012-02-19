@@ -1,6 +1,6 @@
 Como dito anteriormente, a técnica de \emph{ranking reduzido a classificação} aplica uma transformação à base original antes da etapa de treinamento do classificador e modifica a etapa de avaliação a fim de ordenar as instâncias. A transformação da base e o treinamento do classificador compõe um algoritmo de nome \emph{AUC-Train} (algoritmo \ref{alg:auc-train}).
 
-\begin{algorithm}
+\begin{algorithm}[h]
     Let $S' = \{\langle (x_1, x_2), 1(y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S and y_1 \neq y_2\}$\;
     \Return{$c = A(S')$}
     
@@ -14,7 +14,7 @@ Essa transformação foi implantada particionando a base de treinamento em dois 
 
 A \emph{função $\ref{func:one}$}, aplicada para obter a classe da nova instância, retorna $1$, se o resultado da expressão avaliada é verdadeiro, ou $0$, se o resultado da expressão é falsa. Como o argumento para a função é $i_{\alpha}(C) < i_{\beta}(C)$, se $i_{\alpha}(C)$ valer $1$, a classe da nova instância será $0$, se valer $0$, a classe da nova instância será $1$.
 
-\begin{function}
+\begin{function}[h]
     $avaliacao \gets 1$
 
     \Se{$expr = False$}{
@@ -35,7 +35,7 @@ Como desejamos ordenar as instâncias de forma que as que tenham maior chance de
 
 Tecnicamente, um embate entre as instâncias $i_\alpha$ e $i_\beta$ consiste em criar uma nova instância com formato $\langle (i_{\alpha}(A), i_{\beta}(A))\rangle$ e submetê-la à classificação; se a classe prevista da nova instância for $1$, $i_{\alpha}$ ganha, se for $0$, $i_{\beta}$ ganha. Nota-se que o formato da instância a ser classificada é o mesmo que o de uma instância usada no treinamento do classificador, exceto pela ausência de classe. O algoritmo \ref{alg:tournament} demonstra o processo de ordenação.
 
-\begin{algorithm}
+\begin{algorithm}[h]
     For $x \in U$, let $deg(x) = |\{x':c(x, x') = 1, x' \in U\}|$
     Sort U in descending order of deg(x), breaking ties arbitrarily
     
@@ -45,13 +45,13 @@ Tecnicamente, um embate entre as instâncias $i_\alpha$ e $i_\beta$ consiste em 
 
 Uma das vantagens da técnica de \emph{ranking reduzido a classificação} é que o uso de um algoritmo de aprendizado para classificação é transparente. Essa característica possibilitou o uso dos algoritmos de classificação existentes na ferramenta \emph{WEKA}.
 
-O principal ponto negativo é a performance da técnica no que diz respeito a tempo. Os algoritmos \emph{AUC-Train (\ref{alg:auc-train})} e \emph{Tournament (\ref{alg:tournament})} que constituem o cerne da técnica de \emph{ranking reduzido a classificação} possuem elevada complexidade assintótica.
+O principal ponto negativo é a performance da técnica no que diz respeito a tempo computacional. Os algoritmos \emph{AUC-Train (\ref{alg:auc-train})} e \emph{Tournament (\ref{alg:tournament})} que constituem o cerne da técnica de \emph{ranking reduzido a classificação} possuem elevada complexidade.
 
-Os algoritmos expostos nesse capítulo estão descritos em pseudo-código e em sua maioria se baseiam em conceitos de teoria de conjuntos, uma vez que base e instâncias foram definidas sobre a noção de conjunto e tuplas.
+Os algoritmos expostos nesse capítulo estão descritos em pseudo-código e em sua maioria se baseiam em conceitos de teoria de conjuntos e vetores, uma vez que base e instâncias foram definidas sobre esses conceitos.
 
-Assim como a maioria das técnicas de aprendizagem supervisionada, o \emph{ranking reduzido a classificação} pode ser dividido em duas grandes partes distintas: a primeira é o treinamento de um ordenador e a segunda é a avaliação do ordenador treinado.
+Assim como a maioria das técnicas de aprendizagem supervisionada, o \emph{ranking reduzido a classificação} pode ser dividido em duas grandes partes distintas: a primeira é o treinamento de um ordenador e a segunda é a ordenação de uma base a partir do ordenador treinado.
 
-Os principais algoritmos nas etapas de treinamento e avaliação para a técnica de \emph{ranking reduzido a classificação} são, respectivamente, \emph{AUC-Train} e \emph{Tournament}. A complexidade da técnica será estudada a partir das complexidades desses dois algoritmos separadamente.
+Os principais algoritmos nas etapas de treinamento e avaliação para a técnica de \emph{ranking reduzido a classificação} são, respectivamente, \emph{AUC-Train} e \emph{Tournament}. Portanto, a complexidade da técnica será estudada a partir das complexidades desses dois algoritmos separadamente.
 
 
 \section{Treinamento: Estudo de complexidade do algoritmo \emph{AUC-Train (\ref{alg:auc-train})}}
@@ -70,7 +70,7 @@ Por se tratar de uma técnica baseada em meta classificação, não é possível
 
 Para o particionamento da base, basta iterar uma vez pela base original incluindo as instâncias de classe $0$ no conjunto $S_0$ e as de classe $1$ no conjunto $S_1$, como mostrado na \emph{função \ref{func:particionar}}. Essa etapa executa sempre em tempo $O(n)$.
 
-\begin{function}
+\begin{function}[h]
     \Entrada{Conjuntos de instâncias $S$}
     \Saida{Partições de instâncias $S_0, S_1$}
 
@@ -92,8 +92,11 @@ Para o particionamento da base, basta iterar uma vez pela base original incluind
 
 Após o particionamento da base, gera-se o conjunto $S'$ a partir das combinações entre as partições $S_0$ e $S_1$. A \emph{função \ref{func:combinar}} é a encarregada de formar novas instâncias a partir da mesclagem das instâncias nas partições $S_0$ e $S_1$. Essa função deve ser executada duas vezes a fim de formar todos os pares.
 
-\begin{function}
-    \Entrada{Conjuntos de instâncias $S_{\alpha}$ e $S_{\beta}$}
+\begin{function}[h]
+    \Entrada{
+        Conjuntos de instâncias $S_{\alpha}$ e $S_{\beta}$\;
+        Função para manipulacão das instâncias $f$
+    }
     \Saida{Combinacao de $S_{\alpha}$ com $S_{\beta}$}
 
     $S_{\times} \gets \emptyset$
@@ -112,7 +115,7 @@ Após o particionamento da base, gera-se o conjunto $S'$ a partir das combinaç�
 
 A mesclagem das instâncias consiste em gerar uma nova instância a partir de duas outras instâncias de acordo com o algoritmo original do \emph{AUC-Train (\ref{alg:auc-train})}. A \emph{função \ref{func:mesclar}} desempenha esse papel. Essa função executa sempre em tempo $O(1)$.
 
-\begin{function}
+\begin{function}[h]
     \Entrada{Instâncias $\alpha$ e $\beta$}
     \Saida{Nova instância, mescla de $\alpha$ com $\beta$}
 
@@ -138,7 +141,8 @@ Desenvolvendo o somatório:
                &= \frac{1}{n - 1} \cdot \left(\sum_{k = 1}^{n - 1} kn - \sum_{k = 0}^{n} k^2\right) \\
                &= \frac{1}{n - 1} \cdot \left(n \cdot \sum_{k = 1}^{n - 1} k - \sum_{k = 1}^{n} k^2\right) \\
                &= \frac{1}{n - 1} \cdot \left(n \cdot \frac{n((n - 1) + 1)}{2} - \frac{(n - 1)((n - 1) + 1)(2(n - 1) + 1)}{6}\right) \\
-               &= \frac{1}{n - 1} \cdot \frac{n^3 - n}{6} = \frac{n^2 + n}{6}
+               &= \frac{1}{n - 1} \cdot \frac{n^3 - n}{6}
+               &= \frac{n^2 + n}{6}
 \end{align*}
 
 Logo, a complexidade do caso médio é igual a $O(f_{avg}) = O(\frac{n^2 + n}{6}) = O(n^2)$.
@@ -177,7 +181,7 @@ De acordo com o estudo de complexidade , verificou-se que o custo computacional 
 
 Amostragem consiste em utilizar apenas um subconjunto da base completa a ser usada no treinamento do classificador. O objetivo da estratégia não é reduzir a complexidade intríseca das etapas de particionamento e combinação, mas limitar a quantidade de instâncias a serem combinadas amortizando o que seria o tempo total de geração das novas instâncias. A \emph{função \ref{func:amostragem}}) ilustra o processo de amostragem utilizado nesse estudo.
 
-\begin{function}
+\begin{function}[h]
     \Entrada{
         Partições de instâncias $S_{\alpha}$, $S_{\beta}$\;
         Pares por instância $p$\;
@@ -209,7 +213,7 @@ Há uma complementaridade entre as duas estratégias escolhidas para otimizaçã
 
 De posse das informações necessárias para a implantação do \emph{algoritmo AUC-Train (\ref{alg:auc-train})} e de suas otimizações, a etapa de treinamento do \emph{Ranking} está exposta no \emph{algoritmo \ref{alg:treinamento}}.
 
-\begin{algorithm}
+\begin{algorithm}[h]
     \Entrada{
         Partições de instâncias $S_0$, $S_1$\;
         Algoritmo de aprendizagem para classificação $A$\;
@@ -243,18 +247,28 @@ O parâmetro de pares por instância indica a quantidade pares que uma instânci
 O algoritmo \emph{\ref{alg:treinamento}} atende tanto ao propósito do algoritmo \emph{AUC-Train \ref{alg:auc-train}} quanto às otimizações propostas para esse; para tal, manipula-se os parâmetros $n$ e $p$. Para executar o algoritmo original, basta definir $n$ como $1$ e $p$ como $todas$. Para executar o algoritmo com amostragens e votação, basta definir $n$ com um valor maior que $1$ e $p$ com um valor entre $1$ e o número de instâncias da classe minoritária.
 
 
-\section{Avaliação: Estudo de complexidade do algoritmo \emph{Tournament}}
+\section{Ordenação: Estudo de complexidade do algoritmo \emph{Tournament}}
 
-O algoritmo \emph{Tournament (\ref{alg:tournament})} executa em duas
+Após a etapa de treinamento, a técnica de \emph{ranking reduzido a classificação} procede à etapa de ordenação. Nessa etapa, o classificador aprendido na etapa de treinamento é utilizado para ordenar um conjunto de instâncias como descrito no algoritmo \emph{Tournament (\ref{alg:tournament})}.
 
-Para o algoritmo de torneio, o pior caso, o caso médio e o melhor caso apresentam o mesmo tempo de execução, pois é sempre necessário formar todos os pares de instâncias possíveis a fim de obter a ordem de todas as instâncias. Como mostrado no algoritmo \ref{alg:tournament}, a operação de gerar todos os pares aninha dois \emph{loops}o que resulta em um custo de ordem $O(n^2)$, onde $n$ é o tamanho da base a ser ordenada.
+O algoritmo \emph{Tournament (\ref{alg:tournament})} recebe como entrada um classificador $c$ aprendido durante a etapa de treinamento e uma base $B$ composto de $n$ instâncias sem classes assinaladas. Esse algoritmo executa em duas grandes etapas:
+
+\begin{enumerate}
+    \item Obter a pontuação para todas as instâncias na base $B$;
+    \item Ordenar as instâncias na base $B$.
+\end{enumerate}
+
+Partindo dessa divisão, o tempo computacional do algoritmo é a soma dos tempos das etapas de obtenção das pontuações e de ordenação. A etapa de obtenção das pontuações é bem definida no algoritmo \emph{Tournament \ref{alg:tournament}}, enquanto, na etapa de ordenação, qualquer algoritmo de ordenação: \emph{mergesort}, \emph{quicksort}, para citar alguns; pode ser usado.
+
+Para o etapa de obtenção da pontuação, o pior caso, o caso médio e o melhor caso apresentam o mesmo tempo de execução, pois é sempre necessário formar todos os pares de instâncias possíveis. O processo de formação de todos os pares funciona a partir de dois loops aninhados, assim como a \emph{função (\ref{func:combinar})}; isso resulta em um custo de ordem $O(n^2)$.
+
 
 Tanto o algoritmo \emph{AUC-Train} quanto o \emph{Tournament} apresentam tempos elevados de execução. A prática de comparar as instâncias em pares onera tanto os processos de treinamento e de ordenação e, usando bases extensas, o tempo de execução do algoritmo degrada consideravelmente. Essa característica levou à busca de alternativas para tornar ambos treinamento e ordenação mais rápidos.
 
 Duas abordagens foram consideradas para amortizar a complexidade do algoritmo: uma para a fase de treinamento e outra para a fase de geração do \emph{ranking}. Para a fase de classificação, foi pensada uma estratégia de amostragem da base original e votação entre classificadores e para a geração do \emph{ranking}, foi pensada uma estratégia de torneio baseada em \emph{quicksort}.
 
 
-\section{Avaliação: Otimizações e implantação do algoritmo \emph{Tournament}}
+\section{Ordenação: Otimizações e implantação do algoritmo \emph{Tournament}}
 
 A etapa de ordenação original é chamada de \emph{tournament}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
 
@@ -282,8 +296,8 @@ A etapa de ordenação original é chamada de \emph{tournament}. Nessa abordagem
 
     ordenar $B$ com base em $pontos$
 
-    \caption{Avaliação}
-    \label{alg:avaliacao}
+    \caption{Ordenação}
+    \label{alg:ordenacao}
 \end{algorithm}
 
 \begin{function}
