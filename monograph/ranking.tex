@@ -1,6 +1,6 @@
 Como dito anteriormente, a técnica de \emph{ranking reduzido a classificação} aplica uma transformação à base original antes da etapa de treinamento do classificador e modifica a etapa de avaliação a fim de ordenar as instâncias. A transformação da base e o treinamento do classificador compõe um algoritmo de nome \emph{AUC-Train} (algoritmo \ref{alg:auc-train}).
 
-\begin{algorithm}[h]
+\begin{algorithm}[H]
     Let $S' = \{\langle (x_1, x_2), 1(y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S and y_1 \neq y_2\}$\;
     \Return{$c = A(S')$}
     
@@ -35,8 +35,8 @@ Como desejamos ordenar as instâncias de forma que as que tenham maior chance de
 
 Tecnicamente, um embate entre as instâncias $i_\alpha$ e $i_\beta$ consiste em criar uma nova instância com formato $\langle (i_{\alpha}(A), i_{\beta}(A))\rangle$ e submetê-la à classificação; se a classe prevista da nova instância for $1$, $i_{\alpha}$ ganha, se for $0$, $i_{\beta}$ ganha. Nota-se que o formato da instância a ser classificada é o mesmo que o de uma instância usada no treinamento do classificador, exceto pela ausência de classe. O algoritmo \ref{alg:tournament} demonstra o processo de ordenação.
 
-\begin{algorithm}[h]
-    For $x \in U$, let $deg(x) = |\{x':c(x, x') = 1, x' \in U\}|$
+\begin{algorithm}[H]
+    For $x \in U$, let $deg(x) = |\{x':c(x, x') = 1, x' \in U\}|$\;
     Sort U in descending order of deg(x), breaking ties arbitrarily
     
     \caption{Tournament}
@@ -70,7 +70,7 @@ Por se tratar de uma técnica baseada em meta classificação, não é possível
 
 Para o particionamento da base, basta iterar uma vez pela base original incluindo as instâncias de classe $0$ no conjunto $S_0$ e as de classe $1$ no conjunto $S_1$, como mostrado na \emph{função \ref{func:particionar}}. Essa etapa executa sempre em tempo $O(n)$.
 
-\begin{function}[h]
+\begin{function}[H]
     \Entrada{Conjuntos de instâncias $S$}
     \Saida{Partições de instâncias $S_0, S_1$}
 
@@ -92,7 +92,7 @@ Para o particionamento da base, basta iterar uma vez pela base original incluind
 
 Após o particionamento da base, gera-se o conjunto $S'$ a partir das combinações entre as partições $S_0$ e $S_1$. A \emph{função \ref{func:combinar}} é a encarregada de formar novas instâncias a partir da mesclagem das instâncias nas partições $S_0$ e $S_1$. Essa função deve ser executada duas vezes a fim de formar todos os pares.
 
-\begin{function}[h]
+\begin{function}[H]
     \Entrada{
         Conjuntos de instâncias $S_{\alpha}$ e $S_{\beta}$\;
         Função para manipulacão das instâncias $f$
@@ -225,7 +225,7 @@ De posse das informações necessárias para a implantação do \emph{algoritmo 
     $C \gets \emptyset$
 
     \eSe{$i > 1$}{
-        \Para{$i=1 \to n$}{
+        \Para{$i \gets 1; i \to n$}{
             $S' \gets amostragem(S_0, S_1, p, mesclar)$\;
             $S' \gets S' \cup amostragem(S_1, S_0, p, mesclar)$
             $C \gets C \cup \{ A(S') \}$
@@ -258,49 +258,21 @@ O algoritmo \emph{Tournament (\ref{alg:tournament})} recebe como entrada um clas
     \item Ordenar as instâncias na base $B$.
 \end{enumerate}
 
-Partindo dessa divisão, o tempo computacional do algoritmo é a soma dos tempos das etapas de obtenção das pontuações e de ordenação. A etapa de obtenção das pontuações é bem definida no algoritmo \emph{Tournament \ref{alg:tournament}}, enquanto, na etapa de ordenação, qualquer algoritmo de ordenação: \emph{mergesort}, \emph{quicksort}, para citar alguns; pode ser usado.
+Partindo dessa divisão, o tempo computacional do algoritmo é a soma dos tempos das etapas de obtenção das pontuações e de ordenação. A etapa de obtenção das pontuações é bem definida no algoritmo \emph{Tournament \ref{alg:tournament}}, enquanto, na etapa de ordenação, qualquer algoritmo de ordenação pode ser usado: \emph{mergesort}, \emph{quicksort}, para citar alguns.
 
 Para o etapa de obtenção da pontuação, o pior caso, o caso médio e o melhor caso apresentam o mesmo tempo de execução, pois é sempre necessário formar todos os pares de instâncias possíveis. O processo de formação de todos os pares funciona a partir de dois loops aninhados, assim como a \emph{função (\ref{func:combinar})}; isso resulta em um custo de ordem $O(n^2)$.
 
+Como há algoritmos de ordenação com pior tempo de execução da ordem de $O(n^2)$, o gargalo da etapa de ordenação reside na necessidade de se gerar todos os pares a partir das instâncias no conjunto a ser ordenado. Qualquer tentativa de otimização desse processo deve levar em consideração essa observação.
 
-Tanto o algoritmo \emph{AUC-Train} quanto o \emph{Tournament} apresentam tempos elevados de execução. A prática de comparar as instâncias em pares onera tanto os processos de treinamento e de ordenação e, usando bases extensas, o tempo de execução do algoritmo degrada consideravelmente. Essa característica levou à busca de alternativas para tornar ambos treinamento e ordenação mais rápidos.
+Vale destacar que a otimização de votação sugerida para a etapa de treinamento tem extensões na etapa de ordenação. Para que a estratégia de votação funcione, o algoritmo de ordenação precisa utilizar a \emph{função \ref{func:votacao}}. Essa iterará sobre o conjunto de classificadores produzidos na etapa de treinamento determinando a classe majoritária na votação.
 
-Duas abordagens foram consideradas para amortizar a complexidade do algoritmo: uma para a fase de treinamento e outra para a fase de geração do \emph{ranking}. Para a fase de classificação, foi pensada uma estratégia de amostragem da base original e votação entre classificadores e para a geração do \emph{ranking}, foi pensada uma estratégia de torneio baseada em \emph{quicksort}.
-
-
-\section{Ordenação: Otimizações e implantação do algoritmo \emph{Tournament}}
-
-A etapa de ordenação original é chamada de \emph{tournament}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}. A proposta de otimização baseia-se em uma adaptação do algoritmo de quicksort para ordenar as instâncias do \emph{ranking}.
-
-\begin{algorithm}
+\begin{function}[H]
     \Entrada{
         Conjunto de classificadores $C$\;
-        Base com instâncias de classe desconhecida $S$
+        Instância a ser classificada $i$\;
     }
-    \Saida{\emph{Ranking} $O$ da base $B$}
+    \Saida{Previsão da classe de $i$}
 
-    Seja $pontuacao$, um mapeamento das instâncias de $B$ com suas respectivas pontuações
-
-    \ParaTodo{$\alpha \in B$}{
-        \ParaTodo{$\beta \in B \wedge \beta \neq \alpha$}{
-            $i \gets \langle (\alpha(A) \cup \beta(A)) \rangle$\;
-            $classe \gets votacao(C, i)$
-
-            \eSe{$classe = 1$}{
-                $pontuacao[\alpha] \gets pontuacao[\alpha] + 1$
-            }{
-                $pontuacao[\beta] \gets pontuacao[\beta] - 1$
-            }
-        }
-    }
-
-    ordenar $B$ com base em $pontos$
-
-    \caption{Ordenação}
-    \label{alg:ordenacao}
-\end{algorithm}
-
-\begin{function}
     $classe \gets 0$\;
     $zero \gets 0$
 
@@ -321,3 +293,100 @@ A etapa de ordenação original é chamada de \emph{tournament}. Nessa abordagem
     \caption{votacao(C, i)}
     \label{func:votacao}
 \end{function}
+
+De acordo com o exposto até agora sobre a etapa de ordenação, essa pode ser descrito como no algoritmo \ref{alg:ordenacao}. Por causa especificações, o algoritmo de ordenação é mais monolítico que o algoritmo de treinamento, que pode ser dividido em funções menores.
+
+\begin{algorithm}
+    \Entrada{
+        Conjunto de classificadores $C$\;
+        Base com instâncias de classe desconhecida $S$\;
+        Mapeamento das instâncias de $B$ com suas pontuações $pontuacao$
+    }
+    \Saida{\emph{Ranking} da base $B$}
+
+    \ParaTodo{$\alpha \in B$}{
+        \ParaTodo{$\beta \in B \wedge \beta \neq \alpha$}{
+            $i \gets \langle (\alpha(A) \cup \beta(A)) \rangle$\;
+            $classe \gets votacao(C, i)$
+
+            \eSe{$classe = 1$}{
+                $pontuacao[\alpha] \gets pontuacao[\alpha] + 1$
+            }{
+                $pontuacao[\beta] \gets pontuacao[\beta] - 1$
+            }
+        }
+    }
+
+    ordenar $B$ com base em $pontuacao$
+
+    \caption{Ordenação}
+    \label{alg:ordenacao}
+\end{algorithm}
+
+Pelo menos uma otimização poderia ser aplicada ao algortimo \ref{alg:ordenacao}: os pares $\alpha || \beta$ e $\beta || \alpha$ poderiam ser formados no mesmo loop. Isso reduziria a quantidade de repetições pela metade. Apesar disso, a complexidade do algoritmo continuaria a mesma. O algortimo implantado na ferramenta \emph{WEKA} possui essa otimização.
+
+
+\section{Ordenação: Otimizações e implantação do algoritmo \emph{Tournament}}
+
+A etapa de ordenação original é chamada de \emph{tournament}. Nessa abordagem, todas as instâncias do conjunto a ser ordenado são comparadas entre si com base no classificador obtido no treinamento e recebem uma pontuação. As instâncias de maior pontuação assumem as primeiras posições no \emph{ranking}.
+
+Como visto na seção anterior, o custo computacional da etapa de ordenação é composto pelas somas dos custos da obtenção das pontuações e da ordenação. A maior parte do custo é devida ao processo de obtenção das pontuações, de complexidade $O(n^2)$. E com as pontuações obtidas, ainda é executado um algoritmo de ordenação.
+
+Uma otimização possível, segundo \cite{ailon08}, é utilizar o classificador treinado como uma relação de ordem a fim de definir uma precedência entre as instâncias. Assim seria possível utilizar o classificador diretamente no algoritmo de ordenação em vez de coletar a pontuação de todas as instâncias.
+
+Essa otimização eliminaria a necessidade da etapa de pontuação. O artigo sugere que o classificador seja usado em conjunto com o algoritmo de \emph{quicksort} como uma operação de comparação entre duas instâncias. Essa operação ocorre no momento do particionamento do conjunto, onde ocorre o reposicionamento do elemento pivot.
+
+Dessa forma, o algoritmo de ordenação passaria a herdar a complexidade do método de ordenação quicksort. Isso significa que ainda teria complexidade de pior caso $O(n^2)$, mas no caso médio a complexidade cairia para $O(n \cdot \log{n})$.
+
+Ainda segundo \ref{ailon08}, a consequência dessa otimização é tornar viável o uso da técnica de \emph{ranking reduzido a classificação} em sistemas comerciais, tais como: motores de busca e sistemas de recomendações.
+
+Embora a ordenação por quicksort tenha sido implantada na solução para o \emph{framework WEKA}, não houve nenhuma avaliação empírica dessa estratégia, como será visto no próximo capítulo.
+
+% Tal implantação está explicada no algoritmo \ref{alg:quicksort}. O algoritmo assume que as instâncias na base podem ser acessadas através de sua posição.
+
+% \begin{algorithm}
+%     \Entrada{Base a ser ordenada $B$}
+%     \Saida{Base ordenada $B$}
+% 
+%     $esquerda \gets 0$\;
+%     $direita \gets |B| - 1$
+% 
+%     \Se{$esquerda < direita$}{
+%         $indicePivot \gets escolherPivot(B)$\;
+%         $novoIndicePivot \gets particionarQuicksort(B, esquerda, direita, indicePivot)$\;
+%         $quicksort(B, esquerda, novoIndicePivot - 1)$\;
+%         $quicksort(B, novoIndicePivot + 1, direita)$
+%     }
+% 
+%     \caption{Quicksort}
+%     \label{alg:quicksort}
+% \end{algorithm}
+% 
+% \begin{function}
+%     \Entrada{
+%         Base a ser particionada $B$\;
+%         Limites de particionamento $esquerda$ e $direita$\;
+%         Indice do elemento pivot $indicePivot$
+%     }
+%     \Saida{Novo índice do elemento pivot $novoIndicePivot$}
+% 
+%     $instanciaPivot \gets B[indicePivot]$\;
+%     $trocar(B[indicePivot], B[direita])$\;
+%     $novoIndicePivot \gets esquerda$\;
+%     
+%     \Para{$i \gets esquerda; i \to direita - 1$}{
+%         $instancia \gets B[i]$\;
+%         $par \gets instanciaPivot || instancia$
+%         \Se{$votacao(par) = 1$}{
+%             $trocar(B[i], B[novoIndicePivot])$\;
+%             $novoIndicePivot \gets novoIndicePivot + 1$
+%         }
+%     }
+% 
+%     $trocar(B[direita], B[novoIndicePivot])$\;
+%     
+%     \Retorna{$novoIndicePivot$}
+% 
+%     \caption{particionarQuicksort($B, esquerda, direita, indicePivot$)}
+%     \label{func:particionar-quicksort}
+% \end{function}
