@@ -6,15 +6,15 @@ Todos os \emph{rankings} citados são ordenados de acordo com um critério. Por 
 
 A pontuação total de uma seleção em um período de quatro anos é definida por meio da soma da média de pontos ganhos em partidas disputados nos 12 últimos meses e da média de pontos ganhos em partidas que ocorreram há mais de 12 meses, a qual se deprecia anualmente. Há uma fórmula matemática para definir a pontuação de uma equipe em uma partida.
 
-Podemos afirmar que as fórmulas utilizadas pela FIFA para definir as pontuações das seleções constituem um modelo que determina uma ordem parcial do conjunto de seleções FIFA. Dizer que o as fórmulas utilizadas pela FIFA constituem um modelo caracteriza a tarefa de ordenação das seleções FIFA como computável, ou seja, o modelo pode ser escrito em forma de algoritmo e avaliado, junto aos dados necessários, por um computador.
+Podemos afirmar que as fórmulas utilizadas pela FIFA para definir as pontuações das seleções constituem um modelo que determina uma ordem parcial do conjunto de seleções FIFA. Dizer que as fórmulas utilizadas pela FIFA constituem um modelo caracteriza a tarefa de ordenação das seleções FIFA como computável, ou seja, o modelo pode ser escrito em forma de algoritmo e avaliado, junto aos dados necessários, por um computador.
 
-Outra característica do modelo FIFA é que ele foi definido por funcionários da instituição, ou seja, o modelo é fruto do intelecto humano. Apesar disso, seria possível a aprendizagem automática de um modelo que ordenasse o conjunto de seleções vinculadas à FIFA.
+Outra característica do modelo FIFA é que ele foi definido por funcionários da instituição, ou seja, o modelo é fruto do intelecto humano. Apesar disso, seria possível o aprendizado automático de um modelo que ordenasse o conjunto de seleções vinculadas à FIFA.
 
-As características de computabilidade e possibilidade de aprendizagem automática, observadas no exemplo do \emph{ranking} da FIFA, podem ser encontradas em diversos outros tipos de ordenações.
+As características de computabilidade e possibilidade de aprendizado automático, observadas no exemplo do \emph{ranking} da FIFA, podem ser encontradas em diversos outros tipos de ordenações.
 
 Talvez não haja muita valia em automatizar o aprendizado de um modelo para ordenar as seleções vinculadas à FIFA; o modelo definido pela FIFA já é bastante adequado. Porém, para uma grande quantidade de aplicações, aprender modelos que ordenem uma base de dados pode ser útil, ajudando a lidar com problemas como quantidade de dados e variáveis a serem consideradas.
 
-Um problema beneficiado pela aprendizagem de um modelo de ordenação seria: Dado um conjunto de documentos em que cada documento pode receber um rótulo, atribuir uma posicao a cada documento do conjunto, tendo como insumo pares documento-rótulo ou uma relação de ordem total ou parcial entre os documentos.
+Um problema beneficiado pelo aprendizado de um modelo de ordenação seria: Dado um conjunto de documentos em que cada documento pode receber um rótulo, atribuir uma posicao a cada documento do conjunto, tendo como insumo pares documento-rótulo ou uma relação de ordem total ou parcial entre os documentos.
 
 O problema de ordenação de documentos é um dos problemas de interesse de uma área  conhecida como \emph{Learning to Rank} que tem atraído a atenção de muitos pesquisadores nos últimos anos. Já conta com sites especializados no assunto\footnote{http://research.microsoft.com/en-us/um/beijing/projects/letor/}, competições\footnote{http://learningtorankchallenge.yahoo.com/} além do apoio das gigantes de TI.
 
@@ -22,8 +22,6 @@ Essa área de pesquisa está inserida no contexto de \emph{inteligência artific
 
 Estudaremos a implantação e avaliação de uma técnica de aprendizado para ordenação de um conjunto no qual os elementos são passíveis de rotulação. Tal técnica reduz o problema de ordenação a uma problema de classificação de acordo com o descrito em \cite{langford08}.
 
-Essa técnica, que havia sido especificada apenas teoricamente, foi implantada, avaliada e comparada com outras técnicas. Essa é a  principal contribuição desse estudo.
-
-Para a implantação do algoritmo de \emph{ranking} foi escolhida a ferramenta \emph{WEKA}\footnote{http://www.cs.waikato.ac.nz/ml/weka/}, descrita no livro \cite{wekabook}. Essa ferramenta fornece vários recursos para \emph{aprendizado de máquina}.
+A principal contribuição desse estudo é a implantação, avaliação e comparação da técnica, uma vez que a técnica havia sido especificada apenas teoricamente. Para a implantação do algoritmo de \emph{ranking} foi escolhida o  \emph{workbench WEKA}\footnote{http://www.cs.waikato.ac.nz/ml/weka/}, descrito no livro \cite{wekabook}. \emph{WEKA} fornece vários recursos para \emph{aprendizado de máquina}.
 
 O restante dessa monografia está organizado da seguinte forma: O capítulo \ref{chap:nocoes_preliminares} faz uma introdução aos conceitos necessários para o entendimento do algoritmo \emph{Ranking}; o capítulo \ref{chap:implantacao} mostra os problemas e soluções que derivaram da implantação do \emph{Ranking}; o capítulo \ref{chap:avaliacao} descreve a estrategia usada para avaliar o algoritmo e os resultados obtidos; e o capítulo \ref{chap:conclusao} apresenta as principais descobertas obtidas nesse estudo.
