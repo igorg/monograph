@@ -12,15 +12,15 @@ Substituindo-se a palavra rótulo pela palavra classe no enunciado acima, perceb
 
 Um algoritmo de aprendizado para classificação recebe como entrada um conjunto em que cada elemento possui uma classe assinalada e, partindo dessa entrada, deve aprender um classificador capaz atribuir uma classe a qualquer elemento. A etapa em que o aprendizado ocorre é chamada de treinamento.
 
-O treinamento de um classificador é um aprendizado supervisionado, pois cada elemento submetido à etapa de treinamento está vinculado à sua classe verdadeira. Dessa forma, pode-se medir a qualidade do classificador aprendido usando elementos com classes conhecidas, porém suprimindo-as quando forem os elementos forem submetidos a classificação.
+O treinamento de um classificador é um aprendizado supervisionado, pois cada elemento submetido à etapa de treinamento está vinculado à sua classe verdadeira. Dessa forma, pode-se medir a qualidade do classificador aprendido usando elementos com classes conhecidas, porém suprimindo-as quando os elementos forem submetidos a classificação.
 
-O produto da classificação de um elemento é a previsão da classe à qual aquele elemento pertence. Essa previsão é composta pelo valor da classe e pela probabilidade do elemento pertencer à classe prevista. Nesso caso, por se tratar de um problema de classificação binária, se a chance de um elemento pertencer à classe $0$ é $p$, a chance dele pertencer à classe $1$ é $1 - p$.
+O produto da classificação de um elemento é uma previsão do valor da classe à qual aquele elemento pertence. Sobre a previsão é possível obter uma quantidade de certeza, ou probabilidade, do elemento pertencer à classe prevista. Nesso caso, por se tratar de um problema de classificação binária, se a probabilidade de um elemento pertencer à classe $0$ é $p$, então a probabilidade dele pertencer à classe $1$ é $1 - p$.
 
-Supondo que se submeta um conjunto a um classificador, de posse das previsões feitas para todas os elementos do conjunto, é possível ordenar tais elementos, de forma decrescente, de acordo com a probabilidade de cada instância pertencer à classe $0$. De fato, essa é uma possível solução para o problema de ordenação.
+Uma solução trivial para o problema de ordenação é utilizar a probabilidade das previsões de um classificador como uma relação de ordem no conjunto a ser ordenado. De posse da previsão das classes dos elementos de um dado conjunto, basta ordena-los de forma crescente em função da probabilidade de cada um pertencer à classe $0$; os mais prováveis ocupam o topo, os menos prováveis ocupam o fundo.
 
 Segundo \cite{langford08}, esse método para ordenação dos elementos pode resultar em um erro teórico máximo muito alto, dependendo da performance do classificador. A técnica de \emph{ranking reduzido a classificação}, proposta no mesmo artigo, reduz o erro teórico máximo envolvendo o treinamento do classificador com uma etapa de pré-processamento e a avaliação com uma etapa de pós-processamento.
 
-Na técnica de \emph{ranking reduzido a classificação}, o treinamento do classificador binário ocorre após uma etapa inicial em que se aplica uma transformação nos exemplos da base de treinamento. Após o treinamento, a definição da ordem das instâncias na base de avaliação é feita por um algoritmo chamado \emph{torneio}, que usa as previsões do classificador treinado.
+Na técnica de \emph{ranking reduzido a classificação}, o treinamento do classificador ocorre pelo algoritmo \emph{AUC-Train} após uma etapa inicial em que se aplica uma transformação nos exemplos da base de treinamento. Após o treinamento, a definição da ordem das instâncias na base de avaliação é feita pelo algoritmo \emph{tournament}, torneio em português; que usa as previsões do classificador treinado para tal.
 
 \section{Definições}
 
@@ -30,11 +30,15 @@ Como dito anteriormente, o treinamento e avaliação de um classificador é um p
     \item Uma base $B$ é um conjunto de instâncias com cardinalidade $n$.
     \[B = \{i_1, ..., i_n\} \qquad |B| = n\]
 
-    \item Uma instância $I$ é uma tupla $A, C$ na qual $A$ é um conjunto de atributos com cardinalidade $m$ e $C$ é a classe da instância e pode valer $0$ ou $1$.
+    \item Uma instância $I$ é uma tupla $\langle A, C \rangle$ na qual $A$ é um vetor de atributos com cardinalidade $m$ e $C$ é a classe da instância e pode valer $0$ ou $1$.
     \[I = (A, C) \qquad A = \{a_1, ..., a_m\} \qquad C = x \; | \; x \in \{0, 1\}\]
 \end{itemize}
 
+Pode-se acessar os atributos de uma instância $I$ através de $I(A)$ e a classe através de $I(C)$. Nos algortimos do próximo capítulo, quando duas instâncias forem combinadas, os vetores de atributos serão concatenados, isso é feito através do operador binário de concatenação $||$.
+
 Não será necessária a definição do conceito de atributo. Uma vez que os atributos são manipulados pelo classificador e o funcionamento dos classificadores nas soluções aqui propostas é uma caixa preta, os atributos são transparentes para os propósitos desse trabalho.
+
+A tabela \ref{tab:weather} aprensenta um exemplo de base extraido do livro \cite{wekabook}. Essa base indica se há condições para a prática de um esporte de acordo com medições meteorológicas. Um exemplo dessa base apresenta um conjunto de medições meteorológicas e, de acordo com essas medições, a classe do exemplo pode ser \emph{sim} ou \emph{não}.
 
 \begin{table}[h!]
     \centering
@@ -59,15 +63,14 @@ Não será necessária a definição do conceito de atributo. Uma vez que os atr
         \hline
     \end{tabular}
 
-    \label{tbl:weather_data}
-    \caption{Base de dados de tempo}
+    \caption{Base de dados de tempo. \label{tab:weather}}
 \end{table}
 
-A tabela \ref{tbl:weather_data} aprensenta um exemplo de base extraido do livro \cite{wekabook}. Essa base indica se há condições para a prática de um esporte de acordo com medições meteorológicas. Um exemplo dessa base apresenta um conjunto de medições meteorológicas e, de acordo com essas medições, a classe do exemplo pode ser \emph{sim} ou \emph{não}.
 
-Nessa tabela, a primeira linha nomeia os quatro atributos da base e a classe (adequado para jogo), as linhas seguintes representam as instâncias da base. Nota-se que a classe recebe valores \emph{sim} e \emph{não}, apesar de serem valores diferentes de $0$ e $1$, como dito na definição, ainda se trata de uma base com classe binária.
+A primeira linha nomeia os quatro atributos da base e a classe (adequado para jogo), as linhas seguintes representam as instâncias da base. Nota-se que a classe recebe valores \emph{sim} e \emph{não}, apesar de serem valores diferentes de $0$ e $1$, como dito na definição, ainda se trata de uma base com classe binária.
 
-Escrevendo a primeira instância da base na notação definida acima, tem-se: ({ensolarado, quente, alta, falso}, não). O primeiro elemento da tupla é o conjunto de atributos e o segundo elemento é a classe da instância.
+Escrevendo a primeira instância da base na notação definida acima, tem-se: ((ensolarado, quente, alta, falso), não). O primeiro elemento da tupla é o vetor de atributos e o segundo elemento é a classe da instância.
+
 
 \section{Medidas de desempenho}
 
@@ -77,11 +80,15 @@ O erro decorrente de uma classificação afeta a acurácia de maneira linear. Co
 
 Uma medida comum de avaliação para algoritmos de \emph{ranking} é a área sobre a curva \emph{ROC (Receiver Operating Characteristic)}, comumente chamada de \emph{AUC (Area Under the Curve)}.
 
-A perda, $1 - AUC$, associada a essa medida é calculada pelo número de instâncias, normalizado pela quantidade de $0$s vezes a quantidade de $1$s, que necessitam ser trocadas para um \emph{ranking} perfeito.
+A perda, $1 - AUC$, associada a essa medida é calculada pelo número de instâncias, normalizado pela quantidade de $0$s vezes a quantidade de $1$s, que necessitam ser trocadas para um \emph{ranking} perfeito, como ilustra a fórmula abaixo:
 
-Uma ordenação é perfeita, quando todas as instâncias com classe $0$ precedem as com classe $1$, nesse caso a perda na \emph{AUC} é $0$. No pior caso, em que todos os $1$s precedem os $0$s, a perda na \emph{AUC} é $1$.
+\[
+A
+\]
 
-Comparativamente, um erro de classificação pode ter maior influência na medida \emph{AUC} que na acurácia afetando consideravelmente um \emph{ranking}, mas não a classificação. A causa disso é a \emph{AUC} considerar a relação entre as instâncias ordenadas, enquanto a acurácia considera apenas erros e acertos pontualmente. Abaixo ilustramos através de um exemplo uma relação entre essas medidas que comprova o intuído sobre erros na classificação.
+Uma ordenação é perfeita quando todas as instâncias com classe $0$ precedem as com classe $1$, nesse caso a perda na \emph{AUC} é $0$. No pior caso, em que todos os $1$s precedem os $0$s, a perda na \emph{AUC} é $1$.
+
+Comparativamente, um erro de classificação pode ter maior influência na medida \emph{AUC} que na acurácia afetando consideravelmente um \emph{ranking}, mas não a classificação. A causa disso é a \emph{AUC} considerar a relação entre as instâncias ordenadas, enquanto a acurácia considera apenas erros e acertos pontualmente. Abaixo ilustramos, através de um exemplo, uma relação entre essas medidas que comprova o intuído sobre erros na classificação.
 
 \begin{table}[h!]
     \centering
@@ -106,15 +113,13 @@ Comparativamente, um erro de classificação pode ter maior influência na medid
         \hline
     \end{tabular}
 
-    \caption{Exemplo de \emph{ranking} e classificação na base weather}
+    \caption{Exemplo de \emph{ranking} e classificação na base weather.\label{tab:exemplo}}
 \end{table}
 
-No exemplo acima, temos quatorze instâncias ordenadas em um \emph{ranking} com os atributos, as classes e as previsões dadas por um classificador. Podemos perceber que o classificador errou apenas a classe da primeira instância.
+Na tabela \ref{tab:exemplo}, temos quatorze instâncias ordenadas em um \emph{ranking} com os atributos, as classes e as previsões dadas por um classificador. Podemos perceber que o classificador errou apenas a classe da primeira instância. Calculando a acurácia, temos treze acertos em quatorze possíveis, o que equivale a aproximadamente $93\%$ de acerto.
 
-Calculando a acurácia, temos treze acertos em quatorze possíveis, o que equivale a aproximadamente $93\%$ de acerto.
+Calculando a perda da AUC considerando como base a classe \emph{sim}, a primeira instância precisa retroceder nove posições para uma ordenação perfeita, normalizando pelo número de \emph{não}s vezes o número de \emph{sim}s, temos $(1 - AUC) = 9 \div (5 * 9) = 0,2$, logo a AUC vale $80\%$. Esse exemplo comprova que a AUC pode sofrer um impacto maior devido a erros de classificação se comparada à acurácia.
 
-Calculando a perda da AUC considerando como base a classe \emph{sim}, a primeira instância precisa retroceder nove posições para uma ordenação perfeita, normalizando pelo número de \emph{não}s vezes o número de \emph{sim}s, temos $(1 - AUC) = 9 \div (5 * 9) = 0,2$, logo a AUC vale $80\%$. Esse exemplo comprova que a AUC sofre um impacto maior devido a erros de classificação se comparada à acurácia.
-
-De acordo com \cite{langford08}, um classificador que gere um erro de ordem $\alpha$ na acurácia pode gerar um erro teórico máximo de $\alpha \cdot n$ na AUC, onde $n$ é a cardinalidade do conjunto de instâncias avaliado. Enquanto para o mesmo classificador, a técnica de \emph{ranking reduzido a classificação} apresenta um erro teórico máximo de $\alpha \cdot 2$.
+De acordo com \cite{langford08}, se um classificador gera um erro de ordem $\alpha$ na acurácia, ao ordenar uma base a partir das probabilidades das previsões desse classificador, o erro teórico máximo na AUC será de $\alpha \cdot n$, onde $n$ é a cardinalidade da base avaliada. Enquanto para o mesmo classificador, a técnica de \emph{ranking reduzido a classificação} apresenta um erro teórico máximo de $\alpha \cdot 2$.
 
 O erro na AUC se intensifica a medida que o desbalanceamento de classes do conjunto usado no treinamento aumenta pois, quanto mais desbalanceadas as classes, mais provável que o classificador resultante seja tendencioso para a classe majoritária.
