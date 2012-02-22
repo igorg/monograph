@@ -80,11 +80,13 @@ O erro decorrente de uma classificação afeta a acurácia de maneira linear. Co
 
 Uma medida comum de avaliação para algoritmos de \emph{ranking} é a área sobre a curva \emph{ROC (Receiver Operating Characteristic)}, comumente chamada de \emph{AUC (Area Under the Curve)}.
 
-A perda, $1 - AUC$, associada a essa medida é calculada pelo número de instâncias, normalizado pela quantidade de $0$s vezes a quantidade de $1$s, que necessitam ser trocadas para um \emph{ranking} perfeito, como ilustra a fórmula abaixo:
+A perda, $1 - AUC$, associada a essa medida é calculada pelo número de instâncias, normalizado pela quantidade de $0$s vezes a quantidade de $1$s, que necessitam ser trocadas para um \emph{ranking} perfeito.
 
-\[
-A
-\]
+% , como ilustra a fórmula abaixo:
+% 
+% \[
+% A
+% \]
 
 Uma ordenação é perfeita quando todas as instâncias com classe $0$ precedem as com classe $1$, nesse caso a perda na \emph{AUC} é $0$. No pior caso, em que todos os $1$s precedem os $0$s, a perda na \emph{AUC} é $1$.
 
