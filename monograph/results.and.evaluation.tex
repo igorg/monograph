@@ -1,12 +1,14 @@
-De acordo com o artigo {{Langford}}, o algoritmo de Ranking proposto tem um desempenho melhor quando aplicado sobre bases com alto desbalanceamento entre as classes. Partindo desse princípio, foi montada uma estratégia de testes com cinco bases de dados com diferentes níveis de desbalanceamento. Tais bases podem ser encontradas no repositório da University of California, Irvine (UCI) em \emph{http://archive.ics.uci.edu/ml/}.
+De acordo com o artigo \cite{Langford08} e como dito no capítulo 2, um classificador que apresente um erro $\alpha$ na acurácia, pode apresentar um erro teórico máximo de $\alpha \cdot n$, onde $n$ é a cardinalidade da base a ser ordenada. A técnica de \emph{ranking reduzido a classificação} diminui esse limite para $\alpha * 2$ usando o mesmo classificador com erro $\alpha$ na acurácia.
+
+Quanto maior o desbalanceamento entre as classes da base a ser ordenada, maior a chance de intensificação do erro na ordenação. Partindo desse princípio, foi montada uma estratégia de testes com cinco bases de dados com diferentes níveis de desbalanceamento. Tais bases podem ser encontradas no repositório da University of California, Irvine (UCI)\footnote{http://archive.ics.uci.edu/ml/}.
 
 \section{Características das bases}
 
 As bases usadas foram as seguintes: Breast Cancer; Statlog (Vehicle Silhouettes), chamada de Vehicle; Hepatitis; Glass Identification, chamada de Glass e Yeast. Como o algoritmo proposto em {{langford}} tem um custo computacional alto, $O(n^2)$ para treinamento e $O(n^2)$ para gerar o ranking; isso aliado ao baixo controle sobre o ambiente de execução culminou na escolha de bases pequenas para avaliação do experimento.
 
-As bases Vehicle, Glass e Yeast tratam, originalmente, de problemas multi classe. A essas bases foram aplicadas transformações a fim de torná-las problemas de classe binária. Para as bases Vehicle e Glass, foram unidas todas as classes, exceto a minoritária, em uma nova classe. Para a base Yeast, apenas as classes de valor 'CYT' ou 'POX' foram consideradas.
+As bases Vehicle, Glass e Yeast tratam, originalmente, de problemas multi classe. A essas bases foram aplicadas transformações, descritas em \cite{guo04}, a fim de torná-las problemas de classe binária. Para as bases Vehicle e Glass, foram unidas todas as classes, exceto a minoritária, em uma nova classe. Para a base Yeast, apenas as classes de valor 'CYT' ou 'POX' foram consideradas.
 
-Cada base utilizada apresenta diferentes características como: desbalanceamento entre as classes, número de atributos, número de instâncias, entre outros. A tabela \ref{datasets_characteristics} mostra um resumo sobre as características das bases.
+Cada base utilizada apresenta diferenças em: desbalanceamento entre as classes, número de atributos, número de instâncias, entre outros. A tabela \ref{tbl:caracteristicas} mostra um resumo sobre as características das bases.
 
 \begin{table}[h]
 
@@ -23,23 +25,21 @@ Cada base utilizada apresenta diferentes características como: desbalanceamento
         \hline
     \end{tabular}
 
-    \caption{Dados sobre as bases usadas para \emph{ranking}}
-    \label{datasets_characteristics}
-
+    \caption{Dados sobre as bases usadas para \emph{ranking}. \label{tbl:caracteristicas}}
 \end{table}
 
 \section{Execução e Avaliação do Algoritmo}
 
-Foram escolhidos quatro classificadores base para avaliar o algoritmo: J48, Naïve Bayes, Logistic e SMO. O motivo da escolha desses classificadores é o reconhecimento de tais como padrões em suas famílias, J48 para árvores (implanta a árvore de decisão C4.5), Naïve Bayes para estatísticos, Logistic (implanta curva logística) e SMO (implanta Support Vector Machine) para classificadores baseados em funções.
+Foram escolhidos quatro classificadores base para avaliar o algoritmo: J48, Naïve Bayes, Logistic e SMO. O motivo da escolha desses classificadores é o reconhecimento de tais como padrões em suas famílias, J48 para árvores de decisão (implanta a árvore de decisão C4.5), Naïve Bayes para estatísticos, Logistic (implanta curva logística) e SMO (implanta Support Vector Machine) para classificadores baseados em funções.
 
 Para cada classificador base houve quatro baterias de execução com diferentes configurações:
 
 \begin{enumerate}
 
     \item Somente o classificador;
-    \item O classificador como base para o algoritmo de \emph{ranking} original;
-    \item O classificador como base para o algoritmo de ranking com configurações de 1 par por instância e 10 classificadores na votação;
-    \item O classificador como base para o algoritmo de ranking com configurações de 10 pares por instância e 1 classificador na votação.
+    \item O classificador como base para a técnica de \emph{ranking reduzido a classificação} original;
+    \item O classificador como base para o algoritmo de ranking com configurações de 1 par por instância e variando o número de classificadores na votação entre 1 e 20;
+    \item O classificador como base para o algoritmo de ranking com configurações de 1 classificador na votação e variando o número de pares por instância entre 1 e 20.
 
 \end{enumerate}
 
@@ -47,11 +47,13 @@ Nas três baterias que envolveram o algoritmo de \emph{ranking}, o método de or
 
 Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref{logistic_results_table} e \ref{smo_results_table}; o símbolo \textbf{*} significa ranking aplicado com 1 par por instância e 10 classificadores na votação. O símbolo \textbf{**} significa ranking aplicado com 10 pares por instância e 1 classificador na votação.
 
+\clearpage
+\pagebreak
 
 \subsection{Desempenho para \emph{C4.5} (trees.J48)}
 
 
-\begin{table}[h]
+\begin{table}[h!]
     \begin{tabular}{ c c c c c }
         \hline
     
@@ -73,37 +75,41 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
     \label{j48_results_table}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \subfloat[Breast cancer]{
         \label{fig:breast-cancer_j48}
-        \includegraphics[width=0.5\textwidth]{img/breast-cancer_j48.eps}
+        \includegraphics[width=0.42\textwidth]{img/breast-cancer_j48.eps}
     }
     \subfloat[Glass]{
         \label{fig:glass_j48}
-        \includegraphics[width=0.5\textwidth]{img/glass_j48.eps}
+        \includegraphics[width=0.42\textwidth]{img/glass_j48.eps}
     }
 
     \subfloat[Hepatitis]{
         \label{fig:hepatitis_j48}
-        \includegraphics[width=0.5\textwidth]{img/hepatitis_j48.eps}
+        \includegraphics[width=0.42\textwidth]{img/hepatitis_j48.eps}
     }    
     \subfloat[Vehicle]{
         \label{fig:vehicle_j48}
-        \includegraphics[width=0.5\textwidth]{img/vehicle_j48.eps}
+        \includegraphics[width=0.42\textwidth]{img/vehicle_j48.eps}
     }
-    
+
     \subfloat[Yeast]{
         \label{fig:yeast_j48}
-        \includegraphics[width=0.5\textwidth]{img/yeast_j48.eps}
+        \includegraphics[width=0.42\textwidth]{img/yeast_j48.eps}
     }
 
     \caption{Gráficos de desempenho para árvore de decisão C4.5}
 \end{figure}
 
+\clearpage
+\pagebreak
+
+
 \subsection{Desempenho para \emph{Naïve Bayes} (bayes.NaiveBayes)}
 
-\begin{table}[h]
+\begin{table}[h!]
     \begin{tabular}{ c c c c c }
         \hline
 
@@ -125,37 +131,41 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
     \label{nb_results_table}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \subfloat[Breast cancer]{
         \label{fig:breast-cancer_naive-bayes}
-        \includegraphics[width=0.5\textwidth]{img/breast-cancer_naive-bayes.eps}
+        \includegraphics[width=0.42\textwidth]{img/breast-cancer_naive-bayes.eps}
     }
     \subfloat[Glass]{
         \label{fig:glass_naive-bayes}
-        \includegraphics[width=0.5\textwidth]{img/glass_naive-bayes.eps}
+        \includegraphics[width=0.42\textwidth]{img/glass_naive-bayes.eps}
     }
 
     \subfloat[Hepatitis]{
         \label{fig:hepatitis_naive-bayes}
-        \includegraphics[width=0.5\textwidth]{img/hepatitis_naive-bayes.eps}
+        \includegraphics[width=0.42\textwidth]{img/hepatitis_naive-bayes.eps}
     }    
     \subfloat[Vehicle]{
         \label{fig:vehicle_naive-bayes}
-        \includegraphics[width=0.5\textwidth]{img/vehicle_naive-bayes.eps}
+        \includegraphics[width=0.42\textwidth]{img/vehicle_naive-bayes.eps}
     }
-    
+
     \subfloat[Yeast]{
         \label{fig:yeast_naive-bayes}
-        \includegraphics[width=0.5\textwidth]{img/yeast_naive-bayes.eps}
+        \includegraphics[width=0.42\textwidth]{img/yeast_naive-bayes.eps}
     }
 
     \caption{Gráficos de desempenho para Naïve Bayes}
 \end{figure}
 
+\clearpage
+\pagebreak
+
+
 \subsection{Desempenho para a \emph{Curva Logística} (functions.Logistic)}
 
-\begin{table}[h]
+\begin{table}[h!]
     \begin{tabular}{ c c c c c }
         \hline
 
@@ -177,37 +187,41 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
     \label{logistic_results_table}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \subfloat[Breast cancer]{
         \label{fig:breast-cancer_logistic}
-        \includegraphics[width=0.5\textwidth]{img/breast-cancer_logistic.eps}
+        \includegraphics[width=0.42\textwidth]{img/breast-cancer_logistic.eps}
     }
     \subfloat[Glass]{
         \label{fig:glass_logistic}
-        \includegraphics[width=0.5\textwidth]{img/glass_logistic.eps}
+        \includegraphics[width=0.42\textwidth]{img/glass_logistic.eps}
     }
 
     \subfloat[Hepatitis]{
         \label{fig:hepatitis_logistic}
-        \includegraphics[width=0.5\textwidth]{img/hepatitis_logistic.eps}
+        \includegraphics[width=0.42\textwidth]{img/hepatitis_logistic.eps}
     }    
     \subfloat[Vehicle]{
         \label{fig:vehicle_logistic}
-        \includegraphics[width=0.5\textwidth]{img/vehicle_logistic.eps}
+        \includegraphics[width=0.42\textwidth]{img/vehicle_logistic.eps}
     }
-    
+
     \subfloat[Yeast]{
         \label{fig:yeast_logistic}
-        \includegraphics[width=0.5\textwidth]{img/yeast_logistic.eps}
+        \includegraphics[width=0.42\textwidth]{img/yeast_logistic.eps}
     }
 
     \caption{Gráficos de desempenho para Curva Logística}
 \end{figure}
 
+\clearpage
+\pagebreak
+
+
 \subsection{Desempenho para \emph{Support Vector Machine} (functions.SMO)}
 
-\begin{table}[h]
+\begin{table}[h!]
     \begin{tabular}{ c c c c c }
         \hline
 
@@ -225,34 +239,34 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
         \hline
     \end{tabular}
     
-    \caption{Desempenho para SMO}
+    \caption{Desempenho para Support Vector Machine}
     \label{smo_results_table}
 \end{table}
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \subfloat[Breast cancer]{
         \label{fig:breast-cancer_smo}
-        \includegraphics[width=0.5\textwidth]{img/breast-cancer_smo.eps}
+        \includegraphics[width=0.42\textwidth]{img/breast-cancer_smo.eps}
     }
     \subfloat[Glass]{
         \label{fig:glass_smo}
-        \includegraphics[width=0.5\textwidth]{img/glass_smo.eps}
+        \includegraphics[width=0.42\textwidth]{img/glass_smo.eps}
     }
 
     \subfloat[Hepatitis]{
         \label{fig:hepatitis_smo}
-        \includegraphics[width=0.5\textwidth]{img/hepatitis_smo.eps}
+        \includegraphics[width=0.42\textwidth]{img/hepatitis_smo.eps}
     }    
     \subfloat[Vehicle]{
         \label{fig:vehicle_smo}
-        \includegraphics[width=0.5\textwidth]{img/vehicle_smo.eps}
-    }
-    
-    \subfloat[Yeast]{
-        \label{fig:yeast_smo}
-        \includegraphics[width=0.5\textwidth]{img/yeast_smo.eps}
+        \includegraphics[width=0.42\textwidth]{img/vehicle_smo.eps}
     }
 
-    \caption{Gráficos de desempenho para Curva Logística}
+    \subfloat[Yeast]{
+        \label{fig:yeast_smo}
+        \includegraphics[width=0.42\textwidth]{img/yeast_smo.eps}
+    }
+
+    \caption{Gráficos de desempenho para Support Vector Machine}
 \end{figure}
