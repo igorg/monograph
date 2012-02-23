@@ -1,4 +1,4 @@
-De acordo com o artigo \cite{Langford08} e como dito no capítulo 2, um classificador que apresente um erro $\alpha$ na acurácia, pode apresentar um erro teórico máximo de $\alpha \cdot n$, onde $n$ é a cardinalidade da base a ser ordenada. A técnica de \emph{ranking reduzido a classificação} diminui esse limite para $\alpha * 2$ usando o mesmo classificador com erro $\alpha$ na acurácia.
+De acordo com o artigo \cite{langford08} e como dito no capítulo \ref{chap:nocoes_preliminares}, um classificador que apresente um erro $\alpha$ na acurácia, pode apresentar um erro teórico máximo de $\alpha \cdot n$, onde $n$ é a cardinalidade da base a ser ordenada. A técnica de \emph{ranking reduzido a classificação} diminui esse limite para $\alpha * 2$ usando o mesmo classificador com erro $\alpha$ na acurácia.
 
 Quanto maior o desbalanceamento entre as classes da base a ser ordenada, maior a chance de intensificação do erro na ordenação. Partindo desse princípio, foi montada uma estratégia de testes com cinco bases de dados com diferentes níveis de desbalanceamento. Tais bases podem ser encontradas no repositório da University of California, Irvine (UCI)\footnote{http://archive.ics.uci.edu/ml/}.
 
@@ -29,6 +29,7 @@ Cada base utilizada apresenta diferenças em: desbalanceamento entre as classes,
 \end{table}
 
 \section{Execução e Avaliação do Algoritmo}
+\label{sec:avaliacao}
 
 Foram escolhidos quatro classificadores base para avaliar o algoritmo: J48, Naïve Bayes, Logistic e SMO. O motivo da escolha desses classificadores é o reconhecimento de tais como padrões em suas famílias, J48 para árvores de decisão (implanta a árvore de decisão C4.5), Naïve Bayes para estatísticos, Logistic (implanta curva logística) e SMO (implanta Support Vector Machine) para classificadores baseados em funções.
 
