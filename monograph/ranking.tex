@@ -1,4 +1,4 @@
-Como dito anteriormente, a técnica de \emph{ranking reduzido a classificação} aplica uma transformação à base original antes da etapa de treinamento do classificador e modifica a etapa de avaliação a fim de ordenar as instâncias. A transformação da base e o treinamento do classificador compõe um algoritmo de nome \emph{AUC-Train}, transcrito a partir de \cite{langford08} no algoritmo \ref{alg:auc-train}.
+Como dito anteriormente, a técnica de \emph{ranking reduzido a classificação} aplica uma transformação à base original antes da etapa de treinamento do classificador e modifica a etapa de avaliação a fim de ordenar as instâncias. A transformação da base e o treinamento do classificador compõem um algoritmo de nome \emph{AUC-Train}, transcrito a partir de \cite{langford08} no algoritmo \ref{alg:auc-train}.
 
 \begin{algorithm}[h!]
     Let $S' = \{\langle (x_1, x_2), 1(y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S \; and \;  y_1 \neq y_2\}$\;
@@ -10,11 +10,11 @@ Como dito anteriormente, a técnica de \emph{ranking reduzido a classificação}
 
 A transformação consiste em formar novas instâncias a partir de pares entre instâncias de classes diferentes. A ordem em que as instâncias aparecem no par é relevante; o par $\langle i_{\alpha}, i_{\beta} \rangle$ e o par $\langle i_{\beta}, i_{\alpha} \rangle$ representam informações diferentes para o aprendizado do classificador. Além disso, as classes das duas instâncias que formam um par são combinadas a fim de gerar uma nova classe para a nova instância.
 
-Essa transformação foi implantada particionando a base de treinamento em dois subconjuntos, um subconjunto $S_0$ com as instâncias de classe $0$ e outro, $S_1$, com as instâncias de classe $1$. Com as duas partições definidas, basta combiná-las em um conjunto de elementos com formato final $\langle (i_{\alpha}(A), i{\beta}(A)), 1(i_{\alpha}(C) < i_{\beta}(C)) \rangle$.
+Essa transformação foi implantada particionando a base de treinamento em dois subconjuntos, um subconjunto $S_0$ com as instâncias de classe $0$ e outro, $S_1$, com as instâncias de classe $1$. Com as duas partições definidas, basta combiná-las em um conjunto de elementos com formato final $\langle (i_{\alpha}(A), i_{\beta}(A)), 1(i_{\alpha}(C) < i_{\beta}(C)) \rangle$.
 
 A \emph{função $\ref{func:one}$}, aplicada para obter a classe da nova instância, retorna $1$, se o resultado da expressão avaliada é verdadeiro, ou $0$, se o resultado da expressão é falsa. Como o argumento para a função é $i_{\alpha}(C) < i_{\beta}(C)$, se $i_{\alpha}(C)$ valer $1$, a classe da nova instância será $0$, se valer $0$, a classe da nova instância será $1$.
 
-\begin{function}[h]
+\begin{function}[h!]
     $avaliacao \gets 1$\;
 
     \Se{$expr = False$}{
@@ -54,7 +54,7 @@ Assim como a maioria das técnicas de aprendizagem supervisionada, o \emph{ranki
 Como os algoritmos nas etapas de treinamento e avaliação para a técnica de \emph{ranking reduzido a classificação} são, respectivamente, \emph{AUC-Train} e \emph{Tournament}; a complexidade da técnica será estudada a partir das complexidades desses dois algoritmos separadamente.
 
 
-\section{Treinamento: Estudo de complexidade do algoritmo \emph{AUC-Train)}}
+\section{Treinamento: Estudo de complexidade do algoritmo \emph{AUC-Train}}
 
 Considera-se como entrada para o algoritmo \emph{AUC-Train} uma base $S$ com $n$ instâncias das quais $k$ possuem a classe $0$ e $n - k$ possuem a classe $1$. O algoritmo executa em três grandes etapas:
 
@@ -66,7 +66,7 @@ Considera-se como entrada para o algoritmo \emph{AUC-Train} uma base $S$ com $n$
 
 Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento, da aplicação de duas combinações entre as partições e da aplicação do algoritmo de aprendizagem.
 
-Por se tratar de uma técnica baseada em meta classificação, não é possível determinar um custo computacional para a $3^a$ etapa pois diferentes algoritmos de aprendizagem para classificação executam em tempos diferentes. Portanto, o estudo da complexidade da técnica \emph{AUC-Train} será baseado na computação extra que as etapas 1 e 2 acrescentam ao aprendizado.
+Por se tratar de uma técnica baseada em metaclassificação, não é possível determinar um custo computacional para a $3^a$ etapa, pois diferentes algoritmos de aprendizagem para classificação executam em tempos diferentes. Portanto, o estudo da complexidade da técnica \emph{AUC-Train} será baseado na computação extra que as etapas 1 e 2 acrescentam ao aprendizado.
 
 Para o particionamento da base, basta iterar uma vez pela base original incluindo as instâncias de classe $0$ no conjunto $S_0$ e as de classe $1$ no conjunto $S_1$, como mostrado na \emph{função \ref{func:particionar}}. Essa etapa executa sempre em tempo $O(n)$.
 
@@ -113,7 +113,7 @@ Após o particionamento da base, gera-se o conjunto $S'$ a partir das combinaç�
     \label{func:combinar}
 \end{function}
 
-A mesclagem das instâncias consiste em gerar uma nova instância a partir de duas outras instâncias de acordo com o algoritmo original do \emph{AUC-Train (\ref{alg:auc-train})}. A \emph{função \ref{func:mesclar}} desempenha esse papel. Essa função executa sempre em tempo $O(1)$.
+A mesclagem das instâncias consiste em gerar uma nova instância a partir de duas outras instâncias, de acordo com o algoritmo original do \emph{AUC-Train (\ref{alg:auc-train})}. A \emph{função \ref{func:mesclar}} desempenha esse papel. Essa função executa sempre em tempo $O(1)$.
 
 \begin{function}[h!]
     \Entrada{Instâncias $\alpha$ e $\beta$}
@@ -149,7 +149,7 @@ Logo, a complexidade do caso médio é igual a $O(f_{avg}) = O(\frac{n^2 + n}{6}
 
 O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento possui metade das instâncias com classe $0$ e a outra metade com classe $1$. A combinação ocorrerá entre dois conjuntos com $\frac{n}{2}$ instâncias, resultando na complexidade assintótica $O(\frac{n}{2} \cdot \frac{n}{2}) = O(\frac{n^2}{4}) = O(n^2)$.
 
-\begin{table}[h]
+\begin{table}[h!]
     \centering
     \begin{tabular}{ c | c c | c }
         \hline
@@ -169,10 +169,10 @@ O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento 
     \label{auc-train-complexity}
 \end{table}
 
-Analisando a tabela \ref{auc-train-complexity}, percebe-se que o gargalo do algoritmo \emph{AUC-Train} reside na combinação das instâncias. Na prática, uma otimização foi aplicada ao algoritmo final escrito para o \emph{workbench WEKA}: a \emph{função \ref{func:combinar}} foi levemente alterada para combinar tanto o par $(\alpha, \beta)$ quanto o par $(\alpha, \beta)$; isso elimina a necessidade da aplicação de duas combinações. Apesar da aplicação dessa otimização, a complexidade do algoritmo se mantem inalterada.
+Analisando a tabela \ref{auc-train-complexity}, percebe-se que o gargalo do algoritmo \emph{AUC-Train} reside na combinação das instâncias. Na prática, uma otimização foi aplicada ao algoritmo final escrito para o \emph{workbench WEKA}: a \emph{função \ref{func:combinar}} foi levemente alterada para combinar tanto o par $(\alpha, \beta)$ quanto o par $(\beta, \alpha)$; isso elimina a necessidade da aplicação de duas combinações. Apesar da aplicação dessa otimização, a complexidade do algoritmo se mantem inalterada.
 
 
-\section{Treinamento: Otimizações e implantacao do algoritmo \emph{AUC-Train}}
+\section{Treinamento: Otimizações e implantação do algoritmo \emph{AUC-Train}}
 
 Recapitulando, o algoritmo \ref{alg:auc-train} \emph{(AUC-Train)} é composto de três etapas principais: particionamento, com a \emph{função \ref{func:particionar}}; combinação das partições, com a \emph{função \ref{func:combinar}}; e treinamento do classificador.
 
@@ -180,7 +180,7 @@ De acordo com o estudo de complexidade , verificou-se que o custo computacional 
 
 Amostragem consiste em utilizar apenas um subconjunto da base completa a ser usada no treinamento do classificador. O objetivo da estratégia não é reduzir a complexidade intríseca das etapas de particionamento e combinação, mas limitar a quantidade de instâncias a serem combinadas amortizando o que seria o tempo total de geração das novas instâncias. A \emph{função \ref{func:amostragem}} ilustra o processo de amostragem utilizado nesse estudo.
 
-\begin{function}[h]
+\begin{function}[h!]
     \Entrada{
         Partições de instâncias $S_{\alpha}$, $S_{\beta}$\;
         Pares por instância $p$\;
@@ -206,13 +206,13 @@ Votação consiste em treinar vários classificadores em vez de apenas um. Para 
 
 Não há sentido em executar uma votação em que os classificadores foram aprendidos a partir da mesma base de treinamento. Isso resultaria em classificadores iguais e, portanto, seus votos também seriam iguais. Esse panorama só deixaria de ocorrer se o próprio algoritmo de aprendizagem inserisse alguma incerteza durante o treinamento.
 
-Apesar do uso da amostragem beneficiar o tempo de execução, o classificador resultante não será treinado com todas as informações disponíveis, o que pode causar um efeito de intensificação dos erros de classificação. Com a votação, embora o treinamento de diversos classificadores resulte em acréscimo de tempo para o algoritmo, geralmente o resultado da classificação possuirá menos erros.
+Apesar de o uso da amostragem beneficiar o tempo de execução, o classificador resultante não será treinado com todas as informações disponíveis, o que pode causar um efeito de intensificação dos erros de classificação. Com a votação, embora o treinamento de diversos classificadores resulte em acréscimo de tempo para o algoritmo, geralmente o resultado da classificação possuirá menos erros.
 
 Há, assim, uma complementaridade entre as duas estratégias escolhidas para otimização do algoritmo \ref{alg:auc-train} \emph{(AUC-Train)}. Enquanto uma preza por melhorar o tempo de execução, o outra preza por dar maior segurança na classificação. Basta combiná-las para balancear o compromisso entre tempo de execução e redução dos erros de classificação.
 
 De posse das informações necessárias para a implantação do algoritmo \ref{alg:auc-train} \emph{(AUC-Train)} e de suas otimizações, a etapa de treinamento do \emph{Ranking} está exposta no algoritmo \ref{alg:treinamento}.
 
-\begin{algorithm}[h]
+\begin{algorithm}[h!]
     \Entrada{
         Base de treinamento $S$\;
         Algoritmo de aprendizagem para classificação $A$\;
@@ -268,7 +268,7 @@ Como o pior tempo de execução observado para algoritmos de ordenação é da o
 
 \section{Ordenação: Otimizações e implantação do algoritmo \emph{Tournament}}
 
-Vale destacar que a otimização de votação sugerida para a etapa de treinamento tem extensões na etapa de ordenação. Para que a estratégia de votação funcione, o algoritmo de ordenação precisa utilizar a \emph{função \ref{func:votacao}}. Essa iterará sobre o conjunto de classificadores produzidos na etapa de treinamento determinando a classe majoritária na votação.
+Vale destacar que a otimização de votação, sugerida para a etapa de treinamento, tem extensões na etapa de ordenação. Para que a estratégia de votação funcione, o algoritmo de ordenação precisa utilizar a \emph{função \ref{func:votacao}}. Essa iterará sobre o conjunto de classificadores produzidos na etapa de treinamento, determinando a classe majoritária na votação.
 
 \begin{function}[h!]
     \Entrada{
@@ -298,9 +298,9 @@ Vale destacar que a otimização de votação sugerida para a etapa de treinamen
     \label{func:votacao}
 \end{function}
 
-De acordo com o exposto até agora sobre a etapa de ordenação, essa pode ser descrito como no algoritmo \ref{alg:ordenacao}. Devido às especificações expostas, o algoritmo de ordenação é mais monolítico que o algoritmo de treinamento, que pode ser dividido em funções menores.
+De acordo com o exposto até agora sobre a etapa de ordenação, essa pode ser descrita como no algoritmo \ref{alg:ordenacao}. Devido às especificações expostas, o algoritmo de ordenação é mais monolítico que o algoritmo de treinamento, que pode ser dividido em funções menores.
 
-\begin{algorithm}[h]
+\begin{algorithm}[h!]
     \Entrada{
         Conjunto de classificadores $C$\;
         Base com instâncias de classe desconhecida $S$\;
@@ -329,7 +329,7 @@ De acordo com o exposto até agora sobre a etapa de ordenação, essa pode ser d
 
 Como visto na seção anterior, o custo computacional da etapa de ordenação é composto pelas somas dos custos da obtenção das pontuações e da ordenação. A maior parte do custo é devida ao processo de obtenção das pontuações, de complexidade $O(n^2)$. E com as pontuações obtidas, ainda é executado um algoritmo de ordenação.
 
-Uma otimização possível, segundo \cite{ailon08}, é utilizar o classificador treinado como uma relação de ordem a fim de estabelecer uma precedência entre as instâncias. Assim seria possível utilizar o classificador diretamente no algoritmo de ordenação em vez de coletar a pontuação de todas as instâncias.
+Uma otimização possível, segundo \cite{ailon08}, é utilizar o classificador treinado como uma relação de ordem a fim de estabelecer uma precedência entre as instâncias. Assim, seria possível utilizar o classificador diretamente no algoritmo de ordenação, em vez de coletar a pontuação de todas as instâncias.
 
 Essa otimização eliminaria a necessidade da etapa de pontuação. O artigo sugere que o classificador seja usado, em conjunto com o algoritmo de \emph{quicksort}, como uma operação de comparação entre duas instâncias. A comparação ocorre no momento do particionamento do conjunto em que ocorre o reposicionamento do elemento pivot.
 

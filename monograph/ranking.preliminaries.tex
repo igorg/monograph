@@ -10,17 +10,17 @@ Dado um conjunto composto por elementos aos quais é possível atribuir um rótu
 
 Substituindo-se a palavra rótulo pela palavra classe no enunciado acima, percebe-se que o problema de ordenação pode ser tratado como um problema de classificação. Mais especificamente, um problema de classificação binária, pois os valores de classe possíveis são $0$ e $1$.
 
-Um algoritmo de aprendizado para classificação recebe como entrada um conjunto em que cada elemento possui uma classe assinalada e, partindo dessa entrada, deve aprender um classificador capaz atribuir uma classe a qualquer elemento. A etapa em que o aprendizado ocorre é chamada de treinamento.
+Um algoritmo de aprendizado para classificação recebe como entrada um conjunto em que cada elemento possui uma classe assinalada e, partindo dessa entrada, deve aprender um classificador capaz de atribuir uma classe a qualquer elemento. A etapa em que o aprendizado ocorre é chamada de treinamento.
 
 O treinamento de um classificador é um aprendizado supervisionado, pois cada elemento submetido à etapa de treinamento está vinculado à sua classe verdadeira. Dessa forma, pode-se medir a qualidade do classificador aprendido usando elementos com classes conhecidas, porém suprimindo-as quando os elementos forem submetidos a classificação.
 
 O produto da classificação de um elemento é uma previsão do valor da classe à qual aquele elemento pertence. Sobre a previsão é possível obter uma quantidade de certeza, ou probabilidade, do elemento pertencer à classe prevista. Nesso caso, por se tratar de um problema de classificação binária, se a probabilidade de um elemento pertencer à classe $0$ é $p$, então a probabilidade dele pertencer à classe $1$ é $1 - p$.
 
-Uma solução trivial para o problema de ordenação é utilizar a probabilidade das previsões de um classificador como uma relação de ordem no conjunto a ser ordenado. De posse da previsão das classes dos elementos de um dado conjunto, basta ordena-los de forma crescente em função da probabilidade de cada um pertencer à classe $0$; os mais prováveis ocupam o topo, os menos prováveis ocupam o fundo.
+Uma solução trivial para o problema de ordenação é utilizar a probabilidade das previsões de um classificador como uma relação de ordem no conjunto a ser ordenado. De posse da previsão das classes dos elementos de um dado conjunto, basta ordená-los de forma crescente em função da probabilidade de cada um pertencer à classe $0$; os mais prováveis ocupam o topo, os menos prováveis ocupam o fundo.
 
 Segundo \cite{langford08}, esse método para ordenação dos elementos pode resultar em um erro teórico máximo muito alto, dependendo da performance do classificador. A técnica de \emph{ranking reduzido a classificação}, proposta no mesmo artigo, reduz o erro teórico máximo envolvendo o treinamento do classificador com uma etapa de pré-processamento e a avaliação com uma etapa de pós-processamento.
 
-Na técnica de \emph{ranking reduzido a classificação}, o treinamento do classificador ocorre pelo algoritmo \emph{AUC-Train} após uma etapa inicial em que se aplica uma transformação nos exemplos da base de treinamento. Após o treinamento, a definição da ordem das instâncias na base de avaliação é feita pelo algoritmo \emph{tournament}, torneio em português; que usa as previsões do classificador treinado para tal.
+Na técnica de \emph{ranking reduzido a classificação}, o treinamento do classificador ocorre pelo algoritmo \emph{AUC-Train} após uma etapa inicial em que se aplica uma transformação nos exemplos da base de treinamento. Após o treinamento, a definição da ordem das instâncias na base de avaliação é feita pelo algoritmo \emph{tournament} --- torneio em português --- que usa as previsões do classificador treinado para tal.
 
 \section{Definições}
 
@@ -124,4 +124,4 @@ Calculando a perda da AUC considerando como base a classe \emph{sim}, a primeira
 
 De acordo com \cite{langford08}, se um classificador gera um erro de ordem $\alpha$ na acurácia, ao ordenar uma base a partir das probabilidades das previsões desse classificador, o erro teórico máximo na AUC será de $\alpha \cdot n$, onde $n$ é a cardinalidade da base avaliada. Enquanto para o mesmo classificador, a técnica de \emph{ranking reduzido a classificação} apresenta um erro teórico máximo de $\alpha \cdot 2$.
 
-O erro na AUC se intensifica a medida que o desbalanceamento de classes do conjunto usado no treinamento aumenta pois, quanto mais desbalanceadas as classes, mais provável que o classificador resultante seja tendencioso para a classe majoritária.
+O erro na AUC se intensifica a medida que o desbalanceamento de classes do conjunto usado no treinamento aumenta, pois quanto mais desbalanceadas as classes, mais provável que o classificador resultante seja tendencioso para a classe majoritária.

@@ -6,7 +6,7 @@ Quanto maior o desbalanceamento entre as classes da base a ser ordenada, maior a
 
 As bases usadas foram as seguintes: Breast Cancer; Statlog (Vehicle Silhouettes), chamada de Vehicle; Hepatitis; Glass Identification, chamada de Glass e Yeast. Como o algoritmo proposto em {{langford}} tem um custo computacional alto, $O(n^2)$ para treinamento e $O(n^2)$ para gerar o ranking; isso aliado ao baixo controle sobre o ambiente de execução culminou na escolha de bases pequenas para avaliação do experimento.
 
-As bases Vehicle, Glass e Yeast tratam, originalmente, de problemas multi classe. A essas bases foram aplicadas transformações, descritas em \cite{guo04}, a fim de torná-las problemas de classe binária. Para as bases Vehicle e Glass, foram unidas todas as classes, exceto a minoritária, em uma nova classe. Para a base Yeast, apenas as classes de valor 'CYT' ou 'POX' foram consideradas.
+As bases Vehicle, Glass e Yeast tratam, originalmente, de problemas multiclasse. A essas bases foram aplicadas transformações, descritas em \cite{guo04}, a fim de torná-las problemas de classe binária. Para as bases Vehicle e Glass, foram unidas todas as classes, exceto a minoritária, em uma nova classe. Para a base Yeast, apenas as classes de valor 'CYT' ou 'POX' foram consideradas.
 
 Cada base utilizada apresenta diferenças em: desbalanceamento entre as classes, número de atributos, número de instâncias, entre outros. A tabela \ref{tbl:caracteristicas} mostra um resumo sobre as características das bases.
 
