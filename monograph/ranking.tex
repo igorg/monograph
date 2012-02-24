@@ -263,7 +263,7 @@ Partindo dessa divisão, o tempo computacional do algoritmo é a soma dos tempos
 
 A parte do algoritmo que calcula as pontuações envolve uma chamada à \emph{função \ref{func:votacao}}, que invoca o classificador base, com dois \emph{loops}. Portanto, o tempo de execução da etepa de obtenção da pontuação é composto pela quantidade de execuções dos loops multiplicada pelo tempo de execução da chamada à \emph{\ref{func:votacao}}.
 
-Não é possível dizer exatamente qual é o limite superior de tempo de execução para o cálculo de todas as pontuações, pois classificadores distintos executam classificação a classificação de um elemento em tempos distintos.Uma alternativa é, em vez de medir o tempo computacional, medir o limite superior de chamadas à \emph{função \ref{func:votacao}}, já que nela reside a incerteza da medida.
+Não é possível dizer exatamente qual é o limite superior de tempo de execução para o cálculo de todas as pontuações, pois classificadores distintos executam a classificação de um elemento em tempos distintos. Uma alternativa é, em vez de medir o tempo computacional, medir o limite superior de chamadas à \emph{função \ref{func:votacao}}, já que nela reside a incerteza da medida.
 
 O pior caso, o caso médio e o melhor caso apresentam o mesmo limite superior de chamadas à \emph{função \ref{func:votacao}}, pois é sempre necessário promover o embate de todas as instâncias. Como a chamada à função está englobada por dois loops aninhados, isso resulta em um limite de chamadas de ordem $O(n^2)$. Dessa forma, a única afirmação que pode ser feita sobre o tempo de execução da etapa de pontuação é que ele pode ser maior ou igual a $O(n^2)$.
 
