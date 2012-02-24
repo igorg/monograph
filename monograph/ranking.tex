@@ -66,7 +66,7 @@ Considera-se como entrada para o algoritmo \emph{AUC-Train} uma base $S$ com $n$
 
 Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento, da aplicação de duas combinações entre as partições e da aplicação do algoritmo de aprendizagem.
 
-Por se tratar de uma técnica baseada em metaclassificação, não é possível determinar um custo computacional para a $3^a$ etapa, pois diferentes algoritmos de aprendizagem para classificação executam em tempos diferentes. Portanto, o estudo da complexidade da técnica \emph{AUC-Train} será baseado na computação extra que as etapas 1 e 2 acrescentam ao aprendizado.
+Por se tratar de uma técnica baseada em metaclassificação, não é possível determinar um custo computacional para a $3^a$ etapa, pois algoritmos de aprendizagem para classificação distintos executam em tempos distintos. Portanto, o estudo da complexidade da técnica \emph{AUC-Train} será baseado na computação extra que as etapas 1 e 2 acrescentam ao aprendizado.
 
 Para o particionamento da base, basta iterar uma vez pela base original incluindo as instâncias de classe $0$ no conjunto $S_0$ e as de classe $1$ no conjunto $S_1$, como mostrado na \emph{função \ref{func:particionar}}. Essa etapa executa sempre em tempo $O(n)$.
 
@@ -261,7 +261,11 @@ O algoritmo \ref{alg:tournament} \emph{(Tournament)} recebe como entrada um clas
 
 Partindo dessa divisão, o tempo computacional do algoritmo é a soma dos tempos das etapas de obtenção das pontuações e de ordenação. A etapa de obtenção das pontuações é bem definida no algoritmo \ref{alg:tournament} \emph{(Tournament)}, enquanto, na etapa de ordenação, qualquer algoritmo de ordenação pode ser usado: \emph{mergesort} e \emph{quicksort}, para citar alguns.
 
-Para o etapa de obtenção da pontuação, o pior caso, o caso médio e o melhor caso apresentam o mesmo tempo de execução, pois é sempre necessário formar todos os pares de instâncias. O processo de formação de todos os pares funciona a partir de dois loops aninhados, assim como a \emph{função \ref{func:combinar}}; isso resulta em um custo de ordem $O(n^2)$.
+A parte do algoritmo que calcula as pontuações envolve uma chamada à \emph{função \ref{func:votacao}}, que invoca o classificador base, com dois \emph{loops}. Portanto, o tempo de execução da etepa de obtenção da pontuação é composto pela quantidade de execuções dos loops multiplicada pelo tempo de execução da chamada à \emph{\ref{func:votacao}}.
+
+Não é possível dizer exatamente qual é o limite superior de tempo de execução para o cálculo de todas as pontuações, pois classificadores distintos executam classificação a classificação de um elemento em tempos distintos.Uma alternativa é, em vez de medir o tempo computacional, medir o limite superior de chamadas à \emph{função \ref{func:votacao}}, já que nela reside a incerteza da medida.
+
+O pior caso, o caso médio e o melhor caso apresentam o mesmo limite superior de chamadas à \emph{função \ref{func:votacao}}, pois é sempre necessário promover o embate de todas as instâncias. Como a chamada à função está englobada por dois loops aninhados, isso resulta em um limite de chamadas de ordem $O(n^2)$. Dessa forma, a única afirmação que pode ser feita sobre o tempo de execução da etapa de pontuação é que ele pode ser maior ou igual a $O(n^2)$.
 
 Como o pior tempo de execução observado para algoritmos de ordenação é da ordem de $O(n^2)$, o gargalo da etapa de ordenação reside na necessidade de se gerar todos os pares a partir das instâncias no conjunto a ser ordenado. Qualquer tentativa de otimização desse processo deve levar em consideração essa observação.
 
@@ -327,13 +331,13 @@ De acordo com o exposto até agora sobre a etapa de ordenação, essa pode ser d
     \label{alg:ordenacao}
 \end{algorithm}
 
-Como visto na seção anterior, o custo computacional da etapa de ordenação é composto pelas somas dos custos da obtenção das pontuações e da ordenação. A maior parte do custo é devida ao processo de obtenção das pontuações, de complexidade $O(n^2)$. E com as pontuações obtidas, ainda é executado um algoritmo de ordenação.
+Como visto na seção anterior, o custo computacional da etapa de ordenação é composto pelas somas dos custos da obtenção das pontuações e da ordenação. A maior parte do custo é devida ao processo de obtenção das pontuações, de complexidade maior ou igual a $O(n^2)$. E com as pontuações obtidas, ainda é executado um algoritmo de ordenação.
 
 Uma otimização possível, segundo \cite{ailon08}, é utilizar o classificador treinado como uma relação de ordem a fim de estabelecer uma precedência entre as instâncias. Assim, seria possível utilizar o classificador diretamente no algoritmo de ordenação, em vez de coletar a pontuação de todas as instâncias.
 
 Essa otimização eliminaria a necessidade da etapa de pontuação. O artigo sugere que o classificador seja usado, em conjunto com o algoritmo de \emph{quicksort}, como uma operação de comparação entre duas instâncias. A comparação ocorre no momento do particionamento do conjunto em que ocorre o reposicionamento do elemento pivot.
 
-Dessa forma, o algoritmo de ordenação passaria a herdar a complexidade do método de ordenação quicksort. Isso significa que ainda teria complexidade de $O(n^2)$ no pior caso, mas no caso médio a complexidade cairia para $O(n \cdot \log{n})$.
+Combinado diretamente com o classificador, o algoritmo de ordenação quicksort ainda implica um limite superior de chamadas à \emph{função \ref{func:votacao}} de $O(n^2)$ no pior caso, porém reduz o limite para $O(n \cdot log(n))$ no caso médio e no melhor caso.
 
 Ainda segundo \cite{ailon08}, uma consequência dessa otimização é tornar viável o uso da técnica de \emph{ranking reduzido a classificação} em sistemas comerciais, tais como: motores de busca e sistemas de recomendações.
 
