@@ -3,15 +3,30 @@
 \usepackage[utf8]{inputenc}
 \usepackage[brazilian]{babel}
 
-% Beamer template settings
-\usetheme{Copenhagen}
-\usecolortheme{crane}
-\setbeamertemplate{navigation symbols}
-
 \begin{document}
 
+\section{Sumário}
 \begin{frame}
-    Início da apresentação!
+    Sumário
+\end{frame}
+
+\section{Introdução}
+\input{introduction}
+
+\section{Ranking: Noções Preliminares}
+\input{ranking.preliminaries}
+
+\section{Ranking: Implantação}
+\input{ranking}
+
+\section{Ranking: Resultados e Avaliação}
+\input{results.and.evaluation}
+
+\section{Conclusão}
+\input{conclusion}
+
+\begin{frame}
+    \bibliography{monograph}
 \end{frame}
 
 \end{document}
