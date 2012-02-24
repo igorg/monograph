@@ -1,3 +1,7 @@
+*.nav
+*.out
+*.snm
+*.toc
 *.bbl
 *.blg
 *.aux
