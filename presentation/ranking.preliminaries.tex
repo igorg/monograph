@@ -1,3 +1,102 @@
 \begin{frame}
-    Ranking: Noções Preliminares
+    \frametitle{Classificação e Ranking}
+
+    \begin{description}
+        \item[Classificação] Tarefa de atribuir rótulos a cada elemento de um dado conjunto tendo como entrada pares elemento-rótulo.
+
+        \item[Ranking] Tarefa de atribuir posições a cada elemento de um dado conjunto tendo como entrada pares elemento-rótulo, uma relação de ordem parcial entre os elementos, ou uma relação de ordem total entre os elementos.
+    \end{description}
+
+    \begin{itemize}
+        \item Algoritmos de classificação e ranking podem compartilhar o mesmo tipo de entrada, pares elemento-rótulo;
+        \item Técnica de Ranking Reduzido a Classificação propõe compor um algoritmo de ranking a partir de um algoritmo de classificação.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Descrição do Problema}
+
+    \begin{block}{Problema}
+        Dado um conjunto composto por elementos aos quais é possível atribuir uma classe de valor 0 ou 1, deseja-se encontrar uma permutação dos elementos de maneira que os elementos que apresentem maior chance de pertencer a classe 0 devem preceder os com maior chance de receber o rótulo 1.
+    \end{block}
+
+    \begin{itemize}
+        \item Solução trivial, permutar os elementos do conjunto com base nas probabilidades das previsões de um classificador;
+        \item Solução trivial pode implicar em erro alto na ordenação dependendo da performance do classificador;
+        \item Técnica de Ranking Reduzido a Classificação é uma alternativa.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Ranking Reduzido à Clasificação}
+
+    \begin{itemize}
+        \item Possui um limite teórico máximo de erro bastante reduzido se comparado à solução trivial;
+        \item Dividido em etapas de treinamento e ordenação;
+        \item Treinamento efetuado pelo algoritmo AUC-Train;
+        \item Ordenação efetuada pelo algoritmo Tournament;
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Definições}
+    
+    \begin{block}{Base}
+        Uma base $B$ é um conjunto de instâncias com cardinalidade $n$.
+        \[
+            B = \{i_1, ..., i_n\} \qquad |B| = n
+        \]
+    \end{block}
+
+    \begin{block}{Instância}
+        Uma instância I é uma tupla $\langle A, C \rangle$ na qual $A$ é um vetor de atributos com cardinalidade $m$ e $C$ é a classe da instância e pode valer 0 ou 1.
+        \[
+            I = \langle A, C \rangle \qquad A = (a_1, ..., a_m) \qquad C = x | x \in \{0, 1\}
+        \]
+    \end{block}
+
+    \begin{itemize}
+        \item Pode-se acessar os atributos de uma instância $I$ através de I(A) e classe através de I(C);
+        \item Vetores de atributos podem ser concatenados através do operador binário $||$.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Exemplo de Base}
+
+    \begin{table}
+        \centering
+        \begin{tabular}{ccccc}
+            \hline
+            panorama & temperatura & humidade & ventoso & adequado \\
+            \hline
+            ensolarado & quente & alta & falso & não \\
+            ensolarado & quente & alta & verdadeiro & não \\
+            nublado & quente & alta & falso & sim \\
+            chuvoso & branda & alta & falso & sim \\
+            chuvoso & frio & normal & falso & sim \\
+            chuvoso & frio & normal & verdadeiro & não \\
+            nublado & frio & normal & verdadeiro & sim \\
+            ensolarado & branda & alta & falso & não \\
+            \hline
+        \end{tabular}
+    \end{table}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Medidas de Desempenho}
+
+    \begin{block}{Acurácia}
+        \begin{itemize}
+            \item Razão entre o número de instâncias classificadas corretamente e o total de instâncias em uma base;
+            \item Erros de classificação afetam pontualmente;
+            \item Medida padrão para desempenho de classificadores.
+        \begin{itemize}
+    \end{block}
+
+    \begin{block}{AUC}
+        \item Considera a relação entre as instâncias, em vez de uma simples razão como a acurácia;
+        \item Erros de classificação podem afetar a AUC mais intensamente;
+        \item Medida proposta para a avaliação de ranking.
+    \end{block}
 \end{frame}
