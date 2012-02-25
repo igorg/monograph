@@ -1,3 +1,208 @@
 \begin{frame}
-    Ranking: Implantação
+    \frametitle{AUC-Train}
+
+    \begin{algorithm}[H]
+        $S' = \{\langle (x_1, x_2), 1(y_1 < y_2) \rangle \; : \; (x_1, y_1), (x_2, y_2) \in S \; and \; y_1 \neq y_2$\;
+        \Return{$c = A(S')$}
+
+        \caption{AUC-Train}
+    \end{algorithm}
+
+    \begin{block}{Decomposição}
+        \begin{enumerate}
+            \item Particionar a base de treinamento em duas bases $S_0$ e $S_1$; $S_0$ possui as instâncias de classe $0$ e $S_1$ possui as instâncias de classe $1$;
+            \item Combinar as partições $S_0$ e $S_1$ de forma que a base de treinamento $S'$ possua todos os pares entre instâncias de classe $1$ e de classe $0$;
+            \item Aplicar um algoritmo de aprendizagem $A$ à base $S'$ obtendo um classificador $c$ como saída.
+        \end{enumerate}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{AUC-Train: Particionamento}
+
+    \begin{function}[H]
+        $S_0, S_1 \gets \emptyset$\;
+
+        \ParaTodo{$i \in S$}{
+            \eSe{$i(C) = 0$}{
+                $S_0 \gets S_0 \cup \{ i \}$\;
+            }{
+                $S_1 \gets S_1 \cup \{ i \}$\;
+            }
+        }
+
+        \Retorna{$S_0, S_1$}
+
+        \caption{particionar($S$)}
+    \end{function}
+
+    \begin{block}{Complexidade}
+        \begin{itemize}
+            \item $O(n)$
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{AUC-Train: Combinação}
+
+    \begin{function}[H]
+        $S_C \gets \emptyset$\;
+
+        \ParaTodo{$\alpha \in S_{\alpha}$}{
+            \ParaTodo{$\beta \in S_{\beta}$}{
+                $S_C \gets S_C \cup \{ mesclar(\alpha, \beta) \}$\;
+            }
+        }
+
+        \Retorna{$S_C$}
+
+        \caption{combinar($S_{\alpha}, S_{\beta}$)}
+    \end{function}
+
+    \begin{function}[H]
+        \Retorna{$\langle \alpha(A) || \beta(A), 1 \cdot (\alpha(C), \beta(C)) \rangle$}
+
+        \caption{mesclar($\alpha, \beta$)}
+    \end{function}
+
+    \begin{block}{Complexidade}
+        \begin{itemize}
+            \item Melhor caso: $O(n)$
+            \item Caso médio e pior caso: $O(n^2)$
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{AUC-Train: Otimizações}
+
+    \begin{block}{Desvantagem}
+        O custo computacional adicionados pelas etapa de particionamento e principalmente pela etapa de combinação é alto.
+    \end{block}
+
+    \begin{block}{Sugestões de Otimização}
+        \begin{itemize}
+            \item Votação
+            \item Amostragem
+        \end{itemize}
+    \end{block}
+
+    Há uma complementaridade entre as duas estratégias escolhidas para otimização do algoritmo AUC-Train. Enquanto uma preza por melhorar o tempo de execução, o outra preza por dar maior segurança na classificação.
+\end{frame}
+
+\begin{frame}
+    \frametitle{AUC-Train: Otimização - Amostragem}
+
+    \begin{function}[H]
+        $S \gets \emptyset$\;
+
+        \ParaTodo{$\alpha \in S_{\alpha}$}{
+            \ParaTodo{$\beta \in Ss_{\beta} \; tal\; que\; Ss_{\beta} \subseteq S_{\beta} \wedge |Ss_{\beta}| = p$}{
+                $S \gets S \cup \{ mesclar(\alpha, \beta) \}$\;
+            }
+        }
+
+        \Retorna{$S$}
+
+        \caption{amostragem($S_{\alpha}, S_{\beta}, p$)}
+    \end{function}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Algoritmo de Treinamento}
+
+    \begin{algorithm}[H]
+        $C \gets \emptyset$\;
+        $S_0, S_1 \gets particionar(S)$;
+
+        \Se{$i = 1$ e $p = todas$}{
+            $S' \gets combinar(S_0, S_1, mesclar)$\;
+            $S' \gets combinar(S_1, S_0, mesclar)$\;
+            $C \gets \{ A(S') \}$\;
+        }
+        \SenaoSe{$i > 1$ e $0 < p \leq min(|S_0|, |S_1|)$}{
+            \Para{$i \gets 1; i \to n$}{
+                $S' \gets amostragem(S_0, S_1, p, mesclar)$\;
+                $S' \gets S' \cup amostragem(S_1, S_0, p, mesclar)$\;
+                $C \gets C \cup \{ A(S') \}$\;
+            }
+        }
+
+        \Retorna{$C$}
+
+        \caption{Treinamento}
+    \end{algorithm}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Tournament}
+
+    \begin{algorithm}[H]
+        For $x \in U$, let $deg(x) = |\{x':c(x, x') = 1, x' \in U\}|$\;
+        Sort U in descending order of deg(x), breaking ties arbitrarily
+
+        \caption{Tournament}
+    \end{algorithm}
+
+    \begin{block}{Decomposição}
+        \begin{enumerate}
+            \item Obter a pontuação para todas as instâncias na base $B$;
+            \item Ordenar as instâncias na base $B$.
+        \end{enumerate}
+    \end{block}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Tournament: Efeito Colateral - Votação}
+
+    \begin{function}[H]
+        $classe \gets 0$\;
+        $zero \gets 0$\;
+
+        \ParaTodo{$c \in C$}{
+            \eSe{$c(i) = 0$}{
+                $zero \gets zero + 1$\;
+            }{
+                $zero \gets zero - 1$\;
+            }
+        }
+
+        \Se{$zero < 0$}{
+            $classe \gets 1$\;
+        }
+
+        \Retorna{$classe$}
+
+        \caption{votacao(C, i)}
+    \end{function}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Algoritmo de Ordenação}
+
+    \begin{algorithm}[H]
+        \ParaTodo{$\alpha \in B$}{
+            \ParaTodo{$\beta \in B \wedge \beta \neq \alpha$}{
+                $i \gets \langle \alpha(A) || \beta(A) \rangle$\;
+                $classe \gets votacao(C, i)$
+
+                \eSe{$classe = 1$}{
+                    $pontuacao[\alpha] \gets pontuacao[\alpha] + 1$
+                }{
+                    $pontuacao[\beta] \gets pontuacao[\beta] + 1$
+                }
+            }
+        }
+
+        ordenar $B$ com base em $pontuacao$
+
+        \caption{Ordenação}
+    \end{algorithm}
+
+    \begin{block}{Complexidade}
+        \begin{itemize}
+            \item $O(n^2)$ chamadas à função votacao + $O(f_{sort})$;
+        \end{itemize}
+    \end{block}
 \end{frame}
