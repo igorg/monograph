@@ -1,4 +1,4 @@
-De acordo com o artigo \cite{langford08} e como dito no capítulo \ref{chap:nocoes_preliminares}, um classificador que apresente um erro $\alpha$ na acurácia, pode apresentar um erro teórico máximo de $\alpha \cdot n$, onde $n$ é a cardinalidade da base a ser ordenada. A técnica de \emph{ranking reduzido a classificação} diminui esse limite para $\alpha * 2$ usando o mesmo classificador com erro $\alpha$ na acurácia.
+De acordo com o artigo \cite{langford08} e como dito no capítulo \ref{chap:nocoes_preliminares}, um classificador que apresente um erro $\alpha$ na acurácia, pode apresentar um erro teórico máximo de $\alpha \cdot n$, onde $n$ é a cardinalidade da base a ser ordenada. A técnica de \emph{ranking reduzido a classificação} diminui esse limite para $\alpha \cdot 2$ usando o mesmo classificador com erro $\alpha$ na acurácia.
 
 Quanto maior o desbalanceamento entre as classes da base a ser ordenada, maior a chance de intensificação do erro na ordenação. Partindo desse princípio, foi montada uma estratégia de testes com cinco bases de dados com diferentes níveis de desbalanceamento. Tais bases podem ser encontradas no repositório da University of California, Irvine (UCI)\footnote{http://archive.ics.uci.edu/ml/}.
 
@@ -36,12 +36,10 @@ Foram escolhidos quatro classificadores base para avaliar o algoritmo: J48, Naï
 Para cada classificador base houve quatro baterias de execução com diferentes configurações:
 
 \begin{enumerate}
-
     \item Somente o classificador;
     \item O classificador como base para a técnica de \emph{ranking reduzido a classificação} original;
     \item O classificador como base para o algoritmo de ranking com configurações de 1 par por instância e variando o número de classificadores na votação entre 1 e 20;
     \item O classificador como base para o algoritmo de ranking com configurações de 1 classificador na votação e variando o número de pares por instância entre 1 e 20.
-
 \end{enumerate}
 
 Nas três baterias que envolveram o algoritmo de \emph{ranking}, o método de ordenação usado para gerar o resultado final foi o \emph{torneio}, como explicado no artigo {{langford}}. Em todas as baterias foi executada uma validação cruzada com 10 partições e os resultados apresentados nas tabelas é a média das \emph{AUCs} obtidas para cada partição.
