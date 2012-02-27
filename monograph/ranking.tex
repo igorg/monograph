@@ -93,23 +93,20 @@ Para o particionamento da base, basta iterar uma vez pela base original incluind
 Após o particionamento da base, gera-se o conjunto $S'$ a partir das combinações entre as partições $S_0$ e $S_1$. A \emph{função \ref{func:combinar}} é a encarregada de formar novas instâncias a partir da mesclagem das instâncias nas partições $S_0$ e $S_1$. Essa função deve ser executada duas vezes a fim de formar todos os pares.
 
 \begin{function}[h!]
-    \Entrada{
-        Conjuntos de instâncias $S_{\alpha}$ e $S_{\beta}$\;
-        Função para manipulacão das instâncias $f$
-    }
+    \Entrada{Conjuntos de instâncias $S_{\alpha}$ e $S_{\beta}$}
     \Saida{Combinacao de $S_{\alpha}$ com $S_{\beta}$}
 
     $S_C \gets \emptyset$\;
 
     \ParaTodo{$\alpha \in S_{\alpha}$}{
         \ParaTodo{$\beta \in S_{\beta}$}{
-            $S_C \gets S_C \cup \{ f(\alpha, \beta) \}$\;
+            $S_C \gets S_C \cup \{ mesclar(\alpha, \beta) \}$\;
         }
     }
 
     \Retorna{$S_C$}
 
-    \caption{combinar($S_{\alpha}, S_{\beta}, f$)}
+    \caption{combinar($S_{\alpha}, S_{\beta}$)}
     \label{func:combinar}
 \end{function}
 
@@ -119,7 +116,7 @@ A mesclagem das instâncias consiste em gerar uma nova instância a partir de du
     \Entrada{Instâncias $\alpha$ e $\beta$}
     \Saida{Nova instância, mescla de $\alpha$ com $\beta$}
 
-    \Retorna{$\langle \alpha(A) || \beta(A), 1 \cdot (\alpha(C), \beta(C)) \rangle$}
+    \Retorna{$\langle \alpha(A) || \beta(A), 1 \cdot (\alpha(C) < \beta(C)) \rangle$}
 
     \caption{mesclar($\alpha, \beta$)}
     \label{func:mesclar}
@@ -183,8 +180,7 @@ Amostragem consiste em utilizar apenas um subconjunto da base completa a ser usa
 \begin{function}[h!]
     \Entrada{
         Partições de instâncias $S_{\alpha}$, $S_{\beta}$\;
-        Pares por instância $p$\;
-        Função para manipulacão das instâncias $f$
+        Pares por instância $p$
     }
     \Saida{Amostra com pares $S$}
 
@@ -192,13 +188,13 @@ Amostragem consiste em utilizar apenas um subconjunto da base completa a ser usa
     
     \ParaTodo{$\alpha \in S_{\alpha}$}{
         \ParaTodo{$\beta \in Ss_{\beta} \; tal\; que\; Ss_{\beta} \subseteq S_{\beta} \wedge |Ss_{\beta}| = p$}{
-            $S \gets S \cup \{ f(\alpha, \beta) \}$\;
+            $S \gets S \cup \{ mesclar(\alpha, \beta) \}$\;
         }
     }
 
     \Retorna{$S$}
 
-    \caption{amostragem($S_{\alpha}, S_{\beta}, p, f$)}
+    \caption{amostragem($S_{\alpha}, S_{\beta}, p$)}
     \label{func:amostragem}
 \end{function}
 
@@ -225,14 +221,14 @@ De posse das informações necessárias para a implantação do algoritmo \ref{a
     $S_0, S_1 \gets particionar(S)$;
 
     \Se{$i = 1$ e $p = todas$}{
-        $S' \gets combinar(S_0, S_1, mesclar)$\;
-        $S' \gets combinar(S_1, S_0, mesclar)$\;
+        $S' \gets combinar(S_0, S_1)$\;
+        $S' \gets combinar(S_1, S_0)$\;
         $C \gets \{ A(S') \}$\;
     }
     \SenaoSe{$i > 1$ e $0 < p \leq min(|S_0|, |S_1|)$}{
         \Para{$i \gets 1; i \to n$}{
-            $S' \gets amostragem(S_0, S_1, p, mesclar)$\;
-            $S' \gets S' \cup amostragem(S_1, S_0, p, mesclar)$\;
+            $S' \gets amostragem(S_0, S_1, p)$\;
+            $S' \gets S' \cup amostragem(S_1, S_0, p)$\;
             $C \gets C \cup \{ A(S') \}$\;
         }
     }
