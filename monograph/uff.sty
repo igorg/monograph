@@ -1,21 +1,23 @@
+\usepackage[utf8]{inputenc}
+
 % Contador de Figuras
 \setcounter{figure}{0}
 
 % Contador de Tabelas
 \setcounter{table}{0}
 
-%Fonte do título dos capítulos 
+%Fonte do tÃ­tulo dos capÃ­tulos 
 \renewcommand{\ABNTchapterfont}{\bfseries\upshape}
 \renewcommand{\ABNTtocchapterfont}{\ABNTchapterfont\upshape}
 
-%Tamanho da fonte do título dos capítulos
+%Tamanho da fonte do tÃ­tulo dos capÃ­tulos
 \renewcommand{\ABNTchaptersize}{\Large}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-% Apêndices e Capítulos
+% ApÃªndices e CapÃ­tulos
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Redefinindo a Formatação do Título dos Capítulos
+% Redefinindo a FormataÃ§Ã£o do TÃ­tulo dos CapÃ­tulos
 \def\@makeschapterhead#1{%
   \vspace*{0pt}\par
   {\flushleft\normalfont\upshape\ABNTchaptersize\ABNTchapterfont%
@@ -25,7 +27,7 @@
   \par%
 }
 
-% Redefinido a Formatação dos capítulos pré-textuais.
+% Redefinido a FormataÃ§Ã£o dos capÃ­tulos prÃ©-textuais.
 \def\@makepchapterhead#1{%
   \vspace*{0pt}\par
   {\center\upshape\ABNTchaptersize\ABNTchapterfont%
@@ -35,8 +37,8 @@
   \par%
 }
 
-% Redefinido a Formatação dos capítulos pré-textuais que não aparecerão 
-% no sumário
+% Redefinido a FormataÃ§Ã£o dos capÃ­tulos prÃ©-textuais que nÃ£o aparecerÃ£o 
+% no sumÃ¡rio
 \def\@makesprechaphead#1{%
   \vspace*{0pt}\par
   {\centering\normalfont\ABNTchaptersize\ABNTchapterfont%
@@ -47,7 +49,7 @@
 }
 
 
-%Redefinição dos ambientes de seção e sub-seção (tamanho da fonte e itálico)
+%RedefiniÃ§Ã£o dos ambientes de seÃ§Ã£o e sub-seÃ§Ã£o (tamanho da fonte e itÃ¡lico)
 \renewcommand\section{\ABNTstartsection{section}{1}{\z@}%
                            {-3.5ex \@plus -1ex \@minus -.2ex}%
                            {2.3ex \@plus.2ex}%
@@ -59,7 +61,7 @@
                            {\espaco{simples}\normalfont\noindent%
                             \ABNTsectionfont\normalsize\textit}}
 
-% Sumário: alterações na fonte exibida no título da página
+% SumÃ¡rio: alteraÃ§Ãµes na fonte exibida no tÃ­tulo da pÃ¡gina
 \renewcommand{\tableofcontents}{%
   \ifthenelse{\boolean{@twocolumn}}%
     {\setboolean{ABNTrestorecol}{true}\onecolumn}%
@@ -79,7 +81,7 @@
 
 \let\sumario\tableofcontents\relax
 
-% Lista de Figuras: alterações na fonte exibida no título da página
+% Lista de Figuras: alteraÃ§Ãµes na fonte exibida no tÃ­tulo da pÃ¡gina
 \renewcommand{\listoffigures}{%
   \ifthenelse{\boolean{@twocolumn}}%
     {\setboolean{ABNTrestorecol}{true}\onecolumn}%
@@ -93,7 +95,7 @@
 
 \let\listadefiguras\listoffigures\relax
 
-% Lista de Tabelas: alterações na fonte exibida no título da página
+% Lista de Tabelas: alteraÃ§Ãµes na fonte exibida no tÃ­tulo da pÃ¡gina
 \renewcommand\listoftables{%
   \ifthenelse{\boolean{@twocolumn}}%
     {\setboolean{ABNTrestorecol}{true}\onecolumn}%
@@ -107,7 +109,7 @@
 
 \let\listadetabelas\listoftables\relax
 
-% Bibliografia: apenas alterado o nome ("Bibliografia" ao invés de "Referencias Bibliograficas")
+% Bibliografia: apenas alterado o nome ("Bibliografia" ao invÃ©s de "Referencias Bibliograficas")
 \renewenvironment{thebibliography}[1]%
   {
    \if@openright\cleardoublepage\else\clearpage\fi%
@@ -144,26 +146,26 @@
 	\endlist%
 }
 
-% Definição de comando de novo capítulo. Utilizado para formatação correta do nome e 
-% da numeração
+% DefiniÃ§Ã£o de comando de novo capÃ­tulo. Utilizado para formataÃ§Ã£o correta do nome e 
+% da numeraÃ§Ã£o
 \newcommand{\capitulo}[1]{%
 	\refstepcounter{chapter}
 	\setcounter{section}{0}
 	\setcounter{subsection}{0}
-	\chapter*{\uppercase{Capítulo \arabic{chapter} - #1}}
+	\chapter*{\uppercase{CapÃ­tulo \arabic{chapter} - #1}}
 }
 
-% Comando de criação dos apêndices. Atualiza o sumário e formata a página.
-% Deve ser chamado ao início dos apêndices.
+% Comando de criaÃ§Ã£o dos apÃªndices. Atualiza o sumÃ¡rio e formata a pÃ¡gina.
+% Deve ser chamado ao inÃ­cio dos apÃªndices.
 \newcommand{\apendices}{%
 	\newcounter{apendicenum}
 	\setcounter{apendicenum}{0}
-	\chapter*{\uppercase{Apêndice}}
+	\chapter*{\uppercase{ApÃªndice}}
 	\noindent
 	\flushleft
 }
 
-% Comando de criação de um novo apêndice. Ele não será listado no sumário.
+% Comando de criaÃ§Ã£o de um novo apÃªndice. Ele nÃ£o serÃ¡ listado no sumÃ¡rio.
 \renewcommand{\apendice}[1]{%
 	\addtocounter{apendicenum}{1}
 	\ifthenelse{\equal{\value{apendicenum}}{1}}
@@ -171,7 +173,7 @@
 		{\vspace{1cm}}
 	\large
 	\bf{
-		Apêndice \Alph{apendicenum}\\[0.5cm]
+		ApÃªndice \Alph{apendicenum}\\[0.5cm]
 		#1
 	}\\[1cm]
 	\normalsize
@@ -183,8 +185,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-% Comando de criação de legenda em figuras.
-% Substitui o \caption, para alterar a forma de exibição das entradas 
+% Comando de criaÃ§Ã£o de legenda em figuras.
+% Substitui o \caption, para alterar a forma de exibiÃ§Ã£o das entradas 
 % na tabela de figuras.
 \newcommand{\FigLegenda}[1]{
 	\refstepcounter\@captype
@@ -193,8 +195,8 @@
 	\@makecaption{Figura \arabic{figure}}{#1}\par
 }
 
-% Comando de criação de legenda em tabelas.
-% Substitui o \caption, para alterar a forma de exibição das entradas 
+% Comando de criaÃ§Ã£o de legenda em tabelas.
+% Substitui o \caption, para alterar a forma de exibiÃ§Ã£o das entradas 
 % na tabela de tabelas.
 \newcommand{\TabLegenda}[1]{
 	\refstepcounter\@captype
@@ -204,7 +206,7 @@
 }
 
 %%%%%%%%%%%%%%%%%%%%%
-% Premâbulo         
+% PremÃ¢bulo         
 %%%%%%%%%%%%%%%%%%%%%
 
 % Atributos:
@@ -217,17 +219,17 @@
 \renewcommand{\orientador}[1]{\renewcommand{\UFForientador}{#1}}
 \renewcommand{\coorientador}[1]{\renewcommand{\UFFcoorientador}{#1}}
 
-% Alguns valores padrão:
+% Alguns valores padrÃ£o:
 
 \newcommand{\UFFautor}{Autor}
-\newcommand{\UFFtitulo}{Título}
+\newcommand{\UFFtitulo}{TÃ­tulo}
 \newcommand{\UFFano}{2006}
 \newcommand{\UFFmes}{agosto}
-\newcommand{\UFFlocal}{Niterói}
+\newcommand{\UFFlocal}{NiterÃ³i}
 \newcommand{\UFForientador}{Orientador}
 \newcommand{\UFFcoorientador}{}
 
-% Comando de geração da capa
+% Comando de geraÃ§Ã£o da capa
 
 \renewcommand{\capa}{
 	\begin{titlepage}
@@ -237,10 +239,10 @@
 	          	\uppercase{UNIVERSIDADE FEDERAL FLUMINENSE} \\
 	 	       }
 		       \normalsize {
-	           	\uppercase{INSTITUTO DE COMPUTAÇÃO} \\
+	           	\uppercase{INSTITUTO DE COMPUTAÃ‡ÃƒO} \\
 		       }
 	         \normalsize {
-	            \uppercase{DEPARTAMENTO DE CIÊNCIA DA COMPUTAÇÃO} \\[2.8cm]
+	            \uppercase{DEPARTAMENTO DE CIÃŠNCIA DA COMPUTAÃ‡ÃƒO} \\[2.8cm]
 	         }
 	      }
 	   \end{center}
@@ -266,7 +268,7 @@
 	\end{titlepage}
 }
 
-% Comando para geração da folha de rosto
+% Comando para geraÃ§Ã£o da folha de rosto
 
 \renewcommand{\folhaderosto}{
 	\begin{titlepage}
@@ -278,7 +280,7 @@
 	   \begin{minipage}{.5\textwidth}
 	     \begin{espacosimples}
 	       \bf{
-		Monografia apresentada ao Departamento de Ciência da Computação da Universidade Federal Fluminense como parte dos requisitos para obtenção do Grau de Bacharel em Ciência da Computação. \\[1cm] 
+		Monografia apresentada ao Departamento de CiÃªncia da ComputaÃ§Ã£o da Universidade Federal Fluminense como parte dos requisitos para obtenÃ§Ã£o do Grau de Bacharel em CiÃªncia da ComputaÃ§Ã£o. \\[1cm] 
 	       }      
 	     \end{espacosimples}
 	   \end{minipage}
@@ -299,7 +301,7 @@
 	\end{titlepage}
 }
 
-% Definição do ambiente usado para o termo de aprovação
+% DefiniÃ§Ã£o do ambiente usado para o termo de aprovaÃ§Ã£o
 
 \newenvironment{termo}{
 	\begin{titlepage}
@@ -311,7 +313,7 @@
 	   \begin{minipage}{.5\textwidth}
 	     \begin{espacosimples}
 	       \bf{
-		Monografia apresentada ao Departamento de Ciência da Computação da Universidade Federal Fluminense como parte dos requisitos para obtenção do Grau de Bacharel em Ciência da Computação. \\[0.3cm] 
+		Monografia apresentada ao Departamento de CiÃªncia da ComputaÃ§Ã£o da Universidade Federal Fluminense como parte dos requisitos para obtenÃ§Ã£o do Grau de Bacharel em CiÃªncia da ComputaÃ§Ã£o. \\[0.3cm] 
 	       }      
 	     \end{espacosimples}
 	   \end{minipage}
@@ -330,11 +332,11 @@
 	\end{titlepage}
 }
 
-% Comando de adição de membros da banca.
+% Comando de adiÃ§Ã£o de membros da banca.
 % Argumentos: 
-% 1° obrigatório: nome do membro, com seu cargo e formação.
-% 2° obrigatório: instituição de origem
-% opcional: texto que ficará entre as duas informações acima. Tipicamente, "Orientador".
+% 1Â° obrigatÃ³rio: nome do membro, com seu cargo e formaÃ§Ã£o.
+% 2Â° obrigatÃ³rio: instituiÃ§Ã£o de origem
+% opcional: texto que ficarÃ¡ entre as duas informaÃ§Ãµes acima. Tipicamente, "Orientador".
 
 \newcommand{\banca}[3][]{
 		\vspace{7mm}
@@ -358,7 +360,7 @@
 	\end{titlepage}
 }
 
-% Comando de adição de palavras chave
+% Comando de adiÃ§Ã£o de palavras chave
 \newcommand{\palavrasChave}[1]{
 	\vspace{72pt}
 	\begin{onehalfspace}
@@ -381,7 +383,7 @@
 	\end{titlepage}
 }
 
-% Comando de adição de keywords
+% Comando de adiÃ§Ã£o de keywords
 \newcommand{\keywords}[1]{
 	\vspace{72pt}
 	\begin{onehalfspace}
@@ -391,11 +393,11 @@
 	\end{onehalfspace}
 }
 
-% Ambiente da tabela de acrônimos
+% Ambiente da tabela de acrÃ´nimos
 \newenvironment{acronimos}{
 	\begin{titlepage}
 		\begin{center}
-			\bf{ \Large{ \uppercase{LISTA DE ACRÔNIMOS}}}\\[36pt]
+			\bf{ \Large{ \uppercase{LISTA DE ACRÃ”NIMOS}}}\\[36pt]
 		\end{center}
 		\noindent
 		\begin{onehalfspace}
@@ -410,8 +412,8 @@
 	\end{titlepage}
 }
 
-% Comando de inserção de acrônimos. Só deve ser utilizado dentro do arquivo de acrônimos.
-% Parâmetros: acrônimo e significado, respectivamente.
+% Comando de inserÃ§Ã£o de acrÃ´nimos. SÃ³ deve ser utilizado dentro do arquivo de acrÃ´nimos.
+% ParÃ¢metros: acrÃ´nimo e significado, respectivamente.
 \newcommand{\acronimo}[2]{%
 		#1: \> #2\\%
 }
