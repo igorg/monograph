@@ -9,6 +9,13 @@
 \usepackage[ruled,lined,portuguese]{algorithm2e}
 \usepackage{subfig}
 
+\AtBeginSection[]
+{
+    \begin{frame}
+        \frametitle{Sumário}
+        \tableofcontents[currentsection]
+    \end{frame}
+}
 
 \title{Implantação e Avaliação de um Algoritmo de Ranking Baseado em Classificação}
 \author{Igor Giusti}
@@ -17,8 +24,10 @@
 
 \frame{\titlepage}
 
-\section{Sumário}
-\frame{\tableofcontents}
+\begin{frame}
+    \frametitle{Sumário}
+    \tableofcontents
+\end{frame}
 
 \section{Introdução}
 \input{introduction}

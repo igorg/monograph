@@ -61,7 +61,7 @@
     \end{function}
 
     \begin{function}[H]
-        \Retorna{$\langle \alpha(A) || \beta(A), 1 \cdot (\alpha(C), \beta(C)) \rangle$}
+        \Retorna{$\langle \alpha(A) || \beta(A), 1 \cdot (\alpha(C) < \beta(C)) \rangle$}
 
         \caption{mesclar($\alpha, \beta$)}
     \end{function}
@@ -78,7 +78,7 @@
     \frametitle{AUC-Train: Otimizações}
 
     \begin{block}{Desvantagem}
-        O custo computacional adicionados pelas etapa de particionamento e principalmente pela etapa de combinação é alto.
+        O custo computacional adicionado pela etapa de particionamento e principalmente pela etapa de combinação é alto.
     \end{block}
 
     \begin{block}{Sugestões de Otimização}
@@ -117,14 +117,14 @@
         $S_0, S_1 \gets particionar(S)$;
 
         \Se{$i = 1$ e $p = todas$}{
-            $S' \gets combinar(S_0, S_1, mesclar)$\;
-            $S' \gets combinar(S_1, S_0, mesclar)$\;
+            $S' \gets combinar(S_0, S_1)$\;
+            $S' \gets combinar(S_1, S_0)$\;
             $C \gets \{ A(S') \}$\;
         }
         \SenaoSe{$i > 1$ e $0 < p \leq min(|S_0|, |S_1|)$}{
             \Para{$i \gets 1; i \to n$}{
-                $S' \gets amostragem(S_0, S_1, p, mesclar)$\;
-                $S' \gets S' \cup amostragem(S_1, S_0, p, mesclar)$\;
+                $S' \gets amostragem(S_0, S_1, p)$\;
+                $S' \gets S' \cup amostragem(S_1, S_0, p)$\;
                 $C \gets C \cup \{ A(S') \}$\;
             }
         }
