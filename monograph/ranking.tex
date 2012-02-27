@@ -49,7 +49,7 @@ O principal ponto negativo é a performance da técnica no que diz respeito a te
 
 Os algoritmos expostos nesse capítulo estão descritos em pseudo-código e em sua maioria se baseiam em conceitos de teoria de conjuntos e vetores; uma vez que as principais estruturas manipuladas, base e instâncias, foram definidas sobre esses conceitos.
 
-Assim como a maioria das técnicas de aprendizagem supervisionada, o \emph{ranking reduzido a classificação} pode ser dividido em duas grandes partes distintas: a primeira é o treinamento de um ordenador e a segunda é a ordenação de uma base a partir do ordenador treinado.
+Assim como a maioria das técnicas de aprendizado supervisionada, o \emph{ranking reduzido a classificação} pode ser dividido em duas grandes partes distintas: a primeira é o treinamento de um ordenador e a segunda é a ordenação de uma base a partir do ordenador treinado.
 
 Como os algoritmos nas etapas de treinamento e avaliação para a técnica de \emph{ranking reduzido a classificação} são, respectivamente, \emph{AUC-Train} e \emph{Tournament}; a complexidade da técnica será estudada a partir das complexidades desses dois algoritmos separadamente.
 
@@ -61,12 +61,12 @@ Considera-se como entrada para o algoritmo \emph{AUC-Train} uma base $S$ com $n$
 \begin{enumerate}
     \item particionar a base de treinamento em duas bases $S_0$ e $S_1$; $S_0$ possui as instâncias de classe $0$ e $S_1$ possui as instâncias de classe $1$;
     \item combinar as partições $S_0$ e $S_1$ de forma que a base de treinamento $S'$ possua todos os pares entre instâncias de classe $1$ e de classe $0$;
-    \item aplicar um algoritmo de aprendizagem $A$ à base $S'$ obtendo um classificador $c$ como saída.
+    \item aplicar um algoritmo de aprendizado $A$ à base $S'$ obtendo um classificador $c$ como saída.
 \end{enumerate}
 
-Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento, da aplicação de duas combinações entre as partições e da aplicação do algoritmo de aprendizagem.
+Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento, da aplicação de duas combinações entre as partições e da aplicação do algoritmo de aprendizado.
 
-Por se tratar de uma técnica baseada em metaclassificação, não é possível determinar um custo computacional para a $3^a$ etapa, pois algoritmos de aprendizagem para classificação distintos executam em tempos distintos. Portanto, o estudo da complexidade da técnica \emph{AUC-Train} será baseado na computação extra que as etapas 1 e 2 acrescentam ao aprendizado.
+Por se tratar de uma técnica baseada em metaclassificação, não é possível determinar um custo computacional para a $3^a$ etapa, pois algoritmos de aprendizado para classificação distintos executam em tempos distintos. Portanto, o estudo da complexidade da técnica \emph{AUC-Train} será baseado na computação extra que as etapas 1 e 2 acrescentam ao aprendizado.
 
 Para o particionamento da base, basta iterar uma vez pela base original incluindo as instâncias de classe $0$ no conjunto $S_0$ e as de classe $1$ no conjunto $S_1$, como mostrado na \emph{função \ref{func:particionar}}. Essa etapa executa sempre em tempo $O(n)$.
 
@@ -176,7 +176,7 @@ Analisando a tabela \ref{auc-train-complexity}, percebe-se que o gargalo do algo
 
 Recapitulando, o algoritmo \ref{alg:auc-train} \emph{(AUC-Train)} é composto de três etapas principais: particionamento, com a \emph{função \ref{func:particionar}}; combinação das partições, com a \emph{função \ref{func:combinar}}; e treinamento do classificador.
 
-De acordo com o estudo de complexidade , verificou-se que o custo computacional adicionado pelas duas primeiras etapas do algoritmo  original, principalmente a de combinação, é alto. Duas estratégias, familiares no campo de aprendizagem de máquina, são propostas para mitigar esse custo: Amostragem e Votação.
+De acordo com o estudo de complexidade , verificou-se que o custo computacional adicionado pelas duas primeiras etapas do algoritmo  original, principalmente a de combinação, é alto. Duas estratégias, familiares no campo de aprendizado de máquina, são propostas para mitigar esse custo: Amostragem e Votação.
 
 Amostragem consiste em utilizar apenas um subconjunto da base completa a ser usada no treinamento do classificador. O objetivo da estratégia não é reduzir a complexidade intríseca das etapas de particionamento e combinação, mas limitar a quantidade de instâncias a serem combinadas amortizando o que seria o tempo total de geração das novas instâncias. A \emph{função \ref{func:amostragem}} ilustra o processo de amostragem utilizado nesse estudo.
 
@@ -204,7 +204,7 @@ Amostragem consiste em utilizar apenas um subconjunto da base completa a ser usa
 
 Votação consiste em treinar vários classificadores em vez de apenas um. Para avaliar uma instância, basta submetê-la aos classificadores e coletar as previsões. A classe que mais figurar entre as previsões é então a classe da instância.
 
-Não há sentido em executar uma votação em que os classificadores foram aprendidos a partir da mesma base de treinamento. Isso resultaria em classificadores iguais e, portanto, seus votos também seriam iguais. Esse panorama só deixaria de ocorrer se o próprio algoritmo de aprendizagem inserisse alguma incerteza durante o treinamento.
+Não há sentido em executar uma votação em que os classificadores foram aprendidos a partir da mesma base de treinamento. Isso resultaria em classificadores iguais e, portanto, seus votos também seriam iguais. Esse panorama só deixaria de ocorrer se o próprio algoritmo de aprendizado inserisse alguma incerteza durante o treinamento.
 
 Apesar de o uso da amostragem beneficiar o tempo de execução, o classificador resultante não será treinado com todas as informações disponíveis, o que pode causar um efeito de intensificação dos erros de classificação. Com a votação, embora o treinamento de diversos classificadores resulte em acréscimo de tempo para o algoritmo, geralmente o resultado da classificação possuirá menos erros.
 
@@ -215,7 +215,7 @@ De posse das informações necessárias para a implantação do algoritmo \ref{a
 \begin{algorithm}[h!]
     \Entrada{
         Base de treinamento $S$\;
-        Algoritmo de aprendizagem para classificação $A$\;
+        Algoritmo de aprendizado para classificação $A$\;
         Quantidade de classificadores a serem treinados $n$\;
         Pares por instância $p$
     }
