@@ -29,7 +29,7 @@ A \emph{função $\ref{func:one}$}, aplicada para obter a classe da nova instân
 
 A modificação da etapa de avaliação tem como objetivo usar as previsões do classificador treinado pelo \emph{algoritmo \emph{AUC-Train}} para gerar o \emph{ranking} da base de avaliação. O algoritmo que efetua a ordenação recebe o nome de \emph{Tournament}, torneio em português. O porquê do nome é devido ao algoritmo se assemelhar muito a um torneio em que muitos competidores se enfrentam, formando um \emph{ranking} de acordo com suas performances.
 
-Continuando a analogia com uma competição, a performance de cada instância na avaliação é medida como a quantidade de "vitórias" que essa instância obteve diante das outras instâncias na base de avaliação. Para gerar o \emph{ranking}, basta promover o embate entre todas as instâncias na base e ordenar pelo número de "vitórias".
+Continuando a analogia com uma competição, a performance de cada instância na ordenação é medida como a quantidade de "vitórias" que essa instância obteve diante das outras instâncias na base a ser ordenada. Para gerar o \emph{ranking}, basta promover o embate entre todas as instâncias na base e ordenar pelo número de "vitórias".
 
 Como desejamos ordenar as instâncias de forma que as que tenham maior chance de pertencer à classe $0$ estejam no topo, a semântica de "vitoria" é: em um embate entre duas instâncias, a instância vencedora é a que possui a maior chance de pertencer à classe $0$. Quem define a instância vitoriosa em um embate é a previsão do classificador binário.
 
@@ -51,7 +51,7 @@ Os algoritmos expostos nesse capítulo estão descritos em pseudo-código e em s
 
 Assim como a maioria das técnicas de aprendizado supervisionada, o \emph{ranking reduzido a classificação} pode ser dividido em duas grandes partes distintas: a primeira é o treinamento de um ordenador e a segunda é a ordenação de uma base a partir do ordenador treinado.
 
-Como os algoritmos nas etapas de treinamento e avaliação para a técnica de \emph{ranking reduzido a classificação} são, respectivamente, \emph{AUC-Train} e \emph{Tournament}; a complexidade da técnica será estudada a partir das complexidades desses dois algoritmos separadamente.
+Como os algoritmos nas etapas de treinamento e ordenação para a técnica de \emph{ranking reduzido a classificação} são, respectivamente, \emph{AUC-Train} e \emph{Tournament}; a complexidade da técnica será estudada a partir das complexidades desses dois algoritmos separadamente.
 
 
 \section{Treinamento: Estudo de complexidade do algoritmo \emph{AUC-Train}}
