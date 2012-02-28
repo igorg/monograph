@@ -4,11 +4,11 @@ Os esforços para otimizar o tempo na etapa de avaliação consistiram em implan
 
 O classificador Naïve Bayes teve um desempenho incomum quando combinado com o algortimo de \emph{Ranking}. Esse classificador gerou resultados absurdamente abaixo do esperado para todas as bases testadas, exceto para a base \emph{yeast}.
 
-Analisando os gráficos da seçao \ref{sec:avaliacao}, repara-se que, para a base \emph{glass}, os resultados começam a melhorar em relação aos obtidos para as bases \emph{breast-cancer}, \emph{vehicle} e \emph{hepatitis}. Já para a base \emph{yeast}, o Naïve Bayes aliado ao algoritmo de \emph{Ranking} teve uma performance perfeita, acertando quase todas as ordenações. Esse comportamento bipolar não foi elucidado nesse estudo.
+Analisando os gráficos da seçao \ref{sec:avaliacao}, repara-se que, para a base \emph{glass}, os resultados começam a melhorar em relação aos obtidos para as bases \emph{breast-cancer}, \emph{vehicle} e \emph{hepatitis}. Já para a base \emph{yeast}, o Naïve Bayes aliado ao algoritmo de \emph{Ranking} teve uma performance excelente, acertando quase todas as ordenações. Esse comportamento anômalo não foi elucidado nesse estudo.
 
 Comparando as estratégias implantadas para acelerar a etapa de treinamento de forma isolada, pode-se chegar a seguinte conclusão: o aumento do número de classificadores na votação cria resultados com menor variação na AUC que o aumento de pares por instância no treinamento.
 
-Olhando as curvas geradas para cada uma dessas estratégias nos gráficos do capítulo \ref{chap:avaliacao}, percebe-se que a tendência para a estratégia de aumento de classificadores na votação é, na maioria dos casos, crescente. Enquanto a tendência para a estratégia de aumento do número de pares por instância não pode ser definida com clareza em alguns casos.
+Olhando as curvas geradas para cada uma dessas estratégias nos gráficos do capítulo \ref{chap:avaliacao}, percebe-se que a tendência da AUC para a estratégia de aumento de classificadores na votação é, na maioria dos casos, crescente. Enquanto a tendência da AUC para a estratégia de aumento do número de pares por instância não pode ser definida com clareza em alguns casos.
 
 O artigo \cite{langford08} mostra que um classificador que produza um erro $\alpha$ na acurácia pode produzir um erro teórico máximo de $n \cdot \alpha$ na AUC, onde $n$ é o número de exemplos a serem ordenados. Mostra também que a técnica de \emph{ranking reduzido a classificação} produz um erro teórico máximo de $2 \cdot \alpha$.
 
