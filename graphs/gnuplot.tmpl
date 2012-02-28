@@ -4,7 +4,7 @@ set key over nobox
 set style data linespoints
 set style line 1 lt 10 lc rgb "violet" lw 1
 set style line 2 lt 5 lc rgb "orange" lw 1
-plot    "%(dat_path)s.dat" u 2:xtic(1) t "iteracoes", \
-        "" u 3 t "pares", \
-        %(cls_mean)s ls 1 t "%(classifier)s", \
+plot    "%(dat_path)s.dat" u 2:xtic(1) t "numero de classificadores", \
+        "" u 3 t "numero de pares", \
+        %(cls_mean)s ls 1 t "classificador", \
         %(ranking_mean)s ls 2 t "ranking"

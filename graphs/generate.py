@@ -49,7 +49,7 @@ except OSError, e:
 for database, dictionary in SCORES.items():
     for classifier, score in dictionary.items():
         cls_mean, ranking_mean = score
-        filename = '%s.%s' % (database, classifier)
+        filename = '%s_%s' % (database, classifier)
 
         tmpl_data = {
             'img_path': join(wd, 'img', filename),
