@@ -1,4 +1,4 @@
-Na área de \emph{aprendizado de máquina}, classificação é tarefa de atribuir rótulos a cada elemento de um dado conjunto tendo como entrada pares elemento-rótulo. Comparativamente, \emph{ranking} é a tarefa de atribuir posições a cada elemento de um dado conjunto tendo como entrada pares elemento-rótulo, uma relação de ordem parcial entre os elementos, ou uma relação de ordem total entre os elementos \cite{tieyan09}.
+Na área de \emph{aprendizado de máquina}, classificação é a tarefa de atribuir rótulos a cada elemento de um dado conjunto tendo como entrada pares elemento-rótulo. Comparativamente, \emph{ranking} é a tarefa de atribuir posições a cada elemento de um dado conjunto tendo como entrada pares elemento-rótulo, uma relação de ordem parcial entre os elementos, ou uma relação de ordem total entre os elementos \cite{tieyan09}.
 
 Embora desempenhem tarefas diferentes com saídas diferentes, algoritmos de classificação e de \emph{ranking} podem compartilhar o mesmo tipo de entrada: pares elemento-rótulo. Isso é uma evidência de que se pode usar um algoritmo de classificação para compor um algoritmo de \emph{ranking}.
 
@@ -34,17 +34,17 @@ Como dito anteriormente, o treinamento e avaliação de um classificador é um p
     \[I = (A, C) \qquad A = \{a_1, ..., a_m\} \qquad C = x \; | \; x \in \{0, 1\}\]
 \end{itemize}
 
-Pode-se acessar os atributos de uma instância $I$ através de $I(A)$ e a classe através de $I(C)$. Nos algortimos do próximo capítulo, quando duas instâncias forem combinadas, os vetores de atributos serão concatenados, isso é feito através do operador binário de concatenação $||$.
+Pode-se acessar os atributos de uma instância $I$ através de $I(A)$ e a classe através de $I(C)$. Nos algoritmos do próximo capítulo, quando duas instâncias forem combinadas, os vetores de atributos serão concatenados, isso é feito através do operador binário de concatenação $||$.
 
 Não será necessária a definição do conceito de atributo. Uma vez que os atributos são manipulados pelo classificador e o funcionamento dos classificadores nas soluções aqui propostas é uma caixa preta, os atributos são transparentes para os propósitos desse trabalho.
 
-A tabela \ref{tab:weather} aprensenta um exemplo de base extraido do livro \cite{wekabook}. Essa base indica se há condições para a prática de um esporte de acordo com medições meteorológicas. Um exemplo dessa base apresenta um conjunto de medições meteorológicas e, de acordo com essas medições, a classe do exemplo pode ser \emph{sim} ou \emph{não}.
+A tabela \ref{tab:weather} apresenta um exemplo de base extraído do livro \cite{wekabook}. Essa base indica se há condições para a prática de um esporte de acordo com medições meteorológicas. Um exemplo dessa base apresenta um conjunto de medições meteorológicas e, de acordo com essas medições, a classe do exemplo pode ser \emph{sim} ou \emph{não}.
 
 \begin{table}[h!]
     \centering
     \begin{tabular}{ccccc}
         \hline
-        panorama & temperatura & humidade & ventoso & adequado para jogo \\
+        panorama & temperatura & umidade & ventoso & adequado para jogo \\
         \hline
         ensolarado & quente & alta & falso & não \\
         ensolarado & quente & alta & verdadeiro & não \\
@@ -82,21 +82,15 @@ Uma medida comum de avaliação para algoritmos de \emph{ranking} é a área sob
 
 A perda, $1 - AUC$, associada a essa medida é calculada pelo número de instâncias, normalizado pela quantidade de $0$s vezes a quantidade de $1$s, que necessitam ser trocadas para um \emph{ranking} perfeito.
 
-% , como ilustra a fórmula abaixo:
-% 
-% \[
-% A
-% \]
-
 Uma ordenação é perfeita quando todas as instâncias com classe $0$ precedem as com classe $1$, nesse caso a perda na \emph{AUC} é $0$. No pior caso, em que todos os $1$s precedem os $0$s, a perda na \emph{AUC} é $1$.
 
-Comparativamente, um erro de classificação pode ter maior influência na medida \emph{AUC} que na acurácia afetando consideravelmente um \emph{ranking}, mas não a classificação. A causa disso é a \emph{AUC} considerar a relação entre as instâncias ordenadas, enquanto a acurácia considera apenas erros e acertos pontualmente. Abaixo ilustramos, através de um exemplo, uma relação entre essas medidas que comprova o intuído sobre erros na classificação.
+Comparativamente, um erro de classificação pode ter maior influência na medida \emph{AUC} que na acurácia afetando consideravelmente um \emph{ranking}, mas não a classificação. A causa disso é a \emph{AUC} considerar a relação entre as instâncias ordenadas, enquanto a acurácia considera apenas erros e acertos pontualmente. A seguir, ilustramos, através de um exemplo, uma relação entre essas medidas que comprova o intuído sobre erros na classificação.
 
 \begin{table}[h!]
     \centering
     \begin{tabular}{cccccc}
         \hline
-        panorama & temperatura & humidade & ventoso & classe & previsão \\
+        panorama & temperatura & umidade & ventoso & classe & previsão \\
         \hline
         ensolarado & quente & alta & falso & não & sim \\
         nublado & quente & alta & falso & sim & sim \\
@@ -120,7 +114,7 @@ Comparativamente, um erro de classificação pode ter maior influência na medid
 
 Na tabela \ref{tab:exemplo}, temos quatorze instâncias ordenadas em um \emph{ranking} com os atributos, as classes e as previsões dadas por um classificador. Podemos perceber que o classificador errou apenas a classe da primeira instância. Calculando a acurácia, temos treze acertos em quatorze possíveis, o que equivale a aproximadamente $93\%$ de acerto.
 
-Calculando a perda da AUC considerando como base a classe \emph{sim}, a primeira instância precisa retroceder nove posições para uma ordenação perfeita, normalizando pelo número de \emph{não}s vezes o número de \emph{sim}s, temos $(1 - AUC) = 9 \div (5 * 9) = 0,2$, logo a AUC vale $80\%$. Esse exemplo comprova que a AUC pode sofrer um impacto maior devido a erros de classificação se comparada à acurácia.
+Calculando a perda da AUC considerando como base a classe \emph{sim}, a primeira instância precisa retroceder nove posições para uma ordenação perfeita, normalizando pelo número de \emph{não's} vezes o número de \emph{sim's}, temos $(1 - AUC) = 9 \div (5 * 9) = 0,2$, logo a AUC vale $80\%$. Esse exemplo comprova que a AUC pode sofrer um impacto maior devido a erros de classificação se comparada à acurácia.
 
 De acordo com \cite{langford08}, se um classificador gera um erro de ordem $\alpha$ na acurácia, ao ordenar uma base a partir das probabilidades das previsões desse classificador, o erro teórico máximo na AUC será de $\alpha \cdot n$, onde $n$ é a cardinalidade da base avaliada. Enquanto para o mesmo classificador, a técnica de \emph{ranking reduzido a classificação} apresenta um erro teórico máximo de $\alpha \cdot 2$.
 
