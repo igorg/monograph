@@ -36,10 +36,10 @@ Foram escolhidos quatro classificadores base para avaliar o algoritmo: J48, Naï
 Para cada classificador base houve quatro baterias de execução com diferentes configurações:
 
 \begin{enumerate}
-    \item Somente o classificador;
-    \item O classificador como base para a técnica de \emph{ranking reduzido a classificação} original;
-    \item O classificador como base para o algoritmo de ranking com configurações de 1 par por instância e variando o número de classificadores na votação entre 1 e 20;
-    \item O classificador como base para o algoritmo de ranking com configurações de 1 classificador na votação e variando o número de pares por instância entre 1 e 20.
+    \item Somente o classificador (classificador);
+    \item O classificador como base para a técnica de \emph{ranking reduzido a classificação} original (ranking);
+    \item O classificador como base para o algoritmo de ranking com configurações de 1 par por instância e variando o número de classificadores na votação entre 1 e 20 (número de classificadores);
+    \item O classificador como base para o algoritmo de ranking com configurações de 1 classificador na votação e variando o número de pares por instância entre 1 e 20 (número de pares).
 \end{enumerate}
 
 Nas três baterias que envolveram o algoritmo de \emph{ranking}, o método de ordenação usado para gerar o resultado final foi o \emph{torneio}, como explicado no artigo \cite{langford08}. Em todas as baterias foi executada uma validação cruzada com 10 partições e os resultados apresentados nas tabelas é a média das \emph{AUCs} obtidas para cada partição.
@@ -99,7 +99,7 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
         \includegraphics[width=0.42\textwidth]{img/yeast_j48.eps}
     }
 
-    \caption{Gráficos de desempenho para árvore de decisão C4.5}
+    \caption{Gráficos de desempenho para árvore de decisão C4.5\\ Eixo y: AUC --- eixo x: número de pares ou classificadores}
 \end{figure}
 
 \clearpage
@@ -155,7 +155,7 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
         \includegraphics[width=0.42\textwidth]{img/yeast_naive-bayes.eps}
     }
 
-    \caption{Gráficos de desempenho para Naïve Bayes}
+    \caption{Gráficos de desempenho para Naïve Bayes\\ Eixo y: AUC --- eixo x: número de pares/ número de classificadores}
 \end{figure}
 
 \clearpage
@@ -211,7 +211,7 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
         \includegraphics[width=0.42\textwidth]{img/yeast_logistic.eps}
     }
 
-    \caption{Gráficos de desempenho para Curva Logística}
+    \caption{Gráficos de desempenho para Curva Logística \\ Eixo y: AUC --- eixo x: número de pares/ número de classificadores}
 \end{figure}
 
 \clearpage
@@ -267,5 +267,5 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
         \includegraphics[width=0.42\textwidth]{img/yeast_smo.eps}
     }
 
-    \caption{Gráficos de desempenho para Support Vector Machine}
+    \caption{Gráficos de desempenho para Support Vector Machine \\ Eixo y: AUC --- eixo x: número de pares/ número de classificadores}
 \end{figure}
