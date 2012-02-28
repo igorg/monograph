@@ -1,8 +1,8 @@
-Como dito anteriormente, a técnica de \emph{ranking reduzido a classificação} aplica uma transformação à base original antes da etapa de treinamento do classificador e modifica a etapa de avaliação a fim de ordenar as instâncias. A transformação da base e o treinamento do classificador compõem um algoritmo de nome \emph{AUC-Train}, transcrito a partir de \cite{langford08} no algoritmo \ref{alg:auc-train}.
+Como dito anteriormente, a técnica de \emph{ranking reduzido a classificação} aplica uma transformação à base original antes da etapa de treinamento do classificador e modifica a etapa de avaliação a fim de ordenar as instâncias. A transformação da base e o treinamento do classificador compõem um algoritmo de nome \emph{AUC-Train}, traduzido a partir de \cite{langford08} no algoritmo \ref{alg:auc-train}.
 
 \begin{algorithm}[h!]
-    Let $S' = \{\langle (x_1, x_2), 1(y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S \; and \;  y_1 \neq y_2\}$\;
-    \Return{$c = A(S')$}
+    Seja $S' = \{\langle (x_1, x_2), 1(y_1 < y_2) \rangle : (x_1, y_1), (x_2, y_2) \in S \; e \;  y_1 \neq y_2\}$\;
+    \Retorna{$c = A(S')$}
     
     \caption{AUC-Train}
     \label{alg:auc-train}
@@ -12,7 +12,7 @@ A transformação consiste em formar novas instâncias a partir de pares entre i
 
 Essa transformação foi implantada particionando a base de treinamento em dois subconjuntos, um subconjunto $S_0$ com as instâncias de classe $0$ e outro, $S_1$, com as instâncias de classe $1$. Com as duas partições definidas, basta combiná-las em um conjunto de elementos com formato final $\langle (i_{\alpha}(A), i_{\beta}(A)), 1(i_{\alpha}(C) < i_{\beta}(C)) \rangle$.
 
-A \emph{função $\ref{func:one}$}, aplicada para obter a classe da nova instância, retorna $1$, se o resultado da expressão avaliada é verdadeiro, ou $0$, se o resultado da expressão é falsa. Como o argumento para a função é $i_{\alpha}(C) < i_{\beta}(C)$, se $i_{\alpha}(C)$ valer $1$, a classe da nova instância será $0$, se valer $0$, a classe da nova instância será $1$.
+A \emph{função $\ref{func:one}$}, aplicada para obter a classe da nova instância, retorna $1$, se o resultado da expressão avaliada é verdadeiro, ou $0$, se o resultado da expressão é falso. Como o argumento para a função é $i_{\alpha}(C) < i_{\beta}(C)$, se $i_{\alpha}(C)$ valer $1$, a classe da nova instância será $0$, se valer $0$, a classe da nova instância será $1$.
 
 \begin{function}[h!]
     $avaliacao \gets 1$\;
@@ -27,17 +27,17 @@ A \emph{função $\ref{func:one}$}, aplicada para obter a classe da nova instân
     \label{func:one}
 \end{function}
 
-A modificação da etapa de avaliação tem como objetivo usar as previsões do classificador treinado pelo \emph{algoritmo \emph{AUC-Train}} para gerar o \emph{ranking} da base de avaliação. O algoritmo que efetua a ordenação recebe o nome de \emph{Tournament}, torneio em português. O porquê do nome é devido ao algoritmo se assemelhar muito a um torneio em que muitos competidores se enfrentam, formando um \emph{ranking} de acordo com suas performances.
+A modificação da etapa de avaliação tem como objetivo usar as previsões do classificador treinado pelo \emph{algoritmo \emph{AUC-Train}} para gerar o \emph{ranking} da base de avaliação. O algoritmo que efetua a ordenação recebe o nome de \emph{Tournament (torneio)}. O porquê do nome é devido ao algoritmo se assemelhar a um torneio em que muitos competidores se enfrentam, formando um \emph{ranking} de acordo com suas performances.
 
 Continuando a analogia com uma competição, a performance de cada instância na ordenação é medida como a quantidade de "vitórias" que essa instância obteve diante das outras instâncias na base a ser ordenada. Para gerar o \emph{ranking}, basta promover o embate entre todas as instâncias na base e ordenar pelo número de "vitórias".
 
 Como desejamos ordenar as instâncias de forma que as que tenham maior chance de pertencer à classe $0$ estejam no topo, a semântica de "vitoria" é: em um embate entre duas instâncias, a instância vencedora é a que possui a maior chance de pertencer à classe $0$. Quem define a instância vitoriosa em um embate é a previsão do classificador binário.
 
-Tecnicamente, um embate entre as instâncias $i_\alpha$ e $i_\beta$ consiste em criar uma nova instância com formato $\langle (i_{\alpha}(A), i_{\beta}(A))\rangle$ e submetê-la à classificação; se a classe prevista da nova instância for $1$, $i_{\alpha}$ vence, se for $0$, $i_{\beta}$ vence. Nota-se que o formato da instância a ser classificada é o mesmo que o de uma instância usada no treinamento do classificador, exceto pela ausência de classe. O algoritmo \ref{alg:tournament} demonstra o processo de ordenação.
+Tecnicamente, um embate entre as instâncias $i_\alpha$ e $i_\beta$ consiste em criar uma nova instância com formato $\langle (i_{\alpha}(A), i_{\beta}(A))\rangle$ e submetê-la à classificação; se a classe prevista da nova instância for $1$, $i_{\alpha}$ vence, se for $0$, $i_{\beta}$ vence. Nota-se que o formato da instância a ser classificada é o mesmo que o de uma instância usada no treinamento do classificador, exceto pela ausência de classe. O algoritmo \ref{alg:tournament}, traduzido de \cite{langford08} demonstra o processo de ordenação.
 
 \begin{algorithm}[h!]
-    For $x \in U$, let $deg(x) = |\{x':c(x, x') = 1, x' \in U\}|$\;
-    Sort U in descending order of deg(x), breaking ties arbitrarily
+    Para $x \in U$, let $deg(x) = |\{x':c(x, x') = 1, x' \in U\}|$\;
+    Ordenar U em ordem decrescente deg(x), resolvendo empates arbitrariamente
     
     \caption{Tournament}
     \label{alg:tournament}
@@ -47,7 +47,7 @@ Uma das vantagens da técnica de \emph{ranking reduzido a classificação} é qu
 
 O principal ponto negativo é a performance da técnica no que diz respeito a tempo computacional. Os algoritmos \ref{alg:auc-train} \emph{(AUC-Train)} e \ref{alg:tournament} \emph{(Tournament)} que constituem o cerne da técnica de \emph{ranking reduzido a classificação} possuem elevada complexidade.
 
-Os algoritmos expostos nesse capítulo estão descritos em pseudo-código e em sua maioria se baseiam em conceitos de teoria de conjuntos e vetores; uma vez que as principais estruturas manipuladas, base e instâncias, foram definidas sobre esses conceitos.
+Os algoritmos expostos neste capítulo estão descritos em pseudo-código e em sua maioria se baseiam em conceitos de teoria de conjuntos e vetores; uma vez que as principais estruturas manipuladas, base e instâncias, foram definidas sobre esses conceitos.
 
 Assim como a maioria das técnicas de aprendizado supervisionada, o \emph{ranking reduzido a classificação} pode ser dividido em duas grandes partes distintas: a primeira é o treinamento de um ordenador e a segunda é a ordenação de uma base a partir do ordenador treinado.
 
@@ -94,7 +94,7 @@ Após o particionamento da base, gera-se o conjunto $S'$ a partir das combinaç�
 
 \begin{function}[h!]
     \Entrada{Conjuntos de instâncias $S_{\alpha}$ e $S_{\beta}$}
-    \Saida{Combinacao de $S_{\alpha}$ com $S_{\beta}$}
+    \Saida{Combinação de $S_{\alpha}$ com $S_{\beta}$}
 
     $S_C \gets \emptyset$\;
 
@@ -122,7 +122,7 @@ A mesclagem das instâncias consiste em gerar uma nova instância a partir de du
     \label{func:mesclar}
 \end{function}
 
-Os casos extremos da \emph{função \ref{func:combinar}} ocorrem quando $k = 0$ ou $k = n$. Nesses casos, todas as instâncias pertencem a mesma classe e o algoritmo não conseguiria formar pares para treinar um classificador; logo, esses casos não estarão incluídos em nossos estudos.
+Os casos extremos da \emph{função \ref{func:combinar}} ocorrem quando $k = 0$ ou $k = n$. Nesses casos, todas as instâncias pertencem à mesma classe e o algoritmo não conseguiria formar pares para treinar um classificador; logo, esses casos não estarão incluídos em nossos estudos.
 
 O melhor caso ocorre, com tempo computacional de $O(n)$, quando $k = 1$ ou $k = n - 1$. Nesses casos, todas as instâncias pertencem à mesma classe, exceto por uma, dessa forma um dos loops executa apenas uma vez, enquanto o outro executa $n$ vezes.
 
@@ -166,7 +166,7 @@ O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento 
     \label{auc-train-complexity}
 \end{table}
 
-Analisando a tabela \ref{auc-train-complexity}, percebe-se que o gargalo do algoritmo \emph{AUC-Train} reside na combinação das instâncias. Na prática, uma otimização foi aplicada ao algoritmo final escrito para o \emph{workbench WEKA}: a \emph{função \ref{func:combinar}} foi levemente alterada para combinar tanto o par $(\alpha, \beta)$ quanto o par $(\beta, \alpha)$; isso elimina a necessidade da aplicação de duas combinações. Apesar da aplicação dessa otimização, a complexidade do algoritmo se mantem inalterada.
+Analisando a tabela \ref{auc-train-complexity}, percebe-se que o gargalo do algoritmo \emph{AUC-Train} reside na combinação das instâncias. Na prática, uma otimização foi aplicada ao algoritmo final escrito para o \emph{workbench WEKA}: a \emph{função \ref{func:combinar}} foi levemente alterada para combinar tanto o par $(\alpha, \beta)$ quanto o par $(\beta, \alpha)$; isso elimina a necessidade da aplicação de duas combinações. Apesar da aplicação dessa otimização, a complexidade do algoritmo se mantém inalterada.
 
 
 \section{Treinamento: Otimizações e implantação do algoritmo \emph{AUC-Train}}
