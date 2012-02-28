@@ -4,7 +4,7 @@ Quanto maior o desbalanceamento entre as classes da base a ser ordenada, maior a
 
 \section{Características das bases}
 
-As bases usadas foram as seguintes: Breast Cancer; Statlog (Vehicle Silhouettes), chamada de Vehicle; Hepatitis; Glass Identification, chamada de Glass e Yeast. Como o algoritmo proposto em {{langford}} tem um custo computacional alto, $O(n^2)$ para treinamento e $O(n^2)$ para gerar o ranking; isso aliado ao baixo controle sobre o ambiente de execução culminou na escolha de bases pequenas para avaliação do experimento.
+As bases usadas foram as seguintes: Breast Cancer; Statlog (Vehicle Silhouettes), chamada de Vehicle; Hepatitis; Glass Identification, chamada de Glass e Yeast. Como o algoritmo proposto em \cite{langford08} tem um custo computacional alto, $O(n^2)$ para treinamento e $O(n^2)$ para gerar o ranking; isso aliado ao baixo controle sobre o ambiente de execução culminou na escolha de bases pequenas para avaliação do experimento.
 
 As bases Vehicle, Glass e Yeast tratam, originalmente, de problemas multiclasse. A essas bases foram aplicadas transformações, descritas em \cite{guo04}, a fim de torná-las problemas de classe binária. Para as bases Vehicle e Glass, foram unidas todas as classes, exceto a minoritária, em uma nova classe. Para a base Yeast, apenas as classes de valor 'CYT' ou 'POX' foram consideradas.
 
@@ -42,7 +42,7 @@ Para cada classificador base houve quatro baterias de execução com diferentes 
     \item O classificador como base para o algoritmo de ranking com configurações de 1 classificador na votação e variando o número de pares por instância entre 1 e 20.
 \end{enumerate}
 
-Nas três baterias que envolveram o algoritmo de \emph{ranking}, o método de ordenação usado para gerar o resultado final foi o \emph{torneio}, como explicado no artigo {{langford}}. Em todas as baterias foi executada uma validação cruzada com 10 partições e os resultados apresentados nas tabelas é a média das \emph{AUCs} obtidas para cada partição.
+Nas três baterias que envolveram o algoritmo de \emph{ranking}, o método de ordenação usado para gerar o resultado final foi o \emph{torneio}, como explicado no artigo \cite{langford08}. Em todas as baterias foi executada uma validação cruzada com 10 partições e os resultados apresentados nas tabelas é a média das \emph{AUCs} obtidas para cada partição.
 
 Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref{logistic_results_table} e \ref{smo_results_table}; o símbolo \textbf{*} significa ranking aplicado com 1 par por instância e 10 classificadores na votação. O símbolo \textbf{**} significa ranking aplicado com 10 pares por instância e 1 classificador na votação.
 
