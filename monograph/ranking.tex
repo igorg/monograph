@@ -8,11 +8,13 @@ Como dito anteriormente, a técnica de \emph{ranking reduzido a classificação}
     \label{alg:auc-train}
 \end{algorithm}
 
-A transformação consiste em formar novas instâncias a partir de pares entre instâncias de classes diferentes. A ordem em que as instâncias aparecem no par é relevante; o par $\langle i_{\alpha}, i_{\beta} \rangle$ e o par $\langle i_{\beta}, i_{\alpha} \rangle$ representam informações diferentes para o aprendizado do classificador. Além disso, as classes das duas instâncias que formam um par são combinadas a fim de gerar uma nova classe para a nova instância.
+No algoritmo \ref{alg:auc-train}, $S$ é a base de treinamento; $S'$ é uma transformação em cima da base de treinamento; $x$ e $y$ são, respectivamente, o vetor de atributos e a classe de uma instância $\langle x, y \rangle$ e $A$ é um algoritmo capaz de aprender um classificador.
 
-Essa transformação foi implantada particionando a base de treinamento em dois subconjuntos, um subconjunto $S_0$ com as instâncias de classe $0$ e outro, $S_1$, com as instâncias de classe $1$. Com as duas partições definidas, basta combiná-las em um conjunto de elementos com formato final $\langle (i_{\alpha}(A), i_{\beta}(A)), 1(i_{\alpha}(C) < i_{\beta}(C)) \rangle$.
+A transformação consiste em formar novas instâncias a partir de combinações entre instâncias de classes diferentes. A ordem das instâncias  na combinação é relevante: o par $\langle (x_1, x_2), 1(y_1 < y_2) \rangle$ e o par $\langle (x_2, x_1), 1(y_2 < y_1) \rangle$ representam informações diferentes para o aprendizado do classificador.
 
-A \emph{função $\ref{func:one}$}, aplicada para obter a classe da nova instância, retorna $1$, se o resultado da expressão avaliada é verdadeiro, ou $0$, se o resultado da expressão é falso. Como o argumento para a função é $i_{\alpha}(C) < i_{\beta}(C)$, se $i_{\alpha}(C)$ valer $1$, a classe da nova instância será $0$, se valer $0$, a classe da nova instância será $1$.
+Essa transformação foi implantada particionando a base de treinamento em dois subconjuntos, um subconjunto $S_0$ com as instâncias de classe $0$ e outro, $S_1$, com as instâncias de classe $1$. Com as duas partições definidas, basta combiná-las em um conjunto de elementos com formato final $\langle (x_{\alpha}, X_{\beta}), 1(y_{\alpha} < y_{\beta}) \rangle$.
+
+A \emph{função $\ref{func:one}$}, aplicada para obter a classe da nova instância, retorna $1$, se o resultado da expressão avaliada é verdadeiro, ou $0$, se o resultado da expressão é falso. Como o argumento para a função é $y_{\alpha} < y_{\beta}$, se $y_{\alpha}$ valer $1$, a classe da nova instância será $0$, se valer $0$, a classe da nova instância será $1$.
 
 \begin{function}[h!]
     $avaliacao \gets 1$\;
@@ -33,15 +35,17 @@ Continuando a analogia com uma competição, a performance de cada instância na
 
 Como desejamos ordenar as instâncias de forma que as que tenham maior chance de pertencer à classe $0$ estejam no topo, a semântica de "vitoria" é: em um embate entre duas instâncias, a instância vencedora é a que possui a maior chance de pertencer à classe $0$. Quem define a instância vitoriosa em um embate é a previsão do classificador binário.
 
-Tecnicamente, um embate entre as instâncias $i_\alpha$ e $i_\beta$ consiste em criar uma nova instância com formato $\langle (i_{\alpha}(A), i_{\beta}(A))\rangle$ e submetê-la à classificação; se a classe prevista da nova instância for $1$, $i_{\alpha}$ vence, se for $0$, $i_{\beta}$ vence. Nota-se que o formato da instância a ser classificada é o mesmo que o de uma instância usada no treinamento do classificador, exceto pela ausência de classe. O algoritmo \ref{alg:tournament}, traduzido de \cite{langford08} demonstra o processo de ordenação.
+Tecnicamente, um embate entre duas instâncias com atributos representados por $x$ e $x'$ consiste em criar uma nova instância com formato $\langle (x, x') \rangle$ e submetê-la a classificação. Se a classe prevista da nova instância for $1$, $x$ vence, se for $0$, $x'$ vence. Nota-se que o formato da instância a ser classificada é o mesmo que o de uma instância usada no treinamento do classificador, exceto pela ausência de classe. O algoritmo \ref{alg:tournament}, traduzido de \cite{langford08} demonstra o processo de ordenação.
 
 \begin{algorithm}[h!]
-    Para $x \in U$, let $deg(x) = |\{x':c(x, x') = 1, x' \in U\}|$\;
-    Ordenar U em ordem decrescente deg(x), resolvendo empates arbitrariamente
+    Para $x \in U$, seja $grau(x) = |\{x':c(x, x') = 1, x' \in U\}|$\;
+    Ordenar U em ordem decrescente de $grau(x)$, resolvendo empates arbitrariamente
     
     \caption{Tournament}
     \label{alg:tournament}
 \end{algorithm}
+
+No algortimo \ref{alg:tournament}, $U$ é uma base composta por instâncias sem classes assinaladas; $x$ e $x'$ são vetores de atributos de duas instâncias em um embate; $c$ é o classificador aprendido pela etapa \emph{AUC-Train} e $grau(x)$ é a quantidade de "vitórias" obtidas pela instância $x$ sobre as demais instâncias em $U$.
 
 Uma das vantagens da técnica de \emph{ranking reduzido a classificação} é que o uso de um algoritmo de aprendizado para classificação é transparente. Essa característica possibilitou o uso dos algoritmos de classificação existentes na ferramenta \emph{WEKA}.
 
@@ -64,9 +68,9 @@ Considera-se como entrada para o algoritmo \emph{AUC-Train} uma base $S$ com $n$
     \item aplicar um algoritmo de aprendizado $A$ à base $S'$ obtendo um classificador $c$ como saída.
 \end{enumerate}
 
-Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento, da aplicação de duas combinações entre as partições e da aplicação do algoritmo de aprendizado.
+Em questão de custo computacional, o tempo de execução do algoritmo \emph{AUC-Train} é composto pela soma dos tempos de particionamento da base de treinamento, da combinação entre as partições e da aplicação do algoritmo de aprendizado.
 
-Por se tratar de uma técnica baseada em metaclassificação, não é possível determinar um custo computacional para a $3^a$ etapa, pois algoritmos de aprendizado para classificação distintos executam em tempos distintos. Portanto, o estudo da complexidade da técnica \emph{AUC-Train} será baseado na computação extra que as etapas 1 e 2 acrescentam ao aprendizado.
+Por se tratar de uma técnica baseada em metaclassificação, não é possível determinar um custo computacional para a 3ª etapa, pois algoritmos de aprendizado para classificação distintos executam em tempos distintos. Portanto, o estudo da complexidade da técnica \emph{AUC-Train} será baseado na computação extra que as etapas 1 e 2 acrescentam ao aprendizado.
 
 Para o particionamento da base, basta iterar uma vez pela base original incluindo as instâncias de classe $0$ no conjunto $S_0$ e as de classe $1$ no conjunto $S_1$, como mostrado na \emph{função \ref{func:particionar}}. Essa etapa executa sempre em tempo $O(n)$.
 
@@ -77,7 +81,7 @@ Para o particionamento da base, basta iterar uma vez pela base original incluind
     $S_0, S_1 \gets \emptyset$\;
     
     \ParaTodo{$i \in S$}{
-        \eSe{$i(C) = 0$}{
+        \eSe{$y_i = 0$}{
             $S_0 \gets S_0 \cup \{ i \}$\;
         }{
             $S_1 \gets S_1 \cup \{ i \}$\;
@@ -93,20 +97,21 @@ Para o particionamento da base, basta iterar uma vez pela base original incluind
 Após o particionamento da base, gera-se o conjunto $S'$ a partir das combinações entre as partições $S_0$ e $S_1$. A \emph{função \ref{func:combinar}} é a encarregada de formar novas instâncias a partir da mesclagem das instâncias nas partições $S_0$ e $S_1$. Essa função deve ser executada duas vezes a fim de formar todos os pares.
 
 \begin{function}[h!]
-    \Entrada{Conjuntos de instâncias $S_{\alpha}$ e $S_{\beta}$}
-    \Saida{Combinação de $S_{\alpha}$ com $S_{\beta}$}
+    \Entrada{Conjuntos de instâncias $S_0$ e $S_1$}
+    \Saida{Combinação de $S_0$ com $S_1$}
 
     $S_C \gets \emptyset$\;
 
-    \ParaTodo{$\alpha \in S_{\alpha}$}{
-        \ParaTodo{$\beta \in S_{\beta}$}{
-            $S_C \gets S_C \cup \{ mesclar(\alpha, \beta) \}$\;
+    \ParaTodo{$i \in S_0$}{
+        \ParaTodo{$j \in S_1$}{
+            $S_C \gets S_C \cup \{ mesclar(i, j) \}$\;
+            $S_C \gets S_C \cup \{ mesclar(j, i) \}$
         }
     }
 
     \Retorna{$S_C$}
 
-    \caption{combinar($S_{\alpha}, S_{\beta}$)}
+    \caption{combinar($S_0, S_1$)}
     \label{func:combinar}
 \end{function}
 
@@ -116,7 +121,7 @@ A mesclagem das instâncias consiste em gerar uma nova instância a partir de du
     \Entrada{Instâncias $\alpha$ e $\beta$}
     \Saida{Nova instância, mescla de $\alpha$ com $\beta$}
 
-    \Retorna{$\langle \alpha(A) || \beta(A), 1 \cdot (\alpha(C) < \beta(C)) \rangle$}
+    \Retorna{$\langle (x_{\alpha}, x_{\beta}), 1(y_{\alpha} < y_{\beta}) \rangle$}
 
     \caption{mesclar($\alpha, \beta$)}
     \label{func:mesclar}
@@ -144,7 +149,7 @@ Desenvolvendo o somatório:
 
 Logo, a complexidade do caso médio é igual a $O(f_{avg}) = O(\frac{n^2 + n}{6}) = O(n^2)$.
 
-O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento possui metade das instâncias com classe $0$ e a outra metade com classe $1$. A combinação ocorrerá entre dois conjuntos com $\frac{n}{2}$ instâncias, resultando na complexidade assintótica $O(\frac{n}{2} \cdot \frac{n}{2}) = O(\frac{n^2}{4}) = O(n^2)$.
+O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento possui metade das instâncias com classe $0$ e a outra metade com classe $1$. A combinação ocorrerá entre dois conjuntos com $\frac{n}{2}$ instâncias, resultando na complexidade assintótica $O(\frac{n}{2} \cdot \frac{n}{2}) = O(\frac{n^2}{4}) = O(n^2)$. Analisando a tabela \ref{auc-train-complexity}, percebe-se que o gargalo do algoritmo \emph{AUC-Train} reside na combinação das instâncias.
 
 \begin{table}[h!]
     \centering
@@ -166,14 +171,12 @@ O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento 
     \label{auc-train-complexity}
 \end{table}
 
-Analisando a tabela \ref{auc-train-complexity}, percebe-se que o gargalo do algoritmo \emph{AUC-Train} reside na combinação das instâncias. Na prática, uma otimização foi aplicada ao algoritmo final escrito para o \emph{workbench WEKA}: a \emph{função \ref{func:combinar}} foi levemente alterada para combinar tanto o par $(\alpha, \beta)$ quanto o par $(\beta, \alpha)$; isso elimina a necessidade da aplicação de duas combinações. Apesar da aplicação dessa otimização, a complexidade do algoritmo se mantém inalterada.
-
 
 \section{Treinamento: Otimizações e implantação do algoritmo \emph{AUC-Train}}
 
 Recapitulando, o algoritmo \ref{alg:auc-train} \emph{(AUC-Train)} é composto de três etapas principais: particionamento, com a \emph{função \ref{func:particionar}}; combinação das partições, com a \emph{função \ref{func:combinar}}; e treinamento do classificador.
 
-De acordo com o estudo de complexidade , verificou-se que o custo computacional adicionado pelas duas primeiras etapas do algoritmo  original, principalmente a de combinação, é alto. Duas estratégias, familiares no campo de aprendizado de máquina, são propostas para mitigar esse custo: Amostragem e Votação.
+De acordo com o estudo de complexidade , verificou-se que o custo computacional adicionado pelas duas primeiras etapas do algoritmo  original, principalmente a de combinação, é alto. Nós propomos duas estratégias, familiares no campo de aprendizado de máquina, para mitigar esse custo: Amostragem e Votação.
 
 Amostragem consiste em utilizar apenas um subconjunto da base completa a ser usada no treinamento do classificador. O objetivo da estratégia não é reduzir a complexidade intríseca das etapas de particionamento e combinação, mas limitar a quantidade de instâncias a serem combinadas amortizando o que seria o tempo total de geração das novas instâncias. A \emph{função \ref{func:amostragem}} ilustra o processo de amostragem utilizado nesse estudo.
 
@@ -184,15 +187,15 @@ Amostragem consiste em utilizar apenas um subconjunto da base completa a ser usa
     }
     \Saida{Amostra com pares $S$}
 
-    $S \gets \emptyset$\;
+    $S_a \gets \emptyset$\;
     
     \ParaTodo{$\alpha \in S_{\alpha}$}{
-        \ParaTodo{$\beta \in Ss_{\beta} \; tal\; que\; Ss_{\beta} \subseteq S_{\beta} \wedge |Ss_{\beta}| = p$}{
-            $S \gets S \cup \{ mesclar(\alpha, \beta) \}$\;
+        \ParaTodo{$\beta \in SS_{\beta} \; tal\; que\; SS_{\beta} \subseteq S_{\beta} \; e \; |SS_{\beta}| = p$}{
+            $S_a \gets S_a \cup \{ mesclar(\alpha, \beta) \}$\;
         }
     }
 
-    \Retorna{$S$}
+    \Retorna{$S_a$}
 
     \caption{amostragem($S_{\alpha}, S_{\beta}, p$)}
     \label{func:amostragem}
@@ -220,12 +223,11 @@ De posse das informações necessárias para a implantação do algoritmo \ref{a
     $C \gets \emptyset$\;
     $S_0, S_1 \gets particionar(S)$;
 
-    \Se{$i = 1$ e $p = todas$}{
+    \Se{$n = 1$ e $p = todas$}{
         $S' \gets combinar(S_0, S_1)$\;
-        $S' \gets combinar(S_1, S_0)$\;
         $C \gets \{ A(S') \}$\;
     }
-    \SenaoSe{$i > 1$ e $0 < p \leq min(|S_0|, |S_1|)$}{
+    \SenaoSe{$n > 1$ e $0 < p \leq min(|S_0|, |S_1|)$}{
         \Para{$i \gets 1; i \to n$}{
             $S' \gets amostragem(S_0, S_1, p)$\;
             $S' \gets S' \cup amostragem(S_1, S_0, p)$\;
@@ -239,7 +241,7 @@ De posse das informações necessárias para a implantação do algoritmo \ref{a
     \label{alg:treinamento}
 \end{algorithm}
 
-O parâmetro de pares por instância indica a quantidade de pares que uma instância $i$ deve formar como primeiro item da combinação entre $i$ e $\beta$ onde $\beta$ é qualquer instância de classe antagônica à classe de $i$. O parâmetro $n$ constitui o número de classificadores a serem treinados para votação. O valor de retorno é sempre um conjunto de classificadores.
+O parâmetro $p$ --- pares por instância --- representa a quantidade de pares que uma instância $i$ deve formar como primeiro item da combinação entre $i$ e $j$ onde $j$ é qualquer instância de classe antagônica à classe de $i$. O parâmetro $n$ indicarepresenta o número de classificadores a serem treinados para votação. O valor de retorno é sempre um conjunto de classificadores.
 
 O algoritmo \ref{alg:treinamento} atende, através da manipulação dos parâmetros $n$ e $p$, tanto ao propósito do algoritmo \ref{alg:auc-train} \emph{(AUC-Train)} quanto às otimizações propostas para esse. Para executar o algoritmo original, basta definir $n$ como $1$ e $p$ como $todas$. Para executar o algoritmo com amostragens e votação, basta definir $n$ com um valor maior que $1$ e $p$ com um valor entre $1$ e o número de instâncias da classe minoritária.
 
@@ -248,11 +250,11 @@ O algoritmo \ref{alg:treinamento} atende, através da manipulação dos parâmet
 
 Após a etapa de treinamento, a técnica de \emph{ranking reduzido a classificação} procede à etapa de ordenação. Nessa etapa, o classificador aprendido na etapa de treinamento é utilizado para ordenar um conjunto de instâncias como descrito no algoritmo \ref{alg:tournament} \emph{(Tournament)}.
 
-O algoritmo \ref{alg:tournament} \emph{(Tournament)} recebe como entrada um classificador $c$ aprendido durante a etapa de treinamento e uma base $B$ composta de $n$ instâncias sem classes assinaladas. Esse algoritmo executa em duas grandes etapas:
+O algoritmo \ref{alg:tournament} \emph{(Tournament)} recebe como entrada um classificador $c$ aprendido durante a etapa de treinamento e uma base $U$ composta por $n$ instâncias sem classes assinaladas. Esse algoritmo executa em duas grandes etapas:
 
 \begin{enumerate}
-    \item Obter a pontuação para todas as instâncias na base $B$;
-    \item Ordenar as instâncias na base $B$.
+    \item Obter a pontuação para todas as instâncias na base $U$;
+    \item Ordenar as instâncias na base $U$.
 \end{enumerate}
 
 Partindo dessa divisão, o tempo computacional do algoritmo é a soma dos tempos das etapas de obtenção das pontuações e de ordenação. A etapa de obtenção das pontuações é bem definida no algoritmo \ref{alg:tournament} \emph{(Tournament)}, enquanto, na etapa de ordenação, qualquer algoritmo de ordenação pode ser usado: \emph{mergesort} e \emph{quicksort}, para citar alguns.
@@ -263,7 +265,7 @@ Não é possível dizer exatamente qual é o limite superior de tempo de execuç
 
 O pior caso, o caso médio e o melhor caso apresentam o mesmo limite superior de chamadas à \emph{função \ref{func:votacao}}, pois é sempre necessário promover o embate de todas as instâncias. Como a chamada à função está englobada por dois loops aninhados, isso resulta em um limite de chamadas de ordem $O(n^2)$. Dessa forma, a única afirmação que pode ser feita sobre o tempo de execução da etapa de pontuação é que ele pode ser maior ou igual a $O(n^2)$.
 
-Como o pior tempo de execução observado para algoritmos de ordenação é da ordem de $O(n^2)$, o gargalo da etapa de ordenação reside na necessidade de se gerar todos os pares a partir das instâncias no conjunto a ser ordenado. Qualquer tentativa de otimização desse processo deve levar em consideração essa observação.
+Como existem algoritmos de ordenação com tempo computacional da ordem de $O(n^2)$ para o pior caso, o gargalo da etapa de ordenação reside na necessidade de se gerar todos os pares a partir das instâncias no conjunto a ser ordenado. Qualquer tentativa de otimização desse processo deve levar em consideração essa observação.
 
 
 \section{Ordenação: Otimizações e implantação do algoritmo \emph{Tournament}}
@@ -303,25 +305,25 @@ De acordo com o exposto até agora sobre a etapa de ordenação, essa pode ser d
 \begin{algorithm}[h!]
     \Entrada{
         Conjunto de classificadores $C$\;
-        Base com instâncias de classe desconhecida $S$\;
-        Mapeamento das instâncias de $B$ com suas pontuações $pontuacao$
+        Base composta por instâncias sem classes assinaladas $U$\;
+        Mapeamento das instâncias de $U$ com seus graus $grau$
     }
-    \Saida{\emph{Ranking} da base $B$}
+    \Saida{\emph{Ranking} da base $U$}
 
-    \ParaTodo{$\alpha \in B$}{
-        \ParaTodo{$\beta \in B \wedge \beta \neq \alpha$}{
-            $i \gets \langle \alpha(A) || \beta(A) \rangle$\;
-            $classe \gets votacao(C, i)$
+    \ParaTodo{$\alpha \in U$}{
+        \ParaTodo{$\beta \in U \; e \; \beta \neq \alpha$}{
+            $i \gets \langle (x_{\alpha}, x_{\beta}) \rangle$\;
+            $classe \gets votacao(C, i)$\;
 
             \eSe{$classe = 1$}{
-                $pontuacao[\alpha] \gets pontuacao[\alpha] + 1$
+                $grau[\alpha] \gets grau[\alpha] + 1$\;
             }{
-                $pontuacao[\beta] \gets pontuacao[\beta] + 1$
+                $grau[\beta] \gets grau[\beta] + 1$\;
             }
         }
     }
 
-    ordenar $B$ com base em $pontuacao$
+    ordenar $U$ com base em $grau$\;
 
     \caption{Ordenação}
     \label{alg:ordenacao}

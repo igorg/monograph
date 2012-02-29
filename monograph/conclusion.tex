@@ -1,19 +1,15 @@
-A primeira conclusão que pode ser tirada é que o algoritmo testado aqui possui tempo computacional elevado tanto para treinamento, quanto para avaliação. As estratégias para melhoria no tempo de treinamento, como uso de votação e de um número reduzido de pares por instância, ajudaram nesse aspecto e criaram resultados por vezes superiores ao algoritmo original e ao classificador base.
-
-Os esforços para otimizar o tempo na etapa de avaliação consistiram em implantar um algoritmo baseado no algoritmo \emph{Quicksort}, que teria um limite superior de chamadas à \emph{função \ref{func:votacao}} de $O(n \cdot \log(n))$, um avanço comparado ao limite superior do torneio que é $O(n^2)$. Embora esta estratégia tenha sido completamente implantada, não houve nenhum experimento que a utilizasse.
+A primeira conclusão que pode ser tirada é que o algoritmo testado aqui possui tempo computacional elevado tanto para treinamento, quanto para avaliação. As estratégias para melhoria no tempo de treinamento, como uso de votação e de um número reduzido de pares por instância, ajudaram nesse aspecto e criaram, por vezes, ordenações melhores que as criadas pelo algoritmo original e pelo classificador base.
 
 O classificador Naïve Bayes teve um desempenho incomum quando combinado com o algortimo de \emph{Ranking}. Esse classificador gerou resultados absurdamente abaixo do esperado para todas as bases testadas, exceto para a base \emph{yeast}.
 
 Analisando os gráficos da seçao \ref{sec:avaliacao}, repara-se que, para a base \emph{glass}, os resultados começam a melhorar em relação aos obtidos para as bases \emph{breast-cancer}, \emph{vehicle} e \emph{hepatitis}. Já para a base \emph{yeast}, o Naïve Bayes aliado ao algoritmo de \emph{Ranking} teve uma performance excelente, acertando quase todas as ordenações. Esse comportamento anômalo não foi elucidado nesse estudo.
 
-Comparando as estratégias implantadas para acelerar a etapa de treinamento de forma isolada, pode-se chegar a seguinte conclusão: o aumento do número de classificadores na votação cria resultados com menor variação na AUC que o aumento de pares por instância no treinamento.
+Comparando as otimizações propostas para acelerar a etapa de treinamento de forma isolada, pode-se chegar a seguinte conclusão: o aumento do número de classificadores na votação cria resultados com menor variação na AUC que o aumento de pares por instância no treinamento.
 
-Olhando as curvas geradas para cada uma dessas estratégias nos gráficos do capítulo \ref{chap:avaliacao}, percebe-se que a tendência da AUC para a estratégia de aumento de classificadores na votação é, na maioria dos casos, crescente. Enquanto a tendência da AUC para a estratégia de aumento do número de pares por instância não pode ser definida com clareza em alguns casos.
-
-O artigo \cite{langford08} mostra que um classificador que produza um erro $\alpha$ na acurácia pode produzir um erro teórico máximo de $n \cdot \alpha$ na AUC, onde $n$ é o número de exemplos a serem ordenados. Mostra também que a técnica de \emph{ranking reduzido a classificação} produz um erro teórico máximo de $2 \cdot \alpha$.
+Analisando as curvas geradas para cada uma dessas estratégias nos gráficos do capítulo \ref{chap:avaliacao}, percebe-se que a tendência da AUC para a estratégia de aumento de classificadores na votação é, na maioria dos casos, crescente. Enquanto a tendência da AUC para a estratégia de aumento do número de pares por instância não pode ser definida com clareza em alguns casos.
 
 Com a exceção do classificador naïve-bayes, que apresentou um comportamento anômalo, a técnica avaliada resultou em menor perda na AUC em comparação com a ordenação do classificador solo na maioria dos casos.
 
 Com o uso da árvore de decisão C4.5 ordenando a base Yeast --- a mais desbalanceada de todas as bases testadas --- a técnica apresentou um incremento de aproximadamente $100\%$ comparada à ordenação da árvore de decisão solo. Esse é um caso que tende a ratificar o ponto exposto em \cite{langford08}.
 
-Em quase todos os casos, a otimização de votação elevou a performance da técnica original de forma que os resultados obtidos fossem melhores que os resultados dos classificadores solo, e muitas vezes superiores à técnica de \emph{ranking reduzido a classificação}.
+Em quase todos os casos, a otimização de votação elevou a performance da técnica original de forma que os resultados obtidos fossem melhores que os resultados dos classificadores solo, e algumas vezes superiores à técnica de \emph{ranking reduzido a classificação}.

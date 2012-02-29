@@ -10,7 +10,7 @@ Dado um conjunto composto por elementos aos quais é possível atribuir um rótu
 
 Substituindo-se a palavra rótulo pela palavra classe no enunciado acima, percebe-se que o problema de ordenação pode ser tratado como um problema de classificação. Mais especificamente, um problema de classificação binária, pois os valores de classe possíveis são $0$ e $1$.
 
-Um algoritmo de aprendizado para classificação recebe como entrada um conjunto em que cada elemento possui uma classe assinalada e, partindo dessa entrada, deve aprender um classificador capaz de atribuir uma classe a qualquer elemento. A etapa em que o aprendizado ocorre é chamada de treinamento.
+Um algoritmo de aprendizado para classificação recebe como entrada um conjunto em que cada elemento possui uma classe assinalada e, partindo dessa entrada, deve aprender um classificador capaz de atribuir uma classe a novos elementos. A etapa em que o aprendizado ocorre é chamada de treinamento.
 
 O treinamento de um classificador é um aprendizado supervisionado, pois cada elemento submetido à etapa de treinamento está vinculado à sua classe verdadeira. Dessa forma, pode-se medir a qualidade do classificador aprendido usando elementos com classes conhecidas, porém suprimindo-as quando os elementos forem submetidos a classificação.
 
@@ -27,14 +27,14 @@ Na técnica de \emph{ranking reduzido a classificação}, o treinamento do class
 Como dito anteriormente, o treinamento e avaliação de um classificador é um processo que manipula conjuntos compostos por elementos. Definições mais rigorosas são necessárias para a descrição da implantação da técnica de \emph{ranking reduzido a classificação} no capítulo \ref{chap:implantacao}. As definições abaixo foram feitas levando-se em consideração o funcionamento da ferramenta WEKA e os requisitos necessários para se modelar a solução de \emph{ranking reduzido a classificação} exposta em \cite{langford08}.
 
 \begin{itemize}
-    \item Uma base $B$ é um conjunto de instâncias com cardinalidade $n$.
-    \[B = \{i_1, ..., i_n\} \qquad |B| = n\]
+    \item Uma base $S$ é um conjunto de instâncias com cardinalidade $n$.
+    \[S = \{i_1, ..., i_n\} \qquad |S| = n\]
 
-    \item Uma instância $I$ é uma tupla $\langle A, C \rangle$ na qual $A$ é um vetor de atributos com cardinalidade $m$ e $C$ é a classe da instância e pode valer $0$ ou $1$.
-    \[I = (A, C) \qquad A = \{a_1, ..., a_m\} \qquad C = x \; | \; x \in \{0, 1\}\]
+    \item Uma instância $I$ é uma tupla $\langle x, y \rangle$ na qual $x$ é um vetor de atributos com cardinalidade $m$ e $y$ é a classe da instância e pode valer $0$ ou $1$.
+    \[I = \langle x, y \rangle \qquad x = \{a_1, ..., a_m\} \qquad y \in \{0, 1\}\]
 \end{itemize}
 
-Pode-se acessar os atributos de uma instância $I$ através de $I(A)$ e a classe através de $I(C)$. Nos algoritmos do próximo capítulo, quando duas instâncias forem combinadas, os vetores de atributos serão concatenados, isso é feito através do operador binário de concatenação $||$.
+Pode-se acessar os atributos de uma instância $I$ através de $x_I$ e a classe através de $y_I$. Pode-se, também, concatenar os vetores de atributos de duas instâncias $I$ e $I'$ através da operação $(x_I, x_{I'})$.
 
 Não será necessária a definição do conceito de atributo. Uma vez que os atributos são manipulados pelo classificador e o funcionamento dos classificadores nas soluções aqui propostas é uma caixa preta, os atributos são transparentes para os propósitos desse trabalho.
 

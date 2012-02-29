@@ -4,7 +4,7 @@ Quanto maior o desbalanceamento entre as classes da base a ser ordenada, maior a
 
 \section{Características das bases}
 
-As bases usadas foram as seguintes: Breast Cancer; Statlog (Vehicle Silhouettes), chamada de Vehicle; Hepatitis; Glass Identification, chamada de Glass e Yeast. Como o algoritmo proposto em \cite{langford08} tem um custo computacional alto, $O(n^2)$ para treinamento e $O(n^2)$ para gerar o ranking; isso aliado ao baixo controle sobre o ambiente de execução culminou na escolha de bases pequenas para avaliação do experimento.
+As bases usadas foram as seguintes: Breast Cancer; Statlog (Vehicle Silhouettes), chamada de Vehicle; Hepatitis; Glass Identification, chamada de Glass e Yeast. Como o algoritmo proposto em \cite{langford08} tem um custo computacional alto; isso aliado ao baixo controle sobre o ambiente de execução culminou na escolha de bases pequenas para avaliação do experimento.
 
 As bases Vehicle, Glass e Yeast tratam, originalmente, de problemas multiclasse. A essas bases foram aplicadas transformações, descritas em \cite{guo04}, a fim de torná-las problemas de classe binária. Para as bases Vehicle e Glass, foram unidas todas as classes, exceto a minoritária, em uma nova classe. Para a base Yeast, apenas as classes de valor 'CYT' ou 'POX' foram consideradas.
 
@@ -76,30 +76,40 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
 
 \begin{figure}[h!]
     \centering
+
     \subfloat[Breast cancer]{
         \label{fig:breast-cancer_j48}
-        \includegraphics[width=0.42\textwidth]{img/breast-cancer_j48.eps}
+        \includegraphics[width=0.65\textwidth]{img/breast-cancer_j48.eps}
     }
+
     \subfloat[Glass]{
         \label{fig:glass_j48}
-        \includegraphics[width=0.42\textwidth]{img/glass_j48.eps}
+        \includegraphics[width=0.65\textwidth]{img/glass_j48.eps}
     }
+
+    \caption{Gráficos de desempenho para árvore de decisão C4.5}
+\end{figure}
+
+\begin{figure}[h!]
+    \ContinuedFloat
+    \centering
 
     \subfloat[Hepatitis]{
         \label{fig:hepatitis_j48}
-        \includegraphics[width=0.42\textwidth]{img/hepatitis_j48.eps}
-    }    
+        \includegraphics[width=0.65\textwidth]{img/hepatitis_j48.eps}
+    }
+
     \subfloat[Vehicle]{
         \label{fig:vehicle_j48}
-        \includegraphics[width=0.42\textwidth]{img/vehicle_j48.eps}
+        \includegraphics[width=0.65\textwidth]{img/vehicle_j48.eps}
     }
 
     \subfloat[Yeast]{
         \label{fig:yeast_j48}
-        \includegraphics[width=0.42\textwidth]{img/yeast_j48.eps}
+        \includegraphics[width=0.65\textwidth]{img/yeast_j48.eps}
     }
 
-    \caption{Gráficos de desempenho para árvore de decisão C4.5\\ Eixo y: AUC --- eixo x: número de pares ou classificadores}
+    \caption{Gráficos de desempenho para árvore de decisão C4.5}
 \end{figure}
 
 \clearpage
@@ -132,30 +142,40 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
 
 \begin{figure}[h!]
     \centering
+
     \subfloat[Breast cancer]{
         \label{fig:breast-cancer_naive-bayes}
-        \includegraphics[width=0.42\textwidth]{img/breast-cancer_naive-bayes.eps}
+        \includegraphics[width=0.65\textwidth]{img/breast-cancer_naive-bayes.eps}
     }
+
     \subfloat[Glass]{
         \label{fig:glass_naive-bayes}
-        \includegraphics[width=0.42\textwidth]{img/glass_naive-bayes.eps}
+        \includegraphics[width=0.65\textwidth]{img/glass_naive-bayes.eps}
     }
+
+    \caption{Gráficos de desempenho para Naïve Bayes}
+\end{figure}
+
+\begin{figure}[h!]
+    \ContinuedFloat
+    \centering
 
     \subfloat[Hepatitis]{
         \label{fig:hepatitis_naive-bayes}
-        \includegraphics[width=0.42\textwidth]{img/hepatitis_naive-bayes.eps}
-    }    
+        \includegraphics[width=0.65\textwidth]{img/hepatitis_naive-bayes.eps}
+    }
+
     \subfloat[Vehicle]{
         \label{fig:vehicle_naive-bayes}
-        \includegraphics[width=0.42\textwidth]{img/vehicle_naive-bayes.eps}
+        \includegraphics[width=0.65\textwidth]{img/vehicle_naive-bayes.eps}
     }
 
     \subfloat[Yeast]{
         \label{fig:yeast_naive-bayes}
-        \includegraphics[width=0.42\textwidth]{img/yeast_naive-bayes.eps}
+        \includegraphics[width=0.65\textwidth]{img/yeast_naive-bayes.eps}
     }
 
-    \caption{Gráficos de desempenho para Naïve Bayes\\ Eixo y: AUC --- eixo x: número de pares/ número de classificadores}
+    \caption{Gráficos de desempenho para Naïve Bayes}
 \end{figure}
 
 \clearpage
@@ -188,30 +208,40 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
 
 \begin{figure}[h!]
     \centering
+
     \subfloat[Breast cancer]{
         \label{fig:breast-cancer_logistic}
-        \includegraphics[width=0.42\textwidth]{img/breast-cancer_logistic.eps}
+        \includegraphics[width=0.65\textwidth]{img/breast-cancer_logistic.eps}
     }
+
     \subfloat[Glass]{
         \label{fig:glass_logistic}
-        \includegraphics[width=0.42\textwidth]{img/glass_logistic.eps}
+        \includegraphics[width=0.65\textwidth]{img/glass_logistic.eps}
     }
+
+    \caption{Gráficos de desempenho para Curva Logística}
+\end{figure}
+
+\begin{figure}[h!]
+    \ContinuedFloat
+    \centering
 
     \subfloat[Hepatitis]{
         \label{fig:hepatitis_logistic}
-        \includegraphics[width=0.42\textwidth]{img/hepatitis_logistic.eps}
-    }    
+        \includegraphics[width=0.65\textwidth]{img/hepatitis_logistic.eps}
+    }
+
     \subfloat[Vehicle]{
         \label{fig:vehicle_logistic}
-        \includegraphics[width=0.42\textwidth]{img/vehicle_logistic.eps}
+        \includegraphics[width=0.65\textwidth]{img/vehicle_logistic.eps}
     }
 
     \subfloat[Yeast]{
         \label{fig:yeast_logistic}
-        \includegraphics[width=0.42\textwidth]{img/yeast_logistic.eps}
+        \includegraphics[width=0.65\textwidth]{img/yeast_logistic.eps}
     }
 
-    \caption{Gráficos de desempenho para Curva Logística \\ Eixo y: AUC --- eixo x: número de pares/ número de classificadores}
+    \caption{Gráficos de desempenho para Curva Logística}
 \end{figure}
 
 \clearpage
@@ -244,28 +274,38 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
 
 \begin{figure}[h!]
     \centering
+
     \subfloat[Breast cancer]{
         \label{fig:breast-cancer_smo}
-        \includegraphics[width=0.42\textwidth]{img/breast-cancer_smo.eps}
-    }
-    \subfloat[Glass]{
-        \label{fig:glass_smo}
-        \includegraphics[width=0.42\textwidth]{img/glass_smo.eps}
+        \includegraphics[width=0.65\textwidth]{img/breast-cancer_smo.eps}
     }
 
+    \subfloat[Glass]{
+        \label{fig:glass_smo}
+        \includegraphics[width=0.65\textwidth]{img/glass_smo.eps}
+    }
+
+    \caption{Gráficos de desempenho para Support Vector Machine}
+\end{figure}
+
+\begin{figure}[h!]
+    \ContinuedFloat
+    \centering
+    
     \subfloat[Hepatitis]{
         \label{fig:hepatitis_smo}
-        \includegraphics[width=0.42\textwidth]{img/hepatitis_smo.eps}
-    }    
+        \includegraphics[width=0.65\textwidth]{img/hepatitis_smo.eps}
+    }
+
     \subfloat[Vehicle]{
         \label{fig:vehicle_smo}
-        \includegraphics[width=0.42\textwidth]{img/vehicle_smo.eps}
+        \includegraphics[width=0.65\textwidth]{img/vehicle_smo.eps}
     }
 
     \subfloat[Yeast]{
         \label{fig:yeast_smo}
-        \includegraphics[width=0.42\textwidth]{img/yeast_smo.eps}
+        \includegraphics[width=0.65\textwidth]{img/yeast_smo.eps}
     }
 
-    \caption{Gráficos de desempenho para Support Vector Machine \\ Eixo y: AUC --- eixo x: número de pares/ número de classificadores}
+    \caption{Gráficos de desempenho para Support Vector Machine}
 \end{figure}
