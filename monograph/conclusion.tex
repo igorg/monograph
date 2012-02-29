@@ -1,6 +1,6 @@
 A primeira conclusão que pode ser tirada é que o algoritmo testado aqui possui tempo computacional elevado tanto para treinamento, quanto para avaliação. As estratégias para melhoria no tempo de treinamento, como uso de votação e de um número reduzido de pares por instância, ajudaram nesse aspecto e criaram, por vezes, ordenações melhores que as criadas pelo algoritmo original e pelo classificador base.
 
-O classificador Naïve Bayes teve um desempenho incomum quando combinado com o algortimo de \emph{Ranking}. Esse classificador gerou resultados muito abaixo do esperado para todas as bases testadas, exceto para a base \emph{yeast}. Esse comportamento anômalo não foi elucidado nesse estudo.
+O classificador Naïve Bayes teve um desempenho incomum quando combinado com o algoritmo de \emph{Ranking}. Esse classificador gerou resultados muito abaixo do esperado para todas as bases testadas, exceto para a base \emph{yeast}. Esse comportamento anômalo não foi elucidado nesse estudo.
 
 Comparando as otimizações propostas para acelerar a etapa de treinamento de forma isolada, pode-se chegar a seguinte conclusão: o aumento do número de classificadores na votação cria resultados com menor variação na AUC que o aumento de pares por instância no treinamento.
 

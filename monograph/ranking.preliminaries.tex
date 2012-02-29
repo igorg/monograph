@@ -8,7 +8,7 @@ De fato, a técnica de \emph{ranking} descrita em \cite{langford08} propõe envo
 
 Dado um conjunto composto por elementos aos quais é possível atribuir um rótulo de valor $0$ ou $1$, deseja-se encontrar uma permutação dos elementos de maneira que os elementos que apresentem maior chance de receber o rótulo $0$ devem preceder os com maior chance de receber o rótulo $1$. Cada elemento é composto por um conjunto de características e a chance de um elemento receber o rótulo $0$ ou o rótulo $1$ deve ser calculada com base nessas características.
 
-Substituindo-se a palavra rótulo pela palavra classe no enunciado acima, percebe-se que o problema de ordenação pode ser tratado como um problema de classificação. Mais especificamente, um problema de classificação binária, pois os valores de classe possíveis são $0$ e $1$.
+Substituindo-se a palavra rótulo pela palavra classe no enunciado anterior, percebe-se que o problema de ordenação pode ser tratado como um problema de classificação. Mais especificamente, um problema de classificação binária, pois os valores de classe possíveis são $0$ e $1$.
 
 Um algoritmo de aprendizado para classificação recebe como entrada um conjunto em que cada elemento possui uma classe assinalada e, partindo dessa entrada, deve aprender um classificador capaz de atribuir uma classe a novos elementos. A etapa em que o aprendizado ocorre é chamada de treinamento.
 
@@ -24,7 +24,7 @@ Na técnica de \emph{ranking reduzido a classificação}, o treinamento do class
 
 \section{Definições}
 
-Como dito anteriormente, o treinamento e avaliação de um classificador é um processo que manipula conjuntos compostos por elementos. Definições mais rigorosas são necessárias para a descrição da implementação da técnica de \emph{ranking reduzido a classificação} no capítulo \ref{chap:implantacao}. As definições abaixo foram feitas levando-se em consideração o funcionamento da ferramenta WEKA e os requisitos necessários para se modelar a solução de \emph{ranking reduzido a classificação} exposta em \cite{langford08}.
+Como dito anteriormente, o treinamento e avaliação de um classificador é um processo que manipula conjuntos compostos por elementos. Definições mais rigorosas são necessárias para a descrição da implementação da técnica de \emph{ranking reduzido a classificação} no capítulo \ref{chap:implantacao}. As definições a seguir foram feitas levando-se em consideração o funcionamento da ferramenta WEKA e os requisitos necessários para se modelar a solução de \emph{ranking reduzido a classificação} exposta em \cite{langford08}.
 
 \begin{itemize}
     \item Uma base $S$ é um conjunto de instâncias com cardinalidade $n$.
@@ -69,7 +69,7 @@ A tabela \ref{tab:weather} apresenta um exemplo de base extraído do livro \cite
 
 A primeira linha nomeia os quatro atributos da base e a classe (adequado para jogo), as linhas seguintes representam as instâncias da base. Nota-se que a classe recebe valores \emph{sim} e \emph{não}, apesar de serem valores diferentes de $0$ e $1$, como dito na definição, ainda se trata de uma base com classe binária.
 
-Escrevendo a primeira instância da base na notação definida acima, tem-se: ((ensolarado, quente, alta, falso), não). O primeiro elemento da tupla é o vetor de atributos e o segundo elemento é a classe da instância.
+Escrevendo a primeira instância da base na notação definida anteriormente, tem-se: ((ensolarado, quente, alta, falso), não). O primeiro elemento da tupla é o vetor de atributos e o segundo elemento é a classe da instância.
 
 
 \section{Medidas de desempenho}
