@@ -37,14 +37,16 @@ Para cada classificador base houve quatro baterias de execução com diferentes 
 
 \begin{enumerate}
     \item Somente o classificador (classificador);
-    \item O classificador como base para a técnica de \emph{ranking reduzido a classificação} original (ranking);
-    \item O classificador como base para o algoritmo de ranking com configurações de 1 par por instância e variando o número de classificadores na votação entre 1 e 20 (número de classificadores);
-    \item O classificador como base para o algoritmo de ranking com configurações de 1 classificador na votação e variando o número de pares por instância entre 1 e 20 (número de pares).
+    \item O classificador como base para a técnica de \emph{ranking} (ranking);
+    \item O classificador como base para a técnica de \emph{ranking} com 1 par por instância e variando o número de classificadores na votação entre 1 e 20 (número de classificadores);
+    \item O classificador como base para a técnica de \emph{ranking} com 1 classificador na votação e variando o número de pares por instância entre 1 e 20 (número de pares).
 \end{enumerate}
 
-Nas três baterias que envolveram o algoritmo de \emph{ranking}, o método de ordenação usado para gerar o resultado final foi o \emph{torneio}, como explicado no artigo \cite{langford08}. Em todas as baterias foi executada uma validação cruzada com 10 partições e os resultados apresentados nas tabelas é a média das \emph{AUCs} obtidas para cada partição.
+Nas três baterias que envolveram o algoritmo de \emph{ranking}, o método de ordenação usado para gerar o resultado final foi o \emph{torneio}, como explicado no artigo \cite{langford08}. Em todas as baterias foi executada uma validação cruzada com 10 partições.
 
-Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref{logistic_results_table} e \ref{smo_results_table}; o símbolo \textbf{*} significa ranking aplicado com 1 par por instância e 10 classificadores na votação. O símbolo \textbf{**} significa ranking aplicado com 10 pares por instância e 1 classificador na votação.
+Os resultados nas tabelas \ref{j48_results_table}, \ref{nb_results_table}, \ref{logistic_results_table} e \ref{smo_results_table} é a média das \emph{AUCs} obtidas para cada partição. Nas mesmas tabelas, o símbolo \textbf{*} significa ranking com 1 par por instância e 10 classificadores na votação. O símbolo \textbf{**} significa ranking com 10 pares por instância e 1 classificador na votação.
+
+Os gráficos expostos a seguir apresentam a AUC como medida para o eixo das coordenadas e o número de classificadores usados na votação ou o número de pares por instância usado na amostragem como medida para o eixo das abscissas, dependendo da curva analisada e de acordo com a legenda dos gráficos.
 
 \clearpage
 \pagebreak
@@ -309,3 +311,15 @@ Para as tabelas de número \ref{j48_results_table}, \ref{nb_results_table}, \ref
 
     \caption{Gráficos de desempenho para Support Vector Machine}
 \end{figure}
+
+\clearpage
+\pagebreak
+
+
+\subsection{Análise dos resultados}
+
+Analisando os gráficos obtidos pelo Naïve-Bayes, repara-se que, para a base \emph{glass}, os resultados começam a melhorar em relação aos obtidos para as bases \emph{breast-cancer}, \emph{vehicle} e \emph{hepatitis}. Já para a base \emph{yeast}, o Naïve Bayes aliado ao algoritmo de \emph{Ranking} teve uma performance excelente, acertando quase todas as ordenações.
+
+As curvas geradas para cada estratégia nos gráficos deste capítulo sugerem que a tendência da AUC para a estratégia de aumento de classificadores na votação é, na maioria dos casos, crescente. Enquanto a tendência da AUC para a estratégia de aumento do número de pares por instância não pode ser definida com clareza na maioria dos casos.
+
+Segundo o gráfico da árvore de decisão C4.5 ordenando a base Yeast, a técnica apresentou um incremento de aproximadamente $100\%$ comparada à ordenação da árvore de decisão solo.

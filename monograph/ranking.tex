@@ -172,7 +172,7 @@ O pior caso acontece quando $k = \frac{n}{2}$, nesse caso a base de treinamento 
 \end{table}
 
 
-\section{Treinamento: Otimizações e implantação do algoritmo \emph{AUC-Train}}
+\section{Treinamento: Otimizações e implementação do algoritmo \emph{AUC-Train}}
 
 Recapitulando, o algoritmo \ref{alg:auc-train} \emph{(AUC-Train)} é composto de três etapas principais: particionamento, com a \emph{função \ref{func:particionar}}; combinação das partições, com a \emph{função \ref{func:combinar}}; e treinamento do classificador.
 
@@ -209,7 +209,7 @@ Apesar de o uso da amostragem beneficiar o tempo de execução, o classificador 
 
 Há, assim, uma complementaridade entre as duas estratégias escolhidas para otimização do algoritmo \ref{alg:auc-train} \emph{(AUC-Train)}. Enquanto uma preza por melhorar o tempo de execução, o outra preza por dar maior segurança na classificação. Basta combiná-las para balancear o compromisso entre tempo de execução e redução dos erros de classificação.
 
-De posse das informações necessárias para a implantação do algoritmo \ref{alg:auc-train} \emph{(AUC-Train)} e de suas otimizações, a etapa de treinamento do \emph{Ranking} está exposta no algoritmo \ref{alg:treinamento}.
+De posse das informações necessárias para a implementação do algoritmo \ref{alg:auc-train} \emph{(AUC-Train)} e de suas otimizações, a etapa de treinamento do \emph{Ranking} está exposta no algoritmo \ref{alg:treinamento}.
 
 \begin{algorithm}[h!]
     \Entrada{
@@ -268,7 +268,7 @@ O pior caso, o caso médio e o melhor caso apresentam o mesmo limite superior de
 Como existem algoritmos de ordenação com tempo computacional da ordem de $O(n^2)$ para o pior caso, o gargalo da etapa de ordenação reside na necessidade de se gerar todos os pares a partir das instâncias no conjunto a ser ordenado. Qualquer tentativa de otimização desse processo deve levar em consideração essa observação.
 
 
-\section{Ordenação: Otimizações e implantação do algoritmo \emph{Tournament}}
+\section{Ordenação: Otimizações e implementação do algoritmo \emph{Tournament}}
 
 Vale destacar que a otimização de votação, sugerida para a etapa de treinamento, tem extensões na etapa de ordenação. Para que a estratégia de votação funcione, o algoritmo de ordenação precisa utilizar a \emph{função \ref{func:votacao}}. Essa iterará sobre o conjunto de classificadores produzidos na etapa de treinamento, determinando a classe majoritária na votação.
 
@@ -341,7 +341,7 @@ Ainda segundo \cite{ailon08}, uma consequência dessa otimização é tornar vi�
 
 Embora a ordenação por quicksort tenha sido implantada na solução para o \emph{workbench WEKA}, não houve nenhuma avaliação empírica dessa estratégia, como será visto no próximo capítulo.
 
-% Tal implantação está explicada no algoritmo \ref{alg:quicksort}. O algoritmo assume que as instâncias na base podem ser acessadas através de sua posição.
+% Tal implementação está explicada no algoritmo \ref{alg:quicksort}. O algoritmo assume que as instâncias na base podem ser acessadas através de sua posição.
 
 % \begin{algorithm}
 %     \Entrada{Base a ser ordenada $B$}
