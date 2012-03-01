@@ -12,7 +12,7 @@ No algoritmo \ref{alg:auc-train}, $S$ é a base de treinamento; $S'$ é uma tran
 
 A transformação consiste em formar novas instâncias a partir de combinações entre instâncias de classes diferentes. A ordem das instâncias  na combinação é relevante: o par $\langle (x_1, x_2), 1(y_1 < y_2) \rangle$ e o par $\langle (x_2, x_1), 1(y_2 < y_1) \rangle$ representam informações diferentes para o aprendizado do classificador.
 
-Essa transformação foi implantada particionando a base de treinamento em dois subconjuntos, um subconjunto $S_0$ com as instâncias de classe $0$ e outro, $S_1$, com as instâncias de classe $1$. Com as duas partições definidas, basta combiná-las em um conjunto de elementos com formato final $\langle (x_{\alpha}, X_{\beta}), 1(y_{\alpha} < y_{\beta}) \rangle$.
+Essa transformação foi implementada particionando a base de treinamento em dois subconjuntos, um subconjunto $S_0$ com as instâncias de classe $0$ e outro, $S_1$, com as instâncias de classe $1$. Com as duas partições definidas, basta combiná-las em um conjunto de elementos com formato final $\langle (x_{\alpha}, X_{\beta}), 1(y_{\alpha} < y_{\beta}) \rangle$.
 
 A \emph{função $\ref{func:one}$}, aplicada para obter a classe da nova instância, retorna $1$, se o resultado da expressão avaliada é verdadeiro, ou $0$, se o resultado da expressão é falso. Como o argumento para a função é $y_{\alpha} < y_{\beta}$, se $y_{\alpha}$ valer $1$, a classe da nova instância será $0$, se valer $0$, a classe da nova instância será $1$.
 
@@ -339,7 +339,7 @@ Combinado diretamente com o classificador, o algoritmo de ordenação quicksort 
 
 Ainda segundo \cite{ailon08}, uma consequência dessa otimização é tornar viável o uso da técnica de \emph{ranking reduzido a classificação} em sistemas comerciais, tais como: motores de busca e sistemas de recomendações.
 
-Embora a ordenação por quicksort tenha sido implantada na solução para o \emph{workbench WEKA}, não houve nenhuma avaliação empírica dessa estratégia, como será visto no próximo capítulo.
+Embora a ordenação por quicksort tenha sido implementada na solução para o \emph{workbench WEKA}, não houve nenhuma avaliação empírica dessa estratégia, como será visto no próximo capítulo.
 
 % Tal implementação está explicada no algoritmo \ref{alg:quicksort}. O algoritmo assume que as instâncias na base podem ser acessadas através de sua posição.
 
